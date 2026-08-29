@@ -4,6 +4,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KpiCategoryController;
 use App\Http\Controllers\KpiController;
+use App\Http\Controllers\KpiIndicatorController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SettingController;
@@ -47,7 +48,7 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::put('/employee/edit/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employee/delete/{employee}',[EmployeeController::class, 'delete']);
     
-    ## Kpi Category
+    ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
     Route::get('/kpi_category/list', [KpiCategoryController::class, 'get_kpi_category_index'])->name('kpi_category.list');
     Route::post('/kpi_category/store', [KpiCategoryController::class, 'store']);
@@ -56,7 +57,7 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::put('/kpi_category/edit/{kpi_category}', [KpiCategoryController::class, 'update']);
     Route::get('/kpi_category/delete/{kpi_category}',[KpiCategoryController::class, 'delete']);
 
-    ## Village
+    ## KPI
     Route::get('/kpi/{kpi_category}', [KpiController::class, 'index'])->name('kpi.index');
     Route::get('/kpi/list/{kpi_category}', [KpiController::class, 'get_kpi_index'])->name('kpi.list');
     Route::post('/kpi/store', [KpiController::class, 'store']);
@@ -64,7 +65,16 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi/edit/{kpi}', [KpiController::class, 'edit']);
     Route::put('/kpi/edit/{kpi}', [KpiController::class, 'update']);
     Route::get('/kpi/delete/{kpi}',[KpiController::class, 'delete']);
-    Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
+    // Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
+
+    ## KPI Indicator
+    Route::get('/kpi_indicator/{kpi}', [KpiIndicatorController::class, 'index'])->name('kpi_indicator.index');
+    Route::get('/kpi_indicator/list/{kpi}', [KpiIndicatorController::class, 'get_kpi_indicator_index'])->name('kpi_indicator.list');
+    Route::post('/kpi_indicator/store', [KpiIndicatorController::class, 'store']);
+    Route::post('/kpi_indicator/validate/{action}', [KpiIndicatorController::class, 'validate']);
+    Route::get('/kpi_indicator/edit/{kpi_indicator}', [KpiIndicatorController::class, 'edit']);
+    Route::put('/kpi_indicator/edit/{kpi_indicator}', [KpiIndicatorController::class, 'update']);
+    Route::get('/kpi_indicator/delete/{kpi_indicator}',[KpiIndicatorController::class, 'delete']);
 
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');

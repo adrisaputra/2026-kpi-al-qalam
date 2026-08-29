@@ -3,45 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kpi;
-use App\Models\KpiCategory;
+use App\Models\KpiIndicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\DataTables;
 
-class KpiController extends Controller
+class KpiIndicatorController extends Controller
 {
-    public function index($kpi_category)
+    public function index($kpi)
     {
-        $title = "KPI";
-        $kpi_category = Crypt::decrypt($kpi_category);
-        $kpi_category = KpiCategory::where('id', $kpi_category)->first();
-        return view('admin.kpi.index', compact('title', 'kpi_category'));
+        $title = "Indikator KPI";
+        $kpi = Crypt::decrypt($kpi);
+        $kpi = Kpi::where('id', $kpi)->first();
+        return view('admin.kpi_indicator.index', compact('title', 'kpi'));
     }
 
 
-    public function get_kpi_index(Request $request, $kpi_category)
+    public function get_kpi_indicator_index(Request $request, $kpi)
     {
         if ($request->ajax()) {
             $counters = 1;
 
-            $kpi_category = Crypt::decrypt($kpi_category);
-            $kpi_category = KpiCategory::where('id', $kpi_category)->first();
+            $kpi = Crypt::decrypt($kpi);
+            $kpi = Kpi::where('id', $kpi)->first();
 
-            $kpi = Kpi::where('kpi_category_id', $kpi_category->id)->where('id','!=',0)->limit(10);
+            $kpi_indicator = KpiIndicator::where('kpi_id', $kpi->id)->where('id','!=',0)->limit(10);
 
-            return DataTables::of($kpi)
+            return DataTables::of($kpi_indicator)
             ->addIndexColumn()
             ->addColumn('number', function () use (&$counters) {
                 return $counters++;
             })
-            ->addColumn('kpi_indicator', function ($v) {
-                $url = url('kpi_indicator', Crypt::encrypt($v->id));
-                $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                            Lihat Indikator KPI';
+            ->addColumn('kpi_item', function ($v) {
+                $url = url('kpi_item', Crypt::encrypt($v->id));
+                $btn = '<a href="' . $url . '" target="_blank" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                            Lihat KPI Item';
 
-                    // if ($v->kpis->count() > 0) {
+                    // if ($v->kpi_indicators->count() > 0) {
                     //     $btn .= '<span class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger">'
-                    //         . $v->kpis->count()
+                    //         . $v->kpi_indicators->count()
                     //         . '</span>';
                     // }
 
@@ -58,7 +58,7 @@ class KpiController extends Controller
                         </a>';
                 return $btn;
             })
-            ->rawColumns(['kpi_indicator', 'action'])
+            ->rawColumns(['kpi_item', 'action'])
             ->make(true);
         }
     }
@@ -68,7 +68,7 @@ class KpiController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'name' => 'Nama KPI'
+                'name' => 'Nama Indikator KPI'
             ];
 
             if ($action === "Simpan") {
@@ -87,69 +87,54 @@ class KpiController extends Controller
         }
     }
 
-    ## Save KPI 
+    ## Save Indikator KPI 
     public function store(Request $request)
     {
         if ($request->ajax()) {
 
-            $kpi = new Kpi();
-            $kpi->kpi_category_id = $request->kpi_category_id;
-            $kpi->name = $request->name;
-            $kpi->save();
-            activity()->log('Create KPI Data');
-            return response()->json(['success' => true, 'message' => 'Tambah KPI Berhasil']);
+            $kpi_indicator = new KpiIndicator();
+            $kpi_indicator->kpi_id = $request->kpi_id;
+            $kpi_indicator->name = $request->name;
+            $kpi_indicator->indicator = $request->indicator;
+            $kpi_indicator->target = $request->target;
+            $kpi_indicator->save();
+            activity()->log('Create Indikator KPI Data');
+            return response()->json(['success' => true, 'message' => 'Tambah Indikator KPI Berhasil']);
         }
     }
 
-    ## Get KPI
-    public function edit(Request $request, Kpi $kpi)
+    ## Get Indikator KPI
+    public function edit(Request $request, KpiIndicator $kpi_indicator)
     {
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'data' => $kpi]);
+            return response()->json(['success' => true, 'data' => $kpi_indicator]);
         }
     }
 
-    ## Edit KPI
-    public function update(Request $request, Kpi $kpi)
+    ## Edit Indikator KPI
+    public function update(Request $request, KpiIndicator $kpi_indicator)
     {
         if ($request->ajax()) {
 
-            $kpi->kpi_category_id = $request->kpi_category_id;
-            $kpi->name = $request->name;
-            $kpi->save();
+            $kpi_indicator->kpi_id = $request->kpi_id;
+            $kpi_indicator->name = $request->name;
+            $kpi_indicator->indicator = $request->indicator;
+            $kpi_indicator->target = $request->target;
+            $kpi_indicator->save();
 
-            activity()->log('Edit KPI Data With ID = ' . $kpi->id);
-            return response()->json(['success' => true, 'message' => 'Ubah KPI Berhasil']);
+            activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_indicator->id);
+            return response()->json(['success' => true, 'message' => 'Ubah Indikator KPI Berhasil']);
         }
     }
 
-    ## Delete KPI
-    public function delete(Request $request, Kpi $kpi)
+    ## Delete Indikator KPI
+    public function delete(Request $request, KpiIndicator $kpi_indicator)
     {
         if ($request->ajax()) {
-            $kpi->delete();
-            activity()->log('Delete KPI Data With ID = ' . $kpi->id);
-            return response()->json(['success' => true, 'message' => 'Hapus KPI Berhasil']);
+            $kpi_indicator->delete();
+            activity()->log('Delete Indikator KPI Data With ID = ' . $kpi_indicator->id);
+            return response()->json(['success' => true, 'message' => 'Hapus Indikator KPI Berhasil']);
         }
     }
 
-    // ## Get Data
-    // public function get($kpi_category, $kpi_id = NULL)
-    // {
-    //     $kpi = Kpi::where('kpi_category_id', $kpi_category)
-    //         ->orderBy('id', 'ASC')->get();
-
-    //     echo "<option value=''>- Pilih KPI -</option>";
-    //     foreach ($kpi as $v) {
-    //         if ($kpi_id) {
-    //             if ($kpi_id == $v->id) {
-    //                 echo "<option value='" . $v->id . "' selected>" . $v->name . "</option>";
-    //             } else {
-    //                 echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-    //             }
-    //         } else {
-    //             echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-    //         }
-    //     }
-    // }
 }
