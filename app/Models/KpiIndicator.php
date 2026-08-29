@@ -18,4 +18,13 @@ class KpiIndicator extends Model
     public function kpi(){
         return $this->belongsTo('App\Models\Kpi');
     }
+
+    public function kpi_indicator_item(){
+        return $this->HasOne('App\Models\KpiIndicatorItem');
+    }
+
+    public function kpi_indicator_items(){
+        return $this->hasMany('App\Models\KpiIndicatorItem');
+    }
+
 }

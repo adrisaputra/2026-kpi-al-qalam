@@ -37,17 +37,16 @@ class KpiController extends Controller
             ->addColumn('kpi_indicator', function ($v) {
                 $url = url('kpi_indicator', Crypt::encrypt($v->id));
                 $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                            Lihat Indikator KPI';
+                            <span>Lihat Indikator KPI</span>';
 
-                    // if ($v->kpis->count() > 0) {
-                    //     $btn .= '<span class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger">'
-                    //         . $v->kpis->count()
-                    //         . '</span>';
-                    // }
+                    if ($v->kpi_indicators->count() > 0) {
+                        $btn .= '<span class="badge badge-danger counter">'.$v->kpi_indicators->count().'</span>';
 
-                    // $btn .= '</a><span class="badge badge-circle badge-success">' . $v->villages->where('is_active', 1)->count() . '</span> Aktif  &nbsp;&nbsp;&nbsp; <span class="badge badge-circle badge-danger">' . $v->villages->where('is_active', 0)->count() . '</span> Tidak Aktif';
+                    }
+
+                    $btn .= '</a>';
                     
-                    return $btn;
+                return $btn;
             })
             ->addColumn('action', function ($v) {
                 $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal">

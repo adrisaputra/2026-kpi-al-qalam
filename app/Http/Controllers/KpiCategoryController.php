@@ -33,17 +33,16 @@ class KpiCategoryController extends Controller
             ->addColumn('kpi', function ($v) {
                 $url = url('kpi', Crypt::encrypt($v->id));
                 $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                            Lihat KPI';
+                            <span>Lihat KPI</span>';
 
                     if ($v->kpis->count() > 0) {
-                        $btn .= '<span class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger">'
-                            . $v->kpis->count()
-                            . '</span>';
+                        $btn .= '<span class="badge badge-danger counter">'.$v->kpis->count().'</span>';
+
                     }
 
-                    // $btn .= '</a><span class="badge badge-circle badge-success">' . $v->villages->where('is_active', 1)->count() . '</span> Aktif  &nbsp;&nbsp;&nbsp; <span class="badge badge-circle badge-danger">' . $v->villages->where('is_active', 0)->count() . '</span> Tidak Aktif';
+                    $btn .= '</a>';
                     
-                    return $btn;
+                return $btn;
             })
             ->addColumn('action', function ($v) {
                 $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal">

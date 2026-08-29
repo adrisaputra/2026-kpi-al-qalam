@@ -2,51 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kpi;
 use App\Models\KpiIndicator;
+use App\Models\KpiIndicatorItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\DataTables;
 
-class KpiIndicatorController extends Controller
+class KpiIndicatorItemController extends Controller
 {
-    public function index($kpi)
+    public function index($kpi_indicator)
     {
         $title = "Indikator KPI";
-        $kpi = Crypt::decrypt($kpi);
-        $kpi = Kpi::where('id', $kpi)->first();
-        return view('admin.kpi_indicator.index', compact('title', 'kpi'));
+        $kpi_indicator = Crypt::decrypt($kpi_indicator);
+        $kpi_indicator = KpiIndicator::where('id', $kpi_indicator)->first();
+        return view('admin.kpi_indicator_item.index', compact('title', 'kpi_indicator'));
     }
 
 
-    public function get_kpi_indicator_index(Request $request, $kpi)
+    public function get_kpi_indicator_item_index(Request $request, $kpi_indicator)
     {
         if ($request->ajax()) {
             $counters = 1;
 
-            $kpi = Crypt::decrypt($kpi);
-            $kpi = Kpi::where('id', $kpi)->first();
+            $kpi_indicator = Crypt::decrypt($kpi_indicator);
+            $kpi_indicator = KpiIndicator::where('id', $kpi_indicator)->first();
 
-            $kpi_indicator = KpiIndicator::where('kpi_id', $kpi->id)->where('id','!=',0)->limit(10);
+            $kpi_indicator_item = KpiIndicatorItem::where('kpi_indicator_id', $kpi_indicator->id)->where('id','!=',0)->limit(10);
 
-            return DataTables::of($kpi_indicator)
+            return DataTables::of($kpi_indicator_item)
             ->addIndexColumn()
             ->addColumn('number', function () use (&$counters) {
                 return $counters++;
-            })
-            ->addColumn('kpi_indicator_item', function ($v) {
-                $url = url('kpi_indicator_item', Crypt::encrypt($v->id));
-                $btn = '<a href="' . $url . '"  target="_blank" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                            <span>Lihat Indikator Item</span>';
-
-                    if ($v->kpi_indicator_items->count() > 0) {
-                        $btn .= '<span class="badge badge-danger counter">'.$v->kpi_indicator_items->count().'</span>';
-
-                    }
-
-                    $btn .= '</a>';
-                    
-                return $btn;
             })
             ->addColumn('action', function ($v) {
                 $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal">
@@ -67,16 +53,16 @@ class KpiIndicatorController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'name' => 'Nama Indikator KPI'
+                'measurement_tool' => 'Alat Ukur/Indikator'
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'measurement_tool' => 'required|max:255'
                 ];
             } else {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'measurement_tool' => 'required|max:255'
                 ];
             }
 
@@ -91,47 +77,45 @@ class KpiIndicatorController extends Controller
     {
         if ($request->ajax()) {
 
-            $kpi_indicator = new KpiIndicator();
-            $kpi_indicator->kpi_id = $request->kpi_id;
-            $kpi_indicator->name = $request->name;
-            $kpi_indicator->indicator = $request->indicator;
-            $kpi_indicator->target = $request->target;
-            $kpi_indicator->save();
+            $kpi_indicator_item = new KpiIndicatorItem();
+            $kpi_indicator_item->kpi_indicator_id = $request->kpi_indicator_id;
+            $kpi_indicator_item->measurement_tool = $request->measurement_tool;
+            $kpi_indicator_item->physical_evidence = $request->physical_evidence;
+            $kpi_indicator_item->save();
             activity()->log('Create Indikator KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Indikator KPI Berhasil']);
         }
     }
 
     ## Get Indikator KPI
-    public function edit(Request $request, KpiIndicator $kpi_indicator)
+    public function edit(Request $request, KpiIndicatorItem $kpi_indicator_item)
     {
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'data' => $kpi_indicator]);
+            return response()->json(['success' => true, 'data' => $kpi_indicator_item]);
         }
     }
 
     ## Edit Indikator KPI
-    public function update(Request $request, KpiIndicator $kpi_indicator)
+    public function update(Request $request, KpiIndicatorItem $kpi_indicator_item)
     {
         if ($request->ajax()) {
 
-            $kpi_indicator->kpi_id = $request->kpi_id;
-            $kpi_indicator->name = $request->name;
-            $kpi_indicator->indicator = $request->indicator;
-            $kpi_indicator->target = $request->target;
-            $kpi_indicator->save();
+            $kpi_indicator_item->kpi_indicator_id = $request->kpi_indicator_id;
+            $kpi_indicator_item->measurement_tool = $request->measurement_tool;
+            $kpi_indicator_item->physical_evidence = $request->physical_evidence;
+            $kpi_indicator_item->save();
 
-            activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_indicator->id);
+            activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_indicator_item->id);
             return response()->json(['success' => true, 'message' => 'Ubah Indikator KPI Berhasil']);
         }
     }
 
     ## Delete Indikator KPI
-    public function delete(Request $request, KpiIndicator $kpi_indicator)
+    public function delete(Request $request, KpiIndicatorItem $kpi_indicator_item)
     {
         if ($request->ajax()) {
-            $kpi_indicator->delete();
-            activity()->log('Delete Indikator KPI Data With ID = ' . $kpi_indicator->id);
+            $kpi_indicator_item->delete();
+            activity()->log('Delete Indikator KPI Data With ID = ' . $kpi_indicator_item->id);
             return response()->json(['success' => true, 'message' => 'Hapus Indikator KPI Berhasil']);
         }
     }
