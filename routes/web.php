@@ -3,6 +3,7 @@
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KpiCategoryController;
+use App\Http\Controllers\KpiController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SettingController;
@@ -54,7 +55,17 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi_category/edit/{kpi_category}', [KpiCategoryController::class, 'edit']);
     Route::put('/kpi_category/edit/{kpi_category}', [KpiCategoryController::class, 'update']);
     Route::get('/kpi_category/delete/{kpi_category}',[KpiCategoryController::class, 'delete']);
-    
+
+    ## Village
+    Route::get('/kpi/{kpi_category}', [KpiController::class, 'index'])->name('kpi.index');
+    Route::get('/kpi/list/{kpi_category}', [KpiController::class, 'get_kpi_index'])->name('kpi.list');
+    Route::post('/kpi/store', [KpiController::class, 'store']);
+    Route::post('/kpi/validate/{action}', [KpiController::class, 'validate']);
+    Route::get('/kpi/edit/{kpi}', [KpiController::class, 'edit']);
+    Route::put('/kpi/edit/{kpi}', [KpiController::class, 'update']);
+    Route::get('/kpi/delete/{kpi}',[KpiController::class, 'delete']);
+    Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
+
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');
     Route::get('/user/list', [UserController::class, 'get_user_index'])->name('users.list');

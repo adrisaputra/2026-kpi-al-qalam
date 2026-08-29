@@ -110,7 +110,7 @@ $setting = \App\Helpers\Helpers::setting();
                                 @if (Auth::user()->photo)
                                 <img src="{{ asset('storage/upload/photo/' . Auth::user()->photo) }}" class="img-fluid mr-2" alt="avatar">
                                 @else
-                                <img src="{{ asset('profile-1-20210205190338.jpg') }}" class="img-fluid mr-2" alt="avatar">
+                                <img src="{{ asset('storage/profile-1-20210205190338.jpg') }}" class="img-fluid mr-2" alt="avatar">
                                 @endif
 
                                 <div class="media-body">
@@ -119,7 +119,7 @@ $setting = \App\Helpers\Helpers::setting();
                                 </div>
                             </div>
                         </div>
-                        @if(Auth::user()->group_id == 1)
+                        @if(Auth::user()->group->name == 'Admin KPI')
                         <div class="dropdown-item">
                             <a href="{{ url('setting') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
@@ -173,7 +173,7 @@ $setting = \App\Helpers\Helpers::setting();
                         @if (Auth::user()->photo)
                         <img src="{{ asset('storage/upload/photo/' . Auth::user()->photo) }}" alt="avatar">
                         @else
-                        <img src="{{ asset('profile-1-20210205190338.jpg') }}" alt="avatar">
+                        <img src="{{ asset('storage/profile-1-20210205190338.jpg') }}" alt="avatar">
                         @endif
                         <h6 class="">{{ Auth::user()->name }}</h6>
                         <p class="">{{ Auth::user()->group->name }}</p>

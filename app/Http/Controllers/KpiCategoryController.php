@@ -32,14 +32,14 @@ class KpiCategoryController extends Controller
             })
             ->addColumn('kpi', function ($v) {
                 $url = url('kpi', Crypt::encrypt($v->id));
-                $btn = '<a href="' . $url . '" class="btn btn-primary btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                             Lihat KPI';
 
-                    // if ($v->villages->count() > 0) {
-                    //     $btn .= '<span class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger">'
-                    //         . $v->villages->count()
-                    //         . '</span>';
-                    // }
+                    if ($v->kpis->count() > 0) {
+                        $btn .= '<span class="position-absolute top-0 start-100 translate-middle badge badge-circle badge-danger">'
+                            . $v->kpis->count()
+                            . '</span>';
+                    }
 
                     // $btn .= '</a><span class="badge badge-circle badge-success">' . $v->villages->where('is_active', 1)->count() . '</span> Aktif  &nbsp;&nbsp;&nbsp; <span class="badge badge-circle badge-danger">' . $v->villages->where('is_active', 0)->count() . '</span> Tidak Aktif';
                     
