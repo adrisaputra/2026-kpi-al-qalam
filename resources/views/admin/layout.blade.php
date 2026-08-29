@@ -217,8 +217,8 @@ $setting = \App\Helpers\Helpers::setting();
                             </svg><span>PENGATURAN</span></div>
                     </li>
 
-                    <li class="menu @if(Request::segment(1)==" work_unit") active @endif">
-                        <a href="{{ url('work_unit') }}" @if(Request::segment(1)=="work_unit" ) aria-expanded="true" @endif class="dropdown-toggle">
+                    <li class="menu @if(Request::segment(1)==" kpi_category") active @endif">
+                        <a href="{{ url('kpi_category') }}" @if(Request::segment(1)=="kpi_category" ) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>Kategori KPI</span>

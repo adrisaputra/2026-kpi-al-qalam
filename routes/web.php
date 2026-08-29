@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KpiCategoryController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SettingController;
@@ -31,8 +32,11 @@ Route::post('/login', [LoginController::class, 'authenticate']);
 Route::post('/logout', [LoginController::class, 'logout']);
 
 
+Route::middleware(['role:Admin KPI,Employee'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index']);
+});
 
+Route::middleware(['role:Admin KPI'])->group(function () {
     
     ## Employee
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
@@ -41,6 +45,15 @@ Route::post('/logout', [LoginController::class, 'logout']);
     Route::post('/employee/validate/{action}', [EmployeeController::class, 'validate']);
     Route::put('/employee/edit/{employee}', [EmployeeController::class, 'update']);
     Route::get('/employee/delete/{employee}',[EmployeeController::class, 'delete']);
+    
+    ## Kpi Category
+    Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
+    Route::get('/kpi_category/list', [KpiCategoryController::class, 'get_kpi_category_index'])->name('kpi_category.list');
+    Route::post('/kpi_category/store', [KpiCategoryController::class, 'store']);
+    Route::post('/kpi_category/validate/{action}', [KpiCategoryController::class, 'validate']);
+    Route::get('/kpi_category/edit/{kpi_category}', [KpiCategoryController::class, 'edit']);
+    Route::put('/kpi_category/edit/{kpi_category}', [KpiCategoryController::class, 'update']);
+    Route::get('/kpi_category/delete/{kpi_category}',[KpiCategoryController::class, 'delete']);
     
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');
@@ -61,3 +74,4 @@ Route::post('/logout', [LoginController::class, 'logout']);
     Route::post('/setting/validate', [SettingController::class, 'validate']);
     Route::put('/setting/edit/{setting}', [SettingController::class, 'update']);
    
+});
