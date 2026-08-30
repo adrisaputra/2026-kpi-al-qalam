@@ -45,6 +45,10 @@ class Employee extends Model
         return $this->hasOne('App\Models\User');
     }
 
+    public function employee_kpi(){
+        return $this->hasOne('App\Models\EmployeeKpi');
+    }
+
     public function work_unit(){
         return $this->belongsTo('App\Models\WorkUnit');
     }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Kpi extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql';
     protected $fillable = [
         'kpi_category_id',
         'name',

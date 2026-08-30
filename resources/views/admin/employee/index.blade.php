@@ -21,7 +21,6 @@
 							<div class="widget-content widget-content-area">
 								<div class="row">
 									<div class="col-xl-9 col-md-12 col-sm-12 col-12">
-										<a href="#" class="btn mb-2 mr-1 btn-success" data-placement="top" data-toggle="modal" data-target="#exampleModal" title="Tambah Data" onClick="clearForm()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
 										<a href="{{ url(Request::segment(1)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
 									</div>
                                     
@@ -37,6 +36,8 @@
 							</div>
 						</form>
 						
+						@include('admin.employee.create')
+								
                             <div class="widget-content widget-content-area" style="padding-top: 0px;">
 							@if ($message = Session::get('status'))
 								<div class="alert alert-info mb-4" role="alert"> 
@@ -54,9 +55,10 @@
 											<th style="width: 2%">No</th>
 											<th>NIK / Nama</th>
 											<th>NIY</th>
-											<th>Pendidikan Terakhir</th>
 											<th>Unit Kerja</th>
-											<th style="width: 20%"></th>
+											<th style="width: 15%">Kategori KPI</th>
+											<th style="width: 15%">KPI</th>
+											<th style="width: 25%"></th>
 										</tr>
 									</thead>
 								</table>
@@ -85,14 +87,15 @@
             columns: [
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
-                {data: 'name_display', name: 'employees.name'}, 
+                {data: 'name_display', name: 'name'}, 
                 {data: 'niy', name: 'employees.niy'},
-                {data: 'education', name: 'employees.education'}, // ASC/DESC jalan
-                {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
+                {data: 'display_work_unit_name', name: 'work_unit_name'}, // ASC/DESC jalan
+                {data: 'display_kpi_category_name', name: 'kpi_category_name'}, // ASC/DESC jalan
+                {data: 'display_kpi_name', name: 'kpi_name'}, // ASC/DESC jalan
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
-				[4, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
+				[2, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
             paging: true,
             pageLength: 25, // 👈 jumlah data per halaman
@@ -115,41 +118,20 @@
 
             var action = document.getElementById('action').innerText;
             var id_employee = $('#id_employee').val();
-            var name = $('#name').val();
-            var nik = $('#nik').val();
-            var phone = $('#phone').val();
-            var tmt = $('#tmt').val();
-            var work_unit_id = $('#work_unit_id').val();
+            var kpi_category_id = $('#kpi_category_id').val();
+            var kpi_id = $('#kpi_id').val();
 
             // Buat objek FormData untuk mengirim data form, termasuk file
             var formData = new FormData();
             formData.append('id', id_employee);
-            formData.append('name', name);
-            formData.append('nik', nik);
-            formData.append('phone', phone);
-            formData.append('tmt', tmt);
-            formData.append('work_unit_id', work_unit_id);
+            formData.append('kpi_category_id', kpi_category_id);
+            formData.append('kpi_id', kpi_id);
             formData.append('_token', "{{ csrf_token() }}");
-
-            var fileInput = document.getElementById('file_ktp');
-            if (fileInput.files.length > 0) {
-                formData.append('file_ktp', fileInput.files[0]);
-            }
-
-            var fileInput = document.getElementById('file_kk');
-            if (fileInput.files.length > 0) {
-                formData.append('file_kk', fileInput.files[0]);
-            }
-
-            var fileInput = document.getElementById('photo');
-            if (fileInput.files.length > 0) {
-                formData.append('photo', fileInput.files[0]);
-            }
 
             // Kirim permintaan validasi ke controller via Ajax
             var url = "{{ url('/employee/validate') }}";
             $.ajax({
-                url: url + "/" + action,
+                url: url,
                 type: "POST",
                 data: formData,
                 contentType: false, // Tidak mengatur contentType secara otomatis
@@ -159,11 +141,7 @@
                     $('.invalid-feedback').html(''); // Hapus pesan kesalahan
                     $('.is-invalid').removeClass('is-invalid'); // Hapus kelas is-invalid dari bidang-bidang yang divalidasi
 
-                    if (action === "Simpan") {
-                        send();
-                    } else {
-                        update(id_employee);
-                    }
+                    update(id_employee);
 
                 },
                 error: function (xhr) {
@@ -182,24 +160,8 @@
             });
         });
 
-        $('#exampleModal').on('shown.bs.modal', function () {
-            flatpickr("#tmt", {
-                dateFormat: "Y-m-d",
-                allowInput: true
-            });
-        });
     });
 
-    function clearForm(){
-        document.getElementById("head_title").textContent = "Tambah {{ __($title) }}";
-        $('#myForm')[0].reset();
-        document.getElementById("work_unit_id").disabled = false;
-        document.getElementById("work_unit2_id").style.display = "none";
-        document.getElementById("show_file_ktp").innerHTML = '';
-        document.getElementById("show_file_kk").innerHTML = '';
-        document.getElementById("show_photo").innerHTML = '';
-        document.getElementById("action").textContent = "Simpan";
-    }
 
     // Fungsi untuk menampilkan notifikasi toast dengan ikon centang
     function showSuccessToast(message) {
@@ -221,31 +183,7 @@
             pos: 'top-right'
         });
     }
-    
-    // Create Data
-    function send() {
-        var formData = new FormData($('#myForm')[0]); // Buat objek FormData dari formulir
-
-        // Kirim data formulir ke server menggunakan AJAX
-        $.ajax({
-            url: "{{ url('employee/store') }}",
-            type: "POST",
-            data: formData,
-            contentType: false, // Biarkan jQuery menentukan contentType secara otomatis
-            processData: false, // Biarkan jQuery menangani proses data secara otomatis
-            success: function (response) {
-                showSuccessToast(response.message); // Tampilkan notifikasi toast
-                $('#myForm')[0].reset(); // Reset form setelah berhasil menambahkan data
-                $('#exampleModal').modal('hide');
-                table.ajax.reload(null, false);
-            },
-            error: function (xhr) {
-                // Tangani kesalahan jika pengiriman formulir gagal
-                console.error("Error pengiriman formulir:", xhr);
-            }
-        });
-    }
-        
+     
     // Get Data
     function getData(id){
         document.getElementById("head_title").textContent = "Ubah {{ __($title) }}";
@@ -261,46 +199,23 @@
                 document.getElementById("name").value = response.data.name;
                 document.getElementById("nik").value = response.data.nik;
                 document.getElementById("niy").value = response.data.niy;
-                document.getElementById("birthplace").value = response.data.birthplace;
-                document.getElementById("birthdate").value = response.data.birthdate;
-                document.getElementById("gender").value = response.data.gender;
-                document.getElementById("address").value = response.data.address;
-                document.getElementById("religion").value = response.data.religion;
-                document.getElementById("blood_type").value = response.data.blood_type;
-                document.getElementById("marital_status").value = response.data.marital_status;
-                document.getElementById("phone").value = response.data.phone;
-                document.getElementById("ethnic").value = response.data.ethnic;
-                document.getElementById("email").value = response.data.email;
-                document.getElementById("education").value = response.data.education;
-                document.getElementById("ig").value = response.data.ig;
-                document.getElementById("fb").value = response.data.fb;
-                document.getElementById("tiktok").value = response.data.tiktok;
-                document.getElementById("tmt").value = response.data.tmt;
-                document.getElementById("work_unit_id").value = response.data.work_unit_id;
-                document.getElementById("work_unit_id").disabled = true;
-                document.getElementById("work_unit2_id").style.display = "block";
-
-                if(response.data.file_ktp){
-                    var file_ktp = '<br><a href="{{ asset("storage/upload/employee/") }}/' + response.data.file_ktp + '" class="btn mb-2 mr-1 btn-sm btn-info snackbar-bg-info" target="_blank">Lihat File Sebelumnya</a>';
-                    document.getElementById("show_file_ktp").innerHTML = file_ktp;
-                } else {
-                    document.getElementById("show_file_ktp").innerHTML = '';
-                }
-                
-                if(response.data.file_kk){
-                    var file_kk = '<br><a href="{{ asset("storage/upload/employee/") }}/' + response.data.file_kk + '" class="btn mb-2 mr-1 btn-sm btn-info snackbar-bg-info" target="_blank">Lihat File Sebelumnya</a>';
-                    document.getElementById("show_file_kk").innerHTML = file_kk;
-                } else {
-                    document.getElementById("show_file_kk").innerHTML = '';
-                }
-                
-                if(response.data.photo){
-                    var photo = '<br><a href="{{ asset("storage/upload/employee/") }}/' + response.data.photo + '" class="btn mb-2 mr-1 btn-sm btn-info snackbar-bg-info" target="_blank">Lihat File Sebelumnya</a>';
-                    document.getElementById("show_photo").innerHTML = photo;
-                } else {
-                    document.getElementById("show_photo").innerHTML = '';
-                }
-                
+                document.getElementById("work_unit_name").value = response.work_unit.name;
+                document.getElementById("kpi_category_id").value = response.employee_kpi.kpi.kpi_category_id;
+                document.getElementById("kpi_id").value = response.employee_kpi.kpi_id;
+                document.getElementById("name").disabled = true;
+                document.getElementById("nik").disabled = true;
+                document.getElementById("niy").disabled = true;
+                document.getElementById("work_unit_name").disabled = true;
+                            
+                // Panggil ajax untuk load village berdasarkan subdistrict
+                var url = "{{ url('/kpi/get') }}";
+                $.ajax({
+                    url: url + "/" + response.employee_kpi.kpi.kpi_category_id,
+                    success: function () {
+                        // Set otomatis terpilih sesuai response.data.village_id
+                        $("#kpi_id").val(response.employee_kpi.kpi_id).trigger("change");
+                    }
+                });
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal
@@ -339,42 +254,6 @@
         });
     }
     
-    // Delete Data
-    function deleteData(id) {
-        swal({
-			title: 'Apakah Kamu Yakin?',
-			text: "Anda tidak akan dapat mengembalikan ini!",
-			type: 'warning',
-			showCancelButton: true,
-			confirmButtonText: 'Delete',
-			padding: '2em'
-		}).then(function (result) {
-			if (result.value) {
-				swal(
-					'Deleted!',
-					'Data Berhasil Dihapus.',
-					'success'
-				).then(function () {
-					var url = "{{ url('/employee/delete') }}";
-                    $.ajax({
-                        url: url + "/" + id,
-                        success: function (response) {
-                            showSuccessToast(response.message);
-                            $('#myForm')[0].reset();
-                            table.ajax.reload(null, false);
-                        },
-                        error: function (xhr) {
-                            showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
-                            console.error("Error pengiriman formulir:", xhr);
-                        }
-                    });
-				});
-			}
-		});
-	
-    }
-
-
 
 </script>
 @endsection

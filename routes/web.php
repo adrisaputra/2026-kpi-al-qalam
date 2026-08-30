@@ -45,9 +45,9 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/employee', [EmployeeController::class, 'index'])->name('employee.index');
     Route::get('/employee/list', [EmployeeController::class, 'get_employee_index'])->name('employee.list');
     Route::post('/employee/store', [EmployeeController::class, 'store']);
-    Route::post('/employee/validate/{action}', [EmployeeController::class, 'validate']);
+    Route::post('/employee/validate', [EmployeeController::class, 'validate']);
+    Route::get('/employee/edit/{employee}', [EmployeeController::class, 'edit']);
     Route::put('/employee/edit/{employee}', [EmployeeController::class, 'update']);
-    Route::get('/employee/delete/{employee}',[EmployeeController::class, 'delete']);
     
     ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
@@ -66,7 +66,7 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi/edit/{kpi}', [KpiController::class, 'edit']);
     Route::put('/kpi/edit/{kpi}', [KpiController::class, 'update']);
     Route::get('/kpi/delete/{kpi}',[KpiController::class, 'delete']);
-    // Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
+    Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
 
     ## KPI Indicator
     Route::get('/kpi_indicator/{kpi}', [KpiIndicatorController::class, 'index'])->name('kpi_indicator.index');

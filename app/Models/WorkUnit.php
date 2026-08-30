@@ -21,12 +21,4 @@ class WorkUnit extends Model
         return $this->hasMany('App\Models\Employee');
     }
 
-    public function count_employee_male(){
-        return $this->hasMany('App\Models\Employee')->where('gender', 'Male');
-    }
-
-    public function count_employee_female(){
-        return $this->hasMany('App\Models\Employee')->where('gender', 'Female');
-    }
-
 }

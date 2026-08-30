@@ -133,22 +133,22 @@ class KpiController extends Controller
     }
 
     // ## Get Data
-    // public function get($kpi_category, $kpi_id = NULL)
-    // {
-    //     $kpi = Kpi::where('kpi_category_id', $kpi_category)
-    //         ->orderBy('id', 'ASC')->get();
+    public function get($kpi_category, $kpi_id = NULL)
+    {
+        $kpi = Kpi::where('kpi_category_id', $kpi_category)
+            ->orderBy('id', 'ASC')->get();
 
-    //     echo "<option value=''>- Pilih KPI -</option>";
-    //     foreach ($kpi as $v) {
-    //         if ($kpi_id) {
-    //             if ($kpi_id == $v->id) {
-    //                 echo "<option value='" . $v->id . "' selected>" . $v->name . "</option>";
-    //             } else {
-    //                 echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-    //             }
-    //         } else {
-    //             echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-    //         }
-    //     }
-    // }
+        echo "<option value=''>- Pilih KPI -</option>";
+        foreach ($kpi as $v) {
+            if ($kpi_id) {
+                if ($kpi_id == $v->id) {
+                    echo "<option value='" . $v->id . "' selected>" . $v->name . "</option>";
+                } else {
+                    echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
+                }
+            } else {
+                echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
+            }
+        }
+    }
 }
