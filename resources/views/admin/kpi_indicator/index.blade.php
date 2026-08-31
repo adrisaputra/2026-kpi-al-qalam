@@ -42,6 +42,7 @@
 											<th>Nama Indikator KPI</th>
 											<th>Indikator</th>
 											<th>Target</th>
+											<th>Bobot</th>
 											<th>Aksi</th>
 											<th style="width: 10%"></th>
 										</tr>
@@ -73,6 +74,7 @@
                 {data: 'name', name: 'name'},
                 {data: 'indicator', name: 'indicator'},
                 {data: 'target', name: 'target'},
+                {data: 'weight', name: 'weight'},
                 {data: 'kpi_indicator_item', name: 'kpi_indicator_item'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
@@ -207,6 +209,7 @@
                 document.getElementById("name").value = response.data.name;
                 document.getElementById("indicator").value = response.data.indicator;
                 document.getElementById("target").value = response.data.target;
+                document.getElementById("weight").value = response.data.weight;
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal

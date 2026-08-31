@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeKpiIndicatorController;
+use App\Http\Controllers\EmployeeKpiIndicatorItemController;
 use App\Http\Controllers\EmployeeKpiPeriodController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KpiCategoryController;
@@ -58,6 +59,11 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     ## Employee KPI Indicator
     Route::post('/employee_kpi_indicator/store', [EmployeeKpiIndicatorController::class, 'store']);
 
+    ## Employee KPI Indicator Item
+    Route::get('/employee_kpi_indicator_item/{employee_kpi_indicator}', [EmployeeKpiIndicatorItemController::class, 'index'])->name('employee_kpi_indicator_item.index');
+    Route::get('/employee_kpi_indicator_item/list/{employee_kpi_indicator}', [EmployeeKpiIndicatorItemController::class, 'get_employee_kpi_indicator_item_index'])->name('employee_kpi_indicator_item.list');
+    Route::put('/employee_kpi_indicator_item/edit/{employee_kpi_indicator_item}', [EmployeeKpiIndicatorItemController::class, 'update']);
+    
     ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
     Route::get('/kpi_category/list', [KpiCategoryController::class, 'get_kpi_category_index'])->name('kpi_category.list');

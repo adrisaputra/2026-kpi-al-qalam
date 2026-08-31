@@ -96,6 +96,7 @@ class KpiIndicatorController extends Controller
             $kpi_indicator->name = $request->name;
             $kpi_indicator->indicator = $request->indicator;
             $kpi_indicator->target = $request->target;
+            $kpi_indicator->weight = $request->weight;
             $kpi_indicator->save();
             activity()->log('Create Indikator KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Indikator KPI Berhasil']);
@@ -119,6 +120,7 @@ class KpiIndicatorController extends Controller
             $kpi_indicator->name = $request->name;
             $kpi_indicator->indicator = $request->indicator;
             $kpi_indicator->target = $request->target;
+            $kpi_indicator->weight = $request->weight;
             $kpi_indicator->save();
 
             activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_indicator->id);

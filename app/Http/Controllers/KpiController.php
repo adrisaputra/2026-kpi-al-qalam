@@ -18,7 +18,6 @@ class KpiController extends Controller
         return view('admin.kpi.index', compact('title', 'kpi_category'));
     }
 
-
     public function get_kpi_index(Request $request, $kpi_category)
     {
         if ($request->ajax()) {

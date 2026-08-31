@@ -15,31 +15,13 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_kpi_indicator" />
-                    <input type="hidden" class="form-control form-control-sm" name="kpi_id" id="kpi_id" value="{{ $kpi->id }}"/>
+                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_kpi" />
+                    <input type="hidden" class="form-control form-control-sm" name="kpi_category_id" id="kpi_category_id" value="{{ $kpi_category->id }}"/>
 
                     <div class="form-group">
                         <p>{{ __('Nama') }} <span class="required" style="color: #dd4b39;">*</span></p>
                         <input type="text" class="form-control form-control-sm" name="name" id="name">
                         <div id="name-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <p>{{ __('Indikator') }}</p>
-                        <input type="text" class="form-control form-control-sm" name="indicator" id="indicator">
-                        <div id="indicator-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <p>{{ __('Target') }}</p>
-                        <input type="text" class="form-control form-control-sm" name="target" id="target">
-                        <div id="target-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <p>{{ __('Bobot') }}</p>
-                        <input type="number" class="form-control form-control-sm" name="weight" id="weight">
-                        <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                 </div>
