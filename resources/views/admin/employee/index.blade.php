@@ -201,7 +201,6 @@
                 document.getElementById("niy").value = response.data.niy;
                 document.getElementById("work_unit_name").value = response.work_unit.name;
                 document.getElementById("kpi_category_id").value = response.employee_kpi.kpi.kpi_category_id;
-                document.getElementById("kpi_id").value = response.employee_kpi.kpi_id;
                 document.getElementById("name").disabled = true;
                 document.getElementById("nik").disabled = true;
                 document.getElementById("niy").disabled = true;
@@ -211,7 +210,8 @@
                 var url = "{{ url('/kpi/get') }}";
                 $.ajax({
                     url: url + "/" + response.employee_kpi.kpi.kpi_category_id,
-                    success: function () {
+                    success: function (response2) {
+                        $("#kpi_id").html(response2);
                         // Set otomatis terpilih sesuai response.data.village_id
                         $("#kpi_id").val(response.employee_kpi.kpi_id).trigger("change");
                     }

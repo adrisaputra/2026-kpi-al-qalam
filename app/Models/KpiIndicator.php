@@ -27,4 +27,8 @@ class KpiIndicator extends Model
         return $this->hasMany('App\Models\KpiIndicatorItem');
     }
 
+    public function employee_kpi_indicator(){
+        return $this->HasOne('App\Models\EmployeeKpiIndicator');
+    }
+
 }

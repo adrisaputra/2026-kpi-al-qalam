@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kpi_indicators', function (Blueprint $table) {
+        Schema::create('employee_kpi_periods', function (Blueprint $table) {
             $table->increments('id',11);
             
-            $table->unsignedInteger('kpi_id');
-            $table->foreign("kpi_id")->references('id')->on("kpis");
+            $table->unsignedInteger('employee_id');
             
-            $table->string('name')->nullable();
-            $table->string('indicator')->nullable();
-            $table->string('target')->nullable();
-            $table->double('weight')->nullable();
+            $table->string('month')->nullable();
+            $table->year('year')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kpi_indicators');
+        Schema::dropIfExists('employee_kpi_periods');
     }
 };

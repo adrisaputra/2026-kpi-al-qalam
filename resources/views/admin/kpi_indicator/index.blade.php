@@ -80,6 +80,7 @@
 				[0, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
             paging: true,
+            pageLength: 100, // Menampilkan 100 data per halaman
 			drawCallback: function () {
                 var api = this.api();
                 var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman

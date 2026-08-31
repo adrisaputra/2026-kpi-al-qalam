@@ -89,7 +89,7 @@ class EmployeeController extends Controller
                     return $v->employee_kpi?->kpi?->name;
                 })
                 ->addColumn('action', function ($v) {
-                    $kpi = url('kpi', Crypt::encrypt($v->id));
+                    $kpi = url('employee_kpi_period', Crypt::encrypt($v->id));
                     $rapor = url('rapor', Crypt::encrypt($v->id));
                     $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal" class="btn btn-sm mb-2 mr-1 btn-warning" title="KPI">
                                 Edit
@@ -98,10 +98,10 @@ class EmployeeController extends Controller
                         $btn .= '<a href="'.$kpi.'" class="btn btn-sm mb-2 mr-1 btn-success" title="KPI">
                                     KPI
                                 </a>';
+                        $btn .= '<a href="'.$rapor.'" class="btn btn-sm mb-2 mr-1 btn-info" title="Rapor">
+                                    Rapor
+                                </a>';
                     }
-                    $btn .= '<a href="'.$rapor.'" class="btn btn-sm mb-2 mr-1 btn-info" title="Rapor">
-                                Rapor
-                            </a>';
                     return $btn;
                 })
                 ->filterColumn('name', function ($query, $keyword) {
