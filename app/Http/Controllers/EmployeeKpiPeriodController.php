@@ -20,7 +20,7 @@ class EmployeeKpiPeriodController extends Controller
         return view('admin.employee_kpi_period.index', compact('title', 'employee'));
     }
 
-    public function get_employee_kpi_period_index(Request $request)
+    public function get_employee_kpi_period_index(Request $request, $employee)
     {
         if ($request->ajax()) {
             $counters = 1;
@@ -28,7 +28,7 @@ class EmployeeKpiPeriodController extends Controller
             $month = $request->input('get_month') ? $request->input('get_month') : date('m');
             $year = $request->input('get_year') ? $request->input('get_year') : date('Y');
 
-            $employee_kpi_period = EmployeeKpiPeriod::where('month', $month)->where('year', $year)->first();
+            $employee_kpi_period = EmployeeKpiPeriod::where('employee_id', $employee)->where('month', $month)->where('year', $year)->first();
             if($employee_kpi_period ){
                 $employee_kpi_indicator = EmployeeKpiIndicator::with('kpi_indicator')
                                         ->where('employee_kpi_period_id', $employee_kpi_period->id)->limit(10);

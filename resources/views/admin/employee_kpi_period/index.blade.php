@@ -106,7 +106,7 @@
             processing: true,
             serverSide: true,
 			ajax: {
-				url: "{{ route('employee_kpi_period.list') }}",
+				url: "{{ route('employee_kpi_period.list', ['employee' => $employee->id]) }}",
 				type: 'GET',
 				dataType: 'json',
 				data: function (d) {

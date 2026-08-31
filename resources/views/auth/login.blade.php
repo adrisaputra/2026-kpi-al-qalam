@@ -36,7 +36,7 @@ $setting = \App\Helpers\Helpers::setting();
         .bg-side {
             flex: 1;
             position: relative;
-            background: linear-gradient(135deg, #F44336 0%, rgb(162 75 75 / 80%) 100%), url(https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop) no-repeat center center;
+            background: linear-gradient(135deg, #2196F3 0%,  #00bcd463 100%), url({{ asset('storage/upload/setting/'.$setting->background_login) }}) no-repeat center center;
             background-size: cover;
             display: flex;
             flex-direction: column;
@@ -360,14 +360,12 @@ $setting = \App\Helpers\Helpers::setting();
     <div class="login-wrapper">
 
         <div class="bg-side">
-            <h1>Aplikasi KPI <br>Yayasan Pendidikan Al-Qalam Kendari</h1>
-            <p>Dashboard, produk, transaksi, dan laporan POS — semua dalam satu tempat.</p>
+            <img src="{{ asset('storage/upload/setting/'.$setting->large_icon) }}" alt="Logo" style="width: 700px; margin-bottom: 15px;">
         </div>
 
         <div class="form-side">
             <div class="form-header">
                 <center>
-                    <img src="{{ asset('upload/setting/'.$setting->large_icon) }}" alt="Logo" style="width: 80px; margin-bottom: 15px;">
                     <h2> LOGIN</h2>
                     <p>Silakan masukkan detail akun Anda</p>
                 </center>
