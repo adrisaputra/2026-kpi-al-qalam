@@ -47,6 +47,7 @@ $setting = \App\Helpers\Helpers::setting();
     <link rel="stylesheet" type="text/css" href="{{ asset('backend/plugins/notification/snackbar/snackbar.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('backend/assets/css/forms/switches.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/fullcalendar.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('backend/assets/css/forms/theme-checkbox-radio.css') }}">
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
     <!-- CSS -->
@@ -231,6 +232,15 @@ $setting = \App\Helpers\Helpers::setting();
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>Kategori KPI</span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li class="menu @if(Request::segment(1)==" report_category") active @endif">
+                        <a href="{{ url('report_category') }}" @if(Request::segment(1)=="report_category" ) aria-expanded="true" @endif class="dropdown-toggle">
+                            <div class="">
+                                <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                <span>Kategori Rapor</span>
                             </div>
                         </a>
                     </li>

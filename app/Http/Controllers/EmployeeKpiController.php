@@ -13,7 +13,7 @@ use Yajra\DataTables\Facades\DataTables;
 class EmployeeKpiController extends Controller
 {
     ## Show Data
-    public function index(Request $request)
+    public function index()
     {
         $title = "Pegawai Aktif";
         $work_unit = WorkUnit::get();

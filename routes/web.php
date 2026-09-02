@@ -13,6 +13,8 @@ use App\Http\Controllers\KpiIndicatorController;
 use App\Http\Controllers\KpiIndicatorItemController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ReportCategoryController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -110,6 +112,25 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi_indicator_item/edit/{kpi_indicator_item}', [KpiIndicatorItemController::class, 'edit']);
     Route::put('/kpi_indicator_item/edit/{kpi_indicator_item}', [KpiIndicatorItemController::class, 'update']);
     Route::get('/kpi_indicator_item/delete/{kpi_indicator_item}',[KpiIndicatorItemController::class, 'delete']);
+
+    ## Report Category
+    Route::get('/report_category', [ReportCategoryController::class, 'index'])->name('report_category.index');
+    Route::get('/report_category/list', [ReportCategoryController::class, 'get_report_category_index'])->name('report_category.list');
+    Route::post('/report_category/store', [ReportCategoryController::class, 'store']);
+    Route::post('/report_category/validate/{action}', [ReportCategoryController::class, 'validate']);
+    Route::get('/report_category/edit/{report_category}', [ReportCategoryController::class, 'edit']);
+    Route::put('/report_category/edit/{report_category}', [ReportCategoryController::class, 'update']);
+    Route::get('/report_category/delete/{report_category}',[ReportCategoryController::class, 'delete']);
+
+    ## Report
+    Route::get('/report/{report_category}', [ReportController::class, 'index'])->name('report.index');
+    Route::get('/report/list/{report_category}', [ReportController::class, 'get_report_index'])->name('report.list');
+    Route::post('/report/store', [ReportController::class, 'store']);
+    Route::post('/report/validate/{action}', [ReportController::class, 'validate']);
+    Route::get('/report/edit/{report}', [ReportController::class, 'edit']);
+    Route::put('/report/edit/{report}', [ReportController::class, 'update']);
+    Route::get('/report/delete/{report}',[ReportController::class, 'delete']);
+    Route::get('/report/get/{report_category}/{report?}',[ReportController::class, 'get']);
 
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');
