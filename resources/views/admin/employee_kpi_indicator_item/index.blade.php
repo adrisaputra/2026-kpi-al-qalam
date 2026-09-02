@@ -1,5 +1,11 @@
 @extends('admin.layout')
 @section('content')
+<style>
+.dataTables_paginate,
+.dataTables_info {
+    display: none !important;
+}
+</style>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
         <!--  BEGIN CONTENT AREA  -->
@@ -16,7 +22,6 @@
                                     </div>                 
                                 </div>
                             </div>
-
                             
                         <div class="widget-content widget-content-area">
                             <p style="font-size:16px;margin-top:-20px;">
@@ -39,14 +44,22 @@
                             <hr>
                             <div class="row">
                                 <div class="col-xl-6 col-md-12 col-sm-12 col-12">
-                                    <a href="{{ url('employee') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
+                                    <a href="{{ url('employee_kpi_period/'.Crypt::encrypt($employee_kpi_indicator->employee_kpi_period->employee->id)) }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                 </div>
 							</div>
 						</div>
 						
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						<p style="font-size:18px;font-weight:bold;text-align:center">Indikator KPI : {{ $employee_kpi_indicator->kpi_indicator->indicator }}</p>
-							<div class="table-responsive">
+						    <p style="font-size:18px;font-weight:bold;text-align:center">Indikator KPI : {{ $employee_kpi_indicator->kpi_indicator->indicator }}</p>
+                            <p style="font-size:16px;margin-top:20px;">
+                                <div class="row">
+                                    <div class="col-md-3">Persentase Ketercapaian %</div>
+                                    <div class="col-md-9">: <span id="presentase" style="font-weight:bold"></span></div>
+                                    <div class="col-md-3">Konversi skor</div>
+                                    <div class="col-md-9">: <span id="score" style="font-weight:bold"></span></div>
+                                </div>
+                            </p>	
+                            <div class="table-responsive">
 								<table class="table table-bordered table-hover mb-12" id="employee-kpi-indicator-table">
 									<thead>
 										<tr>
@@ -90,14 +103,66 @@
 			order: [
 				[2, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
-            paging: true,
-            pageLength: 100, // Menampilkan 100 data per halaman
+            // paging: true,
+            // pageLength: 100, // Menampilkan 100 data per halaman
+            paging: false,
+            pageLength: -1, 
 			drawCallback: function () {
+
                 var api = this.api();
-                var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman
+
+                // Nomor
+                var startIndex = api.context[0]._iDisplayStart;
+
                 api.column(1, {page: 'current'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = startIndex + i + 1; // Menghitung nomor urut berdasarkan indeks baris dan nomor halaman
+                    cell.innerHTML = startIndex + i + 1;
                 });
+
+                // ==========================
+                // HITUNG PERSENTASE
+                // ==========================
+
+                let totalItem = 0;
+                let totalValue = 0;
+
+                api.rows().data().each(function (row) {
+
+                    totalItem++;
+
+                    totalValue += parseInt(row.value_raw) || 0;
+
+                });
+
+                let presentase = 0;
+
+                if (totalItem > 0) {
+                    presentase = (totalValue / totalItem) * 100;
+                }
+
+                // ==========================
+                // KONVERSI SKOR
+                // ==========================
+
+                let score = 1;
+
+                if (presentase >= 90) {
+                    score = 5;
+                } else if (presentase >= 80) {
+                    score = 4;
+                } else if (presentase >= 70) {
+                    score = 3;
+                } else if (presentase >= 60) {
+                    score = 2;
+                } else {
+                    score = 1;
+                }
+
+                // ==========================
+                // TAMPILKAN
+                // ==========================
+
+                $('#presentase').text(presentase.toFixed(2) + '%');
+                $('#score').text(score);
             }
         });
 
@@ -142,6 +207,8 @@
             },
             success: function (response) {
                 showSuccessToast(response.message); // Tampilkan notifikasi toast untuk keberhasilan
+                $('#presentase').text(response.presentase.toFixed(2) + '%');
+                $('#score').text(response.score);
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal
@@ -151,8 +218,5 @@
         });
     }
         
-   
-
-
 </script>
 @endsection

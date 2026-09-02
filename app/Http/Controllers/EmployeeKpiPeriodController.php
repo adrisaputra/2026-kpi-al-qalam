@@ -31,9 +31,9 @@ class EmployeeKpiPeriodController extends Controller
             $employee_kpi_period = EmployeeKpiPeriod::where('employee_id', $employee)->where('month', $month)->where('year', $year)->first();
             if($employee_kpi_period ){
                 $employee_kpi_indicator = EmployeeKpiIndicator::with('kpi_indicator')
-                                        ->where('employee_kpi_period_id', $employee_kpi_period->id)->limit(10);
+                                        ->where('employee_kpi_period_id', $employee_kpi_period->id)->get();
             } else {
-                $employee_kpi_indicator = EmployeeKpiIndicator::where('employee_kpi_period_id', NULL)->limit(10);
+                $employee_kpi_indicator = EmployeeKpiIndicator::where('employee_kpi_period_id', NULL)->get();
             }
 
             return DataTables::of($employee_kpi_indicator)

@@ -1,5 +1,11 @@
 @extends('admin.layout')
 @section('content')
+<style>
+.dataTables_paginate,
+.dataTables_info {
+    display: none !important;
+}
+</style>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
         <!--  BEGIN CONTENT AREA  -->
@@ -41,7 +47,7 @@
                                 <div class="col-xl-6 col-md-12 col-sm-12 col-12">
                                     <a href="#" class="btn mb-2 mr-1 btn-success" onClick="generateKpiIndicator({{ $employee->id }});"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
                                     <a href="{{ url(Request::segment(1).'/'.Request::segment(2)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
-									<a href="{{ url('employee') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
+									<a href="{{ url('employee_kpi') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                 </div>
                                 
                                 <div class="col-xl-3 col-md-12 col-sm-12 col-12">
@@ -67,14 +73,15 @@
                                         @endfor
                                     </select>
                                 </div>
-								</div>
-							</div>
+                            </div>
+                        </div>
 						
 						{{-- @include('admin.kpi.create') --}}
 								
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
 						{{-- <p style="font-size:18px;font-weight:bold;text-align:center">{{ $kpi_category->name}}</p>	 --}}
-							<div class="table-responsive">
+						
+                            <div class="table-responsive">
 								<table class="table table-bordered table-hover mb-12" id="employee-kpi-indicator-table">
 									<thead>
 										<tr>
@@ -86,11 +93,22 @@
 											<th>Bobot (%)</th>
 											<th>Skor (1-5)</th>
 											<th>Nilai</th>
-											<th style="width: 5%"></th>
+											<th style="width: 10%"></th>
 										</tr>
 									</thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5" style="text-align:right;">TOTAL</th>
+                                            <th id="total_weight">0</th>
+                                            <th id="total_score">0</th>
+                                            <th id="total_value">0</th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
 								</table>
-                            </div>
+                                
+                            </div>	
                         </div>
                     </div>
                 </div>
@@ -128,13 +146,34 @@
 			order: [
 				[2, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
-            paging: true,
-            pageLength: 100, // Menampilkan 100 data per halaman
+            paging: false,
+            pageLength: -1, // Menampilkan 100 data per halaman
+            // TOTAL
+            footerCallback: function (row, data, start, end, display) {
+
+                let totalWeight = 0;
+                let totalScore = 0;
+                let totalValue = 0;
+
+                data.forEach(function (item) {
+
+                    totalWeight += parseFloat(item.weight) || 0;
+                    totalScore += parseFloat(item.score) || 0;
+                    totalValue += parseFloat(item.value) || 0;
+
+                });
+
+                $('#total_weight').text(totalWeight);
+                $('#total_score').text(totalScore);
+                $('#total_value').text(totalValue.toFixed(2));
+            },
 			drawCallback: function () {
                 var api = this.api();
-                var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman
+
+                var startIndex = api.context[0]._iDisplayStart;
+
                 api.column(1, {page: 'current'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = startIndex + i + 1; // Menghitung nomor urut berdasarkan indeks baris dan nomor halaman
+                    cell.innerHTML = startIndex + i + 1;
                 });
             }
         });

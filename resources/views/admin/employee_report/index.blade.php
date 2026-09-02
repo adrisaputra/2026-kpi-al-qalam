@@ -36,7 +36,7 @@
 							</div>
 						</form>
 						
-						@include('admin.employee.create')
+						@include('admin.employee_report.create')
 								
                             <div class="widget-content widget-content-area" style="padding-top: 0px;">
 							@if ($message = Session::get('status'))
@@ -79,7 +79,7 @@
             serverSide: true,
             // ajax: "{{ url('employee/list') }}",
 			ajax: {
-				url: "{{ route('employee.list') }}",
+				url: "{{ route('employee_report.list') }}",
 				data: function (d) {
 					d.get_work_unit = $('#get_work_unit').val(); // Kirim nilai combobox office dalam request
 				}
@@ -129,7 +129,7 @@
             formData.append('_token', "{{ csrf_token() }}");
 
             // Kirim permintaan validasi ke controller via Ajax
-            var url = "{{ url('/employee/validate') }}";
+            var url = "{{ url('/employee_report/validate') }}";
             $.ajax({
                 url: url,
                 type: "POST",
@@ -190,7 +190,7 @@
         document.getElementById("action").textContent = "Update";
         // Kirim data formulir ke server menggunakan AJAX
 
-        var url = "{{ url('/employee/edit') }}";
+        var url = "{{ url('/employee_report/edit') }}";
         $.ajax({
             url: url + "/" + id,
             type: "GET",
@@ -200,7 +200,7 @@
                 document.getElementById("nik").value = response.data.nik;
                 document.getElementById("niy").value = response.data.niy;
                 document.getElementById("work_unit_name").value = response.work_unit.name;
-                document.getElementById("kpi_category_id").value = response.employee_kpi.kpi.kpi_category_id;
+                document.getElementById("kpi_category_id").value = response.employee_report.kpi.kpi_category_id;
                 document.getElementById("name").disabled = true;
                 document.getElementById("nik").disabled = true;
                 document.getElementById("niy").disabled = true;
@@ -209,11 +209,11 @@
                 // Panggil ajax untuk load village berdasarkan subdistrict
                 var url = "{{ url('/kpi/get') }}";
                 $.ajax({
-                    url: url + "/" + response.employee_kpi.kpi.kpi_category_id,
+                    url: url + "/" + response.employee_report.kpi.kpi_category_id,
                     success: function (response2) {
                         $("#kpi_id").html(response2);
                         // Set otomatis terpilih sesuai response.data.village_id
-                        $("#kpi_id").val(response.employee_kpi.kpi_id).trigger("change");
+                        $("#kpi_id").val(response.employee_report.kpi_id).trigger("change");
                     }
                 });
             },
@@ -233,7 +233,7 @@
         
         // Kirim data formulir ke server menggunakan AJAX
 
-        var url = "{{ url('/employee/edit') }}";
+        var url = "{{ url('/employee_report/edit') }}";
         $.ajax({
             url: url + "/" + id,
             type: "POST",

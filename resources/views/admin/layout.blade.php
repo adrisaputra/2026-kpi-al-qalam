@@ -193,11 +193,20 @@ $setting = \App\Helpers\Helpers::setting();
 
                     @if(Auth::user()->group->name == "Admin KPI")
 
-                    <li class="menu @if(Request::segment(1)==" employee") active @endif">
-                        <a href="{{ url('employee') }}" @if(Request::segment(1)=="employee" ) aria-expanded="true" @endif class="dropdown-toggle">
+                    <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
+                        <a href="{{ url('employee_kpi') }}" @if(Request::segment(1)=="employee_kpi" ) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Pegawai</span>
+                                <span>KPI</span>
+                            </div>
+                        </a>
+                    </li>
+
+                    <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
+                        <a href="{{ url('employee_report') }}" @if(Request::segment(1)=="employee_report" ) aria-expanded="true" @endif class="dropdown-toggle">
+                            <div class="">
+                                <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                <span>Rapor</span>
                             </div>
                         </a>
                     </li>

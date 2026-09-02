@@ -50,6 +50,9 @@ class EmployeeKpiIndicatorItemController extends Controller
                         </select>';
                 return $value;
             })
+            ->addColumn('value_raw', function ($v) {
+                return $v->value;
+            })
             ->rawColumns(['value'])
             ->make(true);
         }
@@ -63,8 +66,40 @@ class EmployeeKpiIndicatorItemController extends Controller
             $employee_kpi_indicator_item->value = $request->value;
             $employee_kpi_indicator_item->save();
 
+            // Hitung ulang
+            $items = EmployeeKpiIndicatorItem::where(
+                'employee_kpi_indicator_id',
+                $employee_kpi_indicator_item->employee_kpi_indicator_id
+            )->get();
+
+            $total = $items->sum('value');
+            $count = $items->count();
+
+            $presentase = $count > 0
+                ? ($total / $count) * 100
+                : 0;
+
+            // Konversi ke score 1-5
+            if ($presentase >= 90) {
+                $score = 5;
+            } elseif ($presentase >= 80) {
+                $score = 4;
+            } elseif ($presentase >= 70) {
+                $score = 3;
+            } elseif ($presentase >= 60) {
+                $score = 2;
+            } else {
+                $score = 1;
+            }
+
             activity()->log('Edit Employee Kpi Indicator Item Data With ID = ' . $employee_kpi_indicator_item->id);
-            return response()->json(['success' => true, 'message' => 'Simpan Nilai Berhasil']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Simpan Nilai Berhasil',
+                'presentase' => $presentase,
+                'score' => $score
+            ]);
         }
     }
 

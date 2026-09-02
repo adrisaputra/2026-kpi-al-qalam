@@ -10,19 +10,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\Facades\DataTables;
 
-class EmployeeController extends Controller
+class EmployeeKpiController extends Controller
 {
     ## Show Data
-    public function index()
+    public function index(Request $request)
     {
         $title = "Pegawai Aktif";
         $work_unit = WorkUnit::get();
         $kpi_category = KpiCategory::get();
-        return view('admin.employee.index', compact('title', 'work_unit','kpi_category'));
+        return view('admin.employee_kpi.index', compact('title', 'work_unit','kpi_category'));
     }
 
     ## Get Data
-    public function get_employee_index(Request $request)
+    public function get_employee_kpi_index(Request $request)
     {
 
         if ($request->ajax()) {
@@ -88,18 +88,14 @@ class EmployeeController extends Controller
                 ->addColumn('display_kpi_name', function ($v) {
                     return $v->employee_kpi?->kpi?->name;
                 })
-                ->addColumn('action', function ($v) {
+                ->addColumn('action', function ($v) use ($request){
                     $kpi = url('employee_kpi_period', Crypt::encrypt($v->id));
-                    $rapor = url('rapor', Crypt::encrypt($v->id));
                     $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal" class="btn btn-sm mb-2 mr-1 btn-warning" title="KPI">
                                 Edit
                             </a>';
                     if($v->employee_kpi){
                         $btn .= '<a href="'.$kpi.'" class="btn btn-sm mb-2 mr-1 btn-success" title="KPI">
                                     KPI
-                                </a>';
-                        $btn .= '<a href="'.$rapor.'" class="btn btn-sm mb-2 mr-1 btn-info" title="Rapor">
-                                    Rapor
                                 </a>';
                     }
                     return $btn;
