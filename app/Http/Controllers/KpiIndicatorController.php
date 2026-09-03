@@ -67,16 +67,16 @@ class KpiIndicatorController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'name' => 'Nama Indikator KPI'
+                'indicator' => 'Indikator'
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'indicator' => 'required|max:255'
                 ];
             } else {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'indicator' => 'required|max:255'
                 ];
             }
 

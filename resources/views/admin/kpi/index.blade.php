@@ -73,9 +73,10 @@
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
-				[0, 'desc'] // Mengatur pengurutan kolom pertama (id) secara descending
+				[0, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
             paging: true,
+            pageLength: 100,
 			drawCallback: function () {
                 var api = this.api();
                 var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman

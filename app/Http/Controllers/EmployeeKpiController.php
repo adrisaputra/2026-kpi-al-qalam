@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeKpi;
 use App\Models\KpiCategory;
@@ -82,6 +83,13 @@ class EmployeeKpiController extends Controller
                 ->addColumn('display_work_unit_name', function ($v) {
                     return $v->work_unit->name;
                 })
+                ->addColumn('tmt_display', function ($v) {
+                    return Helpers::date($v->tmt);
+                })
+                ->addColumn('education', function ($v) {
+                    // return $v->last_education_history?->major;
+                    return $v->education;
+                })
                 ->addColumn('action', function ($v) use ($request){
                     $kpi = url('employee_kpi_detail', Crypt::encrypt($v->id));
                     $btn = '<a href="'.$kpi.'" class="btn btn-sm mb-2 mr-1 btn-success" title="KPI">
@@ -91,12 +99,19 @@ class EmployeeKpiController extends Controller
                 })
                 ->filterColumn('name', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
-                        $q->where('employees.name', 'like', "%{$keyword}%")
-                        ->orWhere('employees.nik', 'like', "%{$keyword}%");
+                        $q->where('name', 'like', "%{$keyword}%")
+                            ->orWhere('nik', 'like', "%{$keyword}%");
                     });
                 })
-                ->filterColumn('work_unit_name', function ($query, $keyword) {
-                    $query->where('work_units.name','like',"%{$keyword}%");
+                ->filterColumn('tmt', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('tmt', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('work_unit', function ($query, $keyword) {
+                    $query->whereHas('work_unit', function ($q) use ($keyword) {
+                        $q->where('name', 'like', "%{$keyword}%");
+                    });
                 })
                 ->rawColumns(['name_display', 'photo', 'action'])->make(true);
         }

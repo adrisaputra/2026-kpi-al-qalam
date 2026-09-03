@@ -53,8 +53,11 @@
 											<th style="width: 2%">No</th>
 											<th>NIK / Nama</th>
 											<th>NIY</th>
+											<th>TMT</th>
+											<th>Pendidikan Terakhir</th>
+											<th>Suku</th>
 											<th>Unit Kerja</th>
-											<th style="width: 25%"></th>
+											<th style="width: 10%"></th>
 										</tr>
 									</thead>
 								</table>
@@ -85,7 +88,10 @@
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'name_display', name: 'name'}, 
                 {data: 'niy', name: 'employees.niy'},
-                {data: 'display_work_unit_name', name: 'work_unit_name'}, // ASC/DESC jalan
+                {data: 'tmt_display', name: 'employees.tmt'}, 
+                {data: 'education', name: 'employees.education'}, // ASC/DESC jalan
+                {data: 'ethnic', name: 'employees.ethnic'},
+                {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [

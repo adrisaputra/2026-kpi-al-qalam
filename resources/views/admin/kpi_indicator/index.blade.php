@@ -39,7 +39,7 @@
 										<tr>
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
-											<th>Nama Indikator KPI</th>
+											{{--<th>Nama Indikator KPI</th>--}}
 											<th>Indikator</th>
 											<th>Target</th>
 											<th>Bobot</th>
@@ -71,7 +71,7 @@
             columns: [
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
-                {data: 'name', name: 'name'},
+                // {data: 'name', name: 'name'},
                 {data: 'indicator', name: 'indicator'},
                 {data: 'target', name: 'target'},
                 {data: 'weight', name: 'weight'},
@@ -97,12 +97,12 @@
 
             var action = document.getElementById('action').innerText;
             var id_kpi_indicator = $('#id_kpi_indicator').val();
-            var name = $('#name').val();
+            var indicator = $('#indicator').val();
 
             // Buat objek FormData untuk mengirim data form, termasuk file
             var formData = new FormData();
             formData.append('id', id_kpi_indicator);
-            formData.append('name', name);
+            formData.append('indicator', indicator);
             formData.append('_token', "{{ csrf_token() }}");
 
             // Kirim permintaan validasi ke controller via Ajax
@@ -206,7 +206,7 @@
             type: "GET",
             success: function (response) {
                 document.getElementById("id_kpi_indicator").value = response.data.id;
-                document.getElementById("name").value = response.data.name;
+                // document.getElementById("name").value = response.data.name;
                 document.getElementById("indicator").value = response.data.indicator;
                 document.getElementById("target").value = response.data.target;
                 document.getElementById("weight").value = response.data.weight;
