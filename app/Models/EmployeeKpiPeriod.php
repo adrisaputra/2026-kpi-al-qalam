@@ -10,6 +10,7 @@ class EmployeeKpiPeriod extends Model
     use HasFactory;
     protected $connection = 'mysql';
     protected $fillable = [
+        'employee_kpi_id',
         'employee_id',
         'month',
         'year'

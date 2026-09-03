@@ -18,10 +18,11 @@ class EmployeeKpiIndicatorController extends Controller
     {
         if ($request->ajax()) {
 
-                $employee_kpi = EmployeeKpi::with('kpi')->where('employee_id', $request->employee_id)->first();
+                $employee_kpi = EmployeeKpi::with('kpi')->where('id', $request->employee_kpi_id)->first();
                 $employee_kpi_period = EmployeeKpiPeriod::firstOrCreate(
                                             [
-                                                'employee_id' => $request->employee_id,
+                                                'employee_kpi_id' => $request->employee_kpi_id,
+                                                'employee_id' => $employee_kpi->employee_id,
                                                 'month' => $request->month,
                                                 'year' => $request->year,
                                             ]
@@ -44,12 +45,11 @@ class EmployeeKpiIndicatorController extends Controller
                         $employee_kpi_indicator->kpi_indicator_id = $v->id;
                         $employee_kpi_indicator->save();
 
-                        foreach($v->kpi_indicator_items as $x){
-                            
-                        $employee_kpi_indicator_item = new EmployeeKpiIndicatorItem();
-                        $employee_kpi_indicator_item->employee_kpi_indicator_id = $employee_kpi_indicator->id;
-                        $employee_kpi_indicator_item->kpi_indicator_item_id = $x->id;
-                        $employee_kpi_indicator_item->save();
+                        foreach($v->kpi_indicator_items as $x){    
+                            $employee_kpi_indicator_item = new EmployeeKpiIndicatorItem();
+                            $employee_kpi_indicator_item->employee_kpi_indicator_id = $employee_kpi_indicator->id;
+                            $employee_kpi_indicator_item->kpi_indicator_item_id = $x->id;
+                            $employee_kpi_indicator_item->save();
                         }
                     }
 

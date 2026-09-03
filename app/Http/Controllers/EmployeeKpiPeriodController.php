@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeKpi;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeKpiIndicatorItem;
 use App\Models\EmployeeKpiPeriod;
@@ -12,15 +13,16 @@ use Yajra\DataTables\DataTables;
 
 class EmployeeKpiPeriodController extends Controller
 {
-    public function index($employee)
+    public function index($employee_kpi)
     {
         $title = "KPI";
-        $employee = Crypt::decrypt($employee);
-        $employee = Employee::where('id',$employee)->first();
-        return view('admin.employee_kpi_period.index', compact('title', 'employee'));
+        $employee_kpi = Crypt::decrypt($employee_kpi);
+        $employee_kpi = EmployeeKpi::where('id',$employee_kpi)->first();
+        $employee = Employee::where('id',$employee_kpi->employee_id)->first();
+        return view('admin.employee_kpi_period.index', compact('title','employee_kpi','employee'));
     }
 
-    public function get_employee_kpi_period_index(Request $request, $employee)
+    public function get_employee_kpi_period_index(Request $request, $employee_kpi)
     {
         if ($request->ajax()) {
             $counters = 1;
@@ -28,7 +30,7 @@ class EmployeeKpiPeriodController extends Controller
             $month = $request->input('get_month') ? $request->input('get_month') : date('m');
             $year = $request->input('get_year') ? $request->input('get_year') : date('Y');
 
-            $employee_kpi_period = EmployeeKpiPeriod::where('employee_id', $employee)->where('month', $month)->where('year', $year)->first();
+            $employee_kpi_period = EmployeeKpiPeriod::where('employee_kpi_id', $employee_kpi)->where('month', $month)->where('year', $year)->first();
             if($employee_kpi_period ){
                 $employee_kpi_indicator = EmployeeKpiIndicator::with('kpi_indicator')
                                         ->where('employee_kpi_period_id', $employee_kpi_period->id)->get();
@@ -62,7 +64,7 @@ class EmployeeKpiPeriodController extends Controller
             })
             ->addColumn('action', function ($v) {
                 $employee_kpi_item = url('employee_kpi_indicator_item', Crypt::encrypt($v->id));
-                $btn = '<a href="'.$employee_kpi_item.'" target="_blank" title="Detail">
+                $btn = '<a href="'.$employee_kpi_item.'" title="Detail">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list text-info"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                         </a>';
                 return $btn;

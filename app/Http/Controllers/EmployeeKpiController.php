@@ -84,14 +84,9 @@ class EmployeeKpiController extends Controller
                 })
                 ->addColumn('action', function ($v) use ($request){
                     $kpi = url('employee_kpi_detail', Crypt::encrypt($v->id));
-                    $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal" class="btn btn-sm mb-2 mr-1 btn-warning" title="KPI">
-                                Edit
-                            </a>';
-                    if($v->employee_kpi){
-                        $btn .= '<a href="'.$kpi.'" class="btn btn-sm mb-2 mr-1 btn-success" title="KPI">
+                    $btn = '<a href="'.$kpi.'" class="btn btn-sm mb-2 mr-1 btn-success" title="KPI">
                                     KPI
                                 </a>';
-                    }
                     return $btn;
                 })
                 ->filterColumn('name', function ($query, $keyword) {

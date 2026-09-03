@@ -61,17 +61,9 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::put('/employee_kpi_detail/edit/{employee_kpi}', [EmployeeKpiDetailController::class, 'update']);
     Route::get('/employee_kpi_detail/delete/{employee_kpi}',[EmployeeKpiDetailController::class, 'delete']);
     
-    ## Employee Raport
-    Route::get('/employee_report', [EmployeeReportController::class, 'index'])->name('employee_report.index');
-    Route::get('/employee_report/list', [EmployeeReportController::class, 'get_employee_index'])->name('employee_report.list');
-    Route::post('/employee_report/store', [EmployeeReportController::class, 'store']);
-    Route::post('/employee_report/validate', [EmployeeReportController::class, 'validate']);
-    Route::get('/employee_report/edit/{employee}', [EmployeeReportController::class, 'edit']);
-    Route::put('/employee_report/edit/{employee}', [EmployeeReportController::class, 'update']);
-    
     ## Employee KPI Periode
-    Route::get('/employee_kpi_period/{employee}', [EmployeeKpiPeriodController::class, 'index'])->name('employee_kpi_period.index');
-    Route::get('/employee_kpi_period/list/{employee}', [EmployeeKpiPeriodController::class, 'get_employee_kpi_period_index'])->name('employee_kpi_period.list');
+    Route::get('/employee_kpi_period/{employee_kpi}', [EmployeeKpiPeriodController::class, 'index'])->name('employee_kpi_period.index');
+    Route::get('/employee_kpi_period/list/{employee_kpi}', [EmployeeKpiPeriodController::class, 'get_employee_kpi_period_index'])->name('employee_kpi_period.list');
     
     ## Employee KPI Indicator
     Route::post('/employee_kpi_indicator/store', [EmployeeKpiIndicatorController::class, 'store']);
@@ -80,6 +72,14 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/employee_kpi_indicator_item/{employee_kpi_indicator}', [EmployeeKpiIndicatorItemController::class, 'index'])->name('employee_kpi_indicator_item.index');
     Route::get('/employee_kpi_indicator_item/list/{employee_kpi_indicator}', [EmployeeKpiIndicatorItemController::class, 'get_employee_kpi_indicator_item_index'])->name('employee_kpi_indicator_item.list');
     Route::put('/employee_kpi_indicator_item/edit/{employee_kpi_indicator_item}', [EmployeeKpiIndicatorItemController::class, 'update']);
+    
+    ## Employee Raport
+    Route::get('/employee_report', [EmployeeReportController::class, 'index'])->name('employee_report.index');
+    Route::get('/employee_report/list', [EmployeeReportController::class, 'get_employee_index'])->name('employee_report.list');
+    Route::post('/employee_report/store', [EmployeeReportController::class, 'store']);
+    Route::post('/employee_report/validate', [EmployeeReportController::class, 'validate']);
+    Route::get('/employee_report/edit/{employee}', [EmployeeReportController::class, 'edit']);
+    Route::put('/employee_report/edit/{employee}', [EmployeeReportController::class, 'update']);
     
     ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
