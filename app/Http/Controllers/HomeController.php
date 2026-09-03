@@ -14,9 +14,9 @@ class HomeController extends Controller
     {
         $title = "Dashboard";
         if(Auth::user()->group->name == 'Admin KPI'){
-            $employee = 2;
-            $employee_l = 12;
-            $employee_p = 123;
+            $employee = Employee::count();
+            $employee_l = Employee::where('gender','Male')->count();
+            $employee_p = Employee::where('gender','Female')->count();
             return view('admin.home', compact('title','employee','employee_l','employee_p'));
         } if(Auth::user()->group_id == 5){
             $employee = 2;
@@ -24,7 +24,7 @@ class HomeController extends Controller
             $employee_p = 123;
             return view('admin.home', compact('title','employee','employee_l','employee_p'));
         } elseif(Auth::user()->group_id == 3){
-            return view('admin.home', compact('title','employee'));
+            return view('admin.home', compact('title'));
         } 
     }
 }

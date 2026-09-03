@@ -1,14 +1,6 @@
 @extends('admin.layout')
 @section('content')
 
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/data.js"></script>
-<script src="https://code.highcharts.com/modules/drilldown.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
-
 <!--  BEGIN CONTENT AREA  -->
 <div id="content" class="main-content">
 	<div class="layout-px-spacing">
@@ -91,12 +83,10 @@
 			<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
 				<div id="containers"></div>
 			</div>
-			
 
 			@endif
 
 			@if(Auth::user()->group_id == 3)
-				@include('admin.employee')
 			@endif
             
 		</div>

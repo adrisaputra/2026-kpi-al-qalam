@@ -82,14 +82,8 @@ class EmployeeKpiController extends Controller
                 ->addColumn('display_work_unit_name', function ($v) {
                     return $v->work_unit->name;
                 })
-                ->addColumn('display_kpi_category_name', function ($v) {
-                    return $v->employee_kpi?->kpi?->kpi_category?->name;
-                })
-                ->addColumn('display_kpi_name', function ($v) {
-                    return $v->employee_kpi?->kpi?->name;
-                })
                 ->addColumn('action', function ($v) use ($request){
-                    $kpi = url('employee_kpi_period', Crypt::encrypt($v->id));
+                    $kpi = url('employee_kpi_detail', Crypt::encrypt($v->id));
                     $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal" class="btn btn-sm mb-2 mr-1 btn-warning" title="KPI">
                                 Edit
                             </a>';
@@ -109,66 +103,7 @@ class EmployeeKpiController extends Controller
                 ->filterColumn('work_unit_name', function ($query, $keyword) {
                     $query->where('work_units.name','like',"%{$keyword}%");
                 })
-                ->filterColumn('kpi_category_name', function ($query, $keyword) use ($kpi) {
-                    $query->where($kpi . '.kpi_categories.name','like',"%{$keyword}%");
-                })
-                ->filterColumn('kpi_name', function ($query, $keyword) use ($kpi) {
-                    $query->where($kpi . '.kpis.name','like',"%{$keyword}%");
-                })
                 ->rawColumns(['name_display', 'photo', 'action'])->make(true);
-        }
-    }
-
-    public function validate(Request $request)
-    {
-        if ($request->ajax()) {
-
-            $attributes = [
-                'kpi_category_id' => 'Kategori KPI',
-                'kpi_id' => 'KPI'
-            ];
-
-            $rules = [
-                'kpi_category_id' => 'required',
-                'kpi_id' => 'required'
-            ];
-
-            $request->validate($rules, [], $attributes);
-
-            return response()->json(['success' => true]);
-        }
-    }
-
-    ## Get Data
-    public function edit(Request $request, Employee $employee)
-    {
-        if ($request->ajax()) {
-            $work_unit = WorkUnit::where('id',$employee->work_unit_id)->first();
-            $employee_kpi = EmployeeKpi::with('kpi')->where('employee_id',$employee->id)->first();
-            return response()->json(['success' => true, 'data' => $employee, 'work_unit' => $work_unit, 'employee_kpi' => $employee_kpi]);
-        }
-    }
-
-    
-    ## Edit Subdistrict
-    public function update(Request $request, Employee $employee)
-    {
-        if ($request->ajax()) {
-
-            $employee_kpi = EmployeeKpi::where('employee_id',$employee->id)->first();
-            if($employee_kpi){
-                $employee_kpi->employee_id = $employee->id;
-                $employee_kpi->kpi_id = $request->kpi_id;
-                $employee_kpi->save();
-            } else {
-                $employee_kpi = new EmployeeKpi();
-                $employee_kpi->employee_id = $employee->id;
-                $employee_kpi->kpi_id = $request->kpi_id;
-                $employee_kpi->save();
-            }
-
-            activity()->log('Edit Employee KPI With Employee ID = ' . $employee->id);
-            return response()->json(['success' => true, 'message' => 'Simpan Kategori KPI Berhasil']);
         }
     }
 

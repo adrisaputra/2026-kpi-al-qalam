@@ -31,7 +31,6 @@ class LoginController extends Controller
             'cf-turnstile-response.required' => 'Silakan selesaikan verifikasi keamanan.'
         ]);
 
-
         // Verifikasi Cloudflare Turnstile
         $response = Http::asForm()->post(
             'https://challenges.cloudflare.com/turnstile/v0/siteverify',

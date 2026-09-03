@@ -265,64 +265,31 @@ $setting = \App\Helpers\Helpers::setting();
 
                     @elseif(Auth::user()->group_id == 3)
 
-                    <li class="menu @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) active @endif">
-                        <a href="#public_information" data-toggle="collapse" @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) aria-expanded="true" @endif class="dropdown-toggle">
+                    <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
+                        <a href="{{ url('employee_kpi') }}" @if(Request::segment(1)=="employee_kpi") aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
-                                <img src="{{ asset('storage/menu/1695533471.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Riwayat Pegawai</span>
-                            </div>
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                                    <polyline points="9 18 15 12 9 6"></polyline>
-                                </svg>
+                                <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                <span>KPI</span>
                             </div>
                         </a>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('partner_history'))) class="active" @endif>
-                                <a href="{{ url('partner_history/' . Crypt::encrypt($employee->id)) }}">Riwayat Pasangan</a>
-                            </li>
-                        </ul>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('parent_history'))) class="active" @endif>
-                                <a href="{{ url('parent_history/' . Crypt::encrypt($employee->id)) }}"> Riwayat Keluarga</a>
-                            </li>
-                        </ul>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('sk_history'))) class="active" @endif>
-                                <a href="{{ url('sk_history/' . Crypt::encrypt($employee->id)) }}">Riwayat SK</a>
-                            </li>
-                        </ul>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('education_history'))) class="active" @endif>
-                                <a href="{{ url('education_history/' . Crypt::encrypt($employee->id)) }}"> Riwayat Pendidikan</a>
-                            </li>
-                        </ul>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('periodization_history'))) class="active" @endif>
-                                <a href="{{ url('periodization_history/' . Crypt::encrypt($employee->id)) }}"> Riwayat Periodisasi</a>
-                            </li>
-                        </ul>
-                        <ul class="collapse submenu list-unstyled @if(in_array(Request::segment(1), array('sk_history','mutation_history','education_history','partner_history','parent_history','periodization_history'))) show @endif" id="public_information" data-parent="#accordionExample">
-                            <li @if(in_array(Request::segment(1), array('mutation_history'))) class="active" @endif>
-                                <a href="{{ url('mutation_history/' . Crypt::encrypt($employee->id)) }}"> Riwayat Mutasi</a>
-                            </li>
-                        </ul>
                     </li>
 
+                    <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
+                        <a href="{{ url('employee_report') }}" @if(Request::segment(1)=="employee_report" ) aria-expanded="true" @endif class="dropdown-toggle">
+                            <div class="">
+                                <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                <span>Rapor</span>
+                            </div>
+                        </a>
+                    </li>
 
                     @endif
-
-
                 </ul>
-
             </nav>
-
         </div>
         <!--  END SIDEBAR  -->
 
         @yield('content')
-
-
 
     </div>
     <!-- END MAIN CONTAINER -->
