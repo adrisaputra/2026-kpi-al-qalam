@@ -195,7 +195,7 @@ $setting = \App\Helpers\Helpers::setting();
                     @if(Auth::user()->group->name == "Admin KPI")
 
                     <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
-                        <a href="{{ url('employee_kpi') }}" @if(Request::segment(1)=="employee_kpi" ) aria-expanded="true" @endif class="dropdown-toggle">
+                        <a href="{{ url('employee_kpi') }}" @if(in_array(Request::segment(1), ['employee_kpi','employee_kpi_detail','employee_kpi_period','employee_kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>KPI</span>
@@ -204,7 +204,7 @@ $setting = \App\Helpers\Helpers::setting();
                     </li>
 
                     <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
-                        <a href="{{ url('employee_report') }}" @if(Request::segment(1)=="employee_report" ) aria-expanded="true" @endif class="dropdown-toggle">
+                        <a href="{{ url('employee_report') }}" @if(in_array(Request::segment(1), ['employee_report','employee_report_category'])) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>Rapor</span>
@@ -266,7 +266,7 @@ $setting = \App\Helpers\Helpers::setting();
                     @elseif(Auth::user()->group_id == 3)
 
                     <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
-                        <a href="{{ url('employee_kpi_detail/'.Crypt::encrypt(Auth::user()->employee_id)) }}" @if(Request::segment(1)=="employee_kpi") aria-expanded="true" @endif class="dropdown-toggle">
+                        <a href="{{ url('employee_kpi_detail/'.Crypt::encrypt(Auth::user()->employee_id)) }}" @if(in_array(Request::segment(1), ['employee_kpi_detail','employee_kpi_period','employee_kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>KPI</span>
@@ -275,7 +275,7 @@ $setting = \App\Helpers\Helpers::setting();
                     </li>
 
                     <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
-                        <a href="{{ url('employee_report') }}" @if(Request::segment(1)=="employee_report" ) aria-expanded="true" @endif class="dropdown-toggle">
+                        <a href="{{ url('employee_report_category/'.Crypt::encrypt(Auth::user()->employee_id)) }}" @if(in_array(Request::segment(1), ['employee_report','employee_report_category'])) aria-expanded="true" @endif class="dropdown-toggle">
                             <div class="">
                                 <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                 <span>Rapor</span>

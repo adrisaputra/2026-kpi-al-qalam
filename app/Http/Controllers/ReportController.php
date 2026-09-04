@@ -87,7 +87,7 @@ class ReportController extends Controller
             $report = new Report();
             $report->report_category_id = $request->report_category_id;
             $report->name = $request->name;
-            $report->is_special_value = $request->is_special_value;
+            $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
             $report->save();
             activity()->log('Create Report Data');
             return response()->json(['success' => true, 'message' => 'Tambah Report Berhasil']);

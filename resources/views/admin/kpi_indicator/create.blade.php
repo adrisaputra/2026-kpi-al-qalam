@@ -42,6 +42,13 @@
                         <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
+                    <div class="n-chk">
+                        <label class="new-control new-checkbox checkbox-success">
+                        <input type="checkbox" class="new-control-input" name="is_employee" id="is_employee">
+                        <span class="new-control-indicator"></span>Di input Pegawai ?
+                        </label>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Tutup</button>

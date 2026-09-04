@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployeeKpiDetailController;
 use App\Http\Controllers\EmployeeKpiIndicatorController;
 use App\Http\Controllers\EmployeeKpiIndicatorItemController;
 use App\Http\Controllers\EmployeeKpiPeriodController;
+use App\Http\Controllers\EmployeeReportCategoryController;
 use App\Http\Controllers\EmployeeReportController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KpiCategoryController;
@@ -46,6 +47,7 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::middleware(['role:Admin KPI,Employee'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'index']);
     
+    ## Employee KPI Detail
     Route::get('/employee_kpi_detail/{employee}', [EmployeeKpiDetailController::class, 'index'])->name('employee_kpi_detail.index');
     Route::get('/employee_kpi_detail/list/{employee}', [EmployeeKpiDetailController::class, 'get_employee_kpi_detail_index'])->name('employee_kpi_detail.list');
     Route::post('/employee_kpi_detail/store', [EmployeeKpiDetailController::class, 'store']);
@@ -66,6 +68,15 @@ Route::middleware(['role:Admin KPI,Employee'])->group(function () {
     Route::get('/employee_kpi_indicator_item/list/{employee_kpi_indicator}', [EmployeeKpiIndicatorItemController::class, 'get_employee_kpi_indicator_item_index'])->name('employee_kpi_indicator_item.list');
     Route::put('/employee_kpi_indicator_item/edit/{employee_kpi_indicator_item}', [EmployeeKpiIndicatorItemController::class, 'update']);
    
+    ## Employee Report Category
+    Route::get('/employee_report_category/{employee}', [EmployeeReportCategoryController::class, 'index'])->name('employee_report_category.index');
+    Route::get('/employee_report_category/list/{employee}', [EmployeeReportCategoryController::class, 'get_employee_report_category_index'])->name('employee_report_category.list');
+    Route::post('/employee_report_category/store', [EmployeeReportCategoryController::class, 'store']);
+    Route::post('/employee_report_category/validate/{action}', [EmployeeReportCategoryController::class, 'validate']);
+    Route::get('/employee_report_category/edit/{employee_report_category}', [EmployeeReportCategoryController::class, 'edit']);
+    Route::put('/employee_report_category/edit/{employee_report_category}', [EmployeeReportCategoryController::class, 'update']);
+    Route::get('/employee_report_category/delete/{employee_report_category}',[EmployeeReportCategoryController::class, 'delete']);
+    
 });
 
 Route::middleware(['role:Admin KPI'])->group(function () {
@@ -76,12 +87,8 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     
     ## Employee Raport
     Route::get('/employee_report', [EmployeeReportController::class, 'index'])->name('employee_report.index');
-    Route::get('/employee_report/list', [EmployeeReportController::class, 'get_employee_index'])->name('employee_report.list');
-    Route::post('/employee_report/store', [EmployeeReportController::class, 'store']);
-    Route::post('/employee_report/validate', [EmployeeReportController::class, 'validate']);
-    Route::get('/employee_report/edit/{employee}', [EmployeeReportController::class, 'edit']);
-    Route::put('/employee_report/edit/{employee}', [EmployeeReportController::class, 'update']);
-    
+    Route::get('/employee_report/list', [EmployeeReportController::class, 'get_employee_report_index'])->name('employee_report.list');
+   
     ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');
     Route::get('/kpi_category/list', [KpiCategoryController::class, 'get_kpi_category_index'])->name('kpi_category.list');

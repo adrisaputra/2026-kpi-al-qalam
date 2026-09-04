@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class EmployeeReportPeriod extends Model
+{
+    use HasFactory;
+    protected $connection = 'mysql';
+    protected $fillable = [
+        'employee_report_category_id',
+        'employee_id',
+        'date',
+    ];
+
+    public function employee_report_category(){
+        return $this->belongsTo('App\Models\EmployeeReportCategory');
+    }
+    
+    public function employee(){
+        return $this->belongsTo('App\Models\Employe');
+    }
+
+}

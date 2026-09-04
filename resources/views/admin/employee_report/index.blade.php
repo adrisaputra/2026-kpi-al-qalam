@@ -17,7 +17,6 @@
                                 </div>
                             </div>
 
-					   	<form action="{{ url(Request::segment(1).'/search') }}" method="GET">		
 							<div class="widget-content widget-content-area">
 								<div class="row">
 									<div class="col-xl-9 col-md-12 col-sm-12 col-12">
@@ -34,10 +33,7 @@
 									</div>
 								</div>
 							</div>
-						</form>
 						
-						@include('admin.employee_report.create')
-								
                             <div class="widget-content widget-content-area" style="padding-top: 0px;">
 							@if ($message = Session::get('status'))
 								<div class="alert alert-info mb-4" role="alert"> 
@@ -55,10 +51,9 @@
 											<th style="width: 2%">No</th>
 											<th>NIK / Nama</th>
 											<th>NIY</th>
+											<th>TMT</th>
 											<th>Unit Kerja</th>
-											<th style="width: 15%">Kategori KPI</th>
-											<th style="width: 15%">KPI</th>
-											<th style="width: 25%"></th>
+											<th style="width: 10%"></th>
 										</tr>
 									</thead>
 								</table>
@@ -89,9 +84,8 @@
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'name_display', name: 'name'}, 
                 {data: 'niy', name: 'employees.niy'},
-                {data: 'display_work_unit_name', name: 'work_unit_name'}, // ASC/DESC jalan
-                {data: 'display_kpi_category_name', name: 'kpi_category_name'}, // ASC/DESC jalan
-                {data: 'display_kpi_name', name: 'kpi_name'}, // ASC/DESC jalan
+                {data: 'tmt_display', name: 'employees.tmt'}, 
+                {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
@@ -184,76 +178,5 @@
         });
     }
      
-    // Get Data
-    function getData(id){
-        document.getElementById("head_title").textContent = "Ubah {{ __($title) }}";
-        document.getElementById("action").textContent = "Update";
-        // Kirim data formulir ke server menggunakan AJAX
-
-        var url = "{{ url('/employee_report/edit') }}";
-        $.ajax({
-            url: url + "/" + id,
-            type: "GET",
-            success: function (response) {
-                document.getElementById("id_employee").value = response.data.id;
-                document.getElementById("name").value = response.data.name;
-                document.getElementById("nik").value = response.data.nik;
-                document.getElementById("niy").value = response.data.niy;
-                document.getElementById("work_unit_name").value = response.work_unit.name;
-                document.getElementById("kpi_category_id").value = response.employee_report.kpi.kpi_category_id;
-                document.getElementById("name").disabled = true;
-                document.getElementById("nik").disabled = true;
-                document.getElementById("niy").disabled = true;
-                document.getElementById("work_unit_name").disabled = true;
-                            
-                // Panggil ajax untuk load village berdasarkan subdistrict
-                var url = "{{ url('/kpi/get') }}";
-                $.ajax({
-                    url: url + "/" + response.employee_report.kpi.kpi_category_id,
-                    success: function (response2) {
-                        $("#kpi_id").html(response2);
-                        // Set otomatis terpilih sesuai response.data.village_id
-                        $("#kpi_id").val(response.employee_report.kpi_id).trigger("change");
-                    }
-                });
-            },
-            error: function (xhr) {
-                // Tangani kesalahan jika pengiriman formulir gagal
-                showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
-                console.error("Error pengiriman formulir:", xhr);
-            }
-        });
-    }
-
-    // Update Data
-    function update(id) {
-        var formData = new FormData($('#myForm')[0]); // Buat objek FormData dari formulir
-        formData.append('_token', "{{ csrf_token() }}");
-        formData.append('_method', "PUT");
-        
-        // Kirim data formulir ke server menggunakan AJAX
-
-        var url = "{{ url('/employee_report/edit') }}";
-        $.ajax({
-            url: url + "/" + id,
-            type: "POST",
-            data: formData,
-            contentType: false, // Biarkan jQuery menentukan contentType secara otomatis
-            processData: false, // Biarkan jQuery menangani proses data secara otomatis
-            success: function (response) {
-                showSuccessToast(response.message); // Tampilkan notifikasi toast untuk keberhasilan
-                $('#myForm')[0].reset(); // Reset form setelah berhasil memperbarui data
-                $('#exampleModal').modal('hide'); // Tutup modal setelah berhasil memperbarui data
-                table.ajax.reload(null, false); // Muat ulang DataTables setelah update
-            },
-            error: function (xhr) {
-                // Tangani kesalahan jika pengiriman formulir gagal
-                showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
-                console.error("Error pengiriman formulir:", xhr);
-            }
-        });
-    }
-    
-
 </script>
 @endsection

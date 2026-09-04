@@ -29,8 +29,6 @@ class EmployeeKpiController extends Controller
         if ($request->ajax()) {
             $counter = 1;
 
-            $kpi = config('database.connections.mysql.database');
-
             $query = Employee::query()
                 ->leftJoin(
                     'work_units',
@@ -38,30 +36,11 @@ class EmployeeKpiController extends Controller
                     '=',
                     'employees.work_unit_id'
                 )
-                ->leftJoin(
-                    $kpi . '.employee_kpis',
-                    $kpi . '.employee_kpis.employee_id',
-                    '=',
-                    'employees.id'
-                )
-                ->leftJoin(
-                    $kpi . '.kpis',
-                    $kpi . '.kpis.id',
-                    '=',
-                    $kpi . '.employee_kpis.kpi_id'
-                )
-                ->leftJoin(
-                    $kpi . '.kpi_categories',
-                    $kpi . '.kpi_categories.id',
-                    '=',
-                    $kpi . '.kpis.kpi_category_id'
-                )
                 ->select(
                     'employees.*',
-                    'work_units.name as work_unit_name',
-                    $kpi . '.kpi_categories.name as kpi_category_name',
-                    $kpi . '.kpis.name as kpi_name'
+                    'work_units.name as work_unit_name'
                 );
+        
         
             if ($request->has('get_work_unit') && !empty($request->input('get_work_unit'))) {
                 $get_work_unit = $request->input('get_work_unit');

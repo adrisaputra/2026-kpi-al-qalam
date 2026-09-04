@@ -14,6 +14,7 @@ class KpiIndicator extends Model
         'indicator',
         'target',
         'weight',
+        'is_employee',
     ];
 
     public function kpi(){

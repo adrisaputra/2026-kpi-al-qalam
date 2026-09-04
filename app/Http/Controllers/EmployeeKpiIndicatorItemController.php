@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeKpiIndicatorItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\DataTables;
 
@@ -27,7 +28,7 @@ class EmployeeKpiIndicatorItemController extends Controller
             $employee_kpi_indicator = Crypt::decrypt($employee_kpi_indicator);
             $employee_kpi_indicator = EmployeeKpiIndicator::where('id', $employee_kpi_indicator)->first();
 
-            $employee_kpi_indicator_item = EmployeeKpiIndicatorItem::where('employee_kpi_indicator_id', $employee_kpi_indicator->id)->limit(10);
+            $employee_kpi_indicator_item = EmployeeKpiIndicatorItem::where('employee_kpi_indicator_id', $employee_kpi_indicator->id)->get();
 
             return DataTables::of($employee_kpi_indicator_item)
             ->addIndexColumn()
@@ -43,12 +44,30 @@ class EmployeeKpiIndicatorItemController extends Controller
             ->addColumn('physical_evidence', function ($v) {
                 return $v->kpi_indicator_item->physical_evidence;
             })
-            ->addColumn('value', function ($v) {
-                $value='<select class="form-control form-control-sm"  style="width: 150px;"name="value" id="value" onchange="updateValueitem(this, '.$v->id.')">
-                            <option value="1"'.($v->value == 1 ? 'selected' : '').'>Ada</option>
-                            <option value="0"'.($v->value == 0 ? 'selected' : '').'>Tidak Ada</option>
-                        </select>';
-                return $value;
+            ->addColumn('value', function ($v) use ($employee_kpi_indicator){
+                $value = null;
+                if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit'])){ 
+                    if($employee_kpi_indicator->kpi_indicator->is_employee == false){
+                        $value='<select class="form-control form-control-sm"  style="width: 150px;"name="value" id="value" onchange="updateValueitem(this, '.$v->id.')">
+                                    <option value="1"'.($v->value == 1 ? 'selected' : '').'>Ada</option>
+                                    <option value="0"'.($v->value == 0 ? 'selected' : '').'>Tidak Ada</option>
+                                </select>';
+                    } else {
+                        $value=($v->value == 1 ? 'Ada' : 'Tidak Ada');
+
+                    }
+                }else{ 
+                    if($employee_kpi_indicator->kpi_indicator->is_employee == true){
+                        $value='<select class="form-control form-control-sm"  style="width: 150px;"name="value" id="value" onchange="updateValueitem(this, '.$v->id.')">
+                                    <option value="1"'.($v->value == 1 ? 'selected' : '').'>Ada</option>
+                                    <option value="0"'.($v->value == 0 ? 'selected' : '').'>Tidak Ada</option>
+                                </select>';
+                    } else {
+                        $value=($v->value == 1 ? 'Ada' : 'Tidak Ada');
+
+                    }
+                }
+                return $value ;
             })
             ->addColumn('value_raw', function ($v) {
                 return $v->value;

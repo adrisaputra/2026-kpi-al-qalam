@@ -37,8 +37,6 @@
                             <div class="row">
                                 <div class="col-md-2">KPI</div>
                                 <div class="col-md-10">: {{ $kpi_indicator->kpi->name }}</div>
-                                <div class="col-md-2">Nama Indikator KPI</div>
-                                <div class="col-md-10">: {{ $kpi_indicator->name }}</div>
                                 <div class="col-md-2">Indikator KPI</div>
                                 <div class="col-md-10">: {{ $kpi_indicator->indicator }}</div>
                                 <div class="col-md-2">Target</div>
