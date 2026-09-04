@@ -54,8 +54,6 @@
 											<th>NIK / Nama</th>
 											<th>NIY</th>
 											<th>TMT</th>
-											<th>Pendidikan Terakhir</th>
-											<th>Suku</th>
 											<th>Unit Kerja</th>
 											<th style="width: 10%"></th>
 										</tr>
@@ -89,8 +87,6 @@
                 {data: 'name_display', name: 'name'}, 
                 {data: 'niy', name: 'employees.niy'},
                 {data: 'tmt_display', name: 'employees.tmt'}, 
-                {data: 'education', name: 'employees.education'}, // ASC/DESC jalan
-                {data: 'ethnic', name: 'employees.ethnic'},
                 {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],

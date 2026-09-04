@@ -44,30 +44,49 @@ class EmployeeKpiIndicatorItemController extends Controller
             ->addColumn('physical_evidence', function ($v) {
                 return $v->kpi_indicator_item->physical_evidence;
             })
-            ->addColumn('value', function ($v) use ($employee_kpi_indicator){
+            ->addColumn('value', function ($v) use ($employee_kpi_indicator) {
+
                 $value = null;
-                if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit'])){ 
-                    if($employee_kpi_indicator->kpi_indicator->is_employee == false){
-                        $value='<select class="form-control form-control-sm"  style="width: 150px;"name="value" id="value" onchange="updateValueitem(this, '.$v->id.')">
-                                    <option value="1"'.($v->value == 1 ? 'selected' : '').'>Ada</option>
-                                    <option value="0"'.($v->value == 0 ? 'selected' : '').'>Tidak Ada</option>
-                                </select>';
-                    } else {
-                        $value=($v->value == 1 ? 'Ada' : 'Tidak Ada');
 
-                    }
-                }else{ 
-                    if($employee_kpi_indicator->kpi_indicator->is_employee == true){
-                        $value='<select class="form-control form-control-sm"  style="width: 150px;"name="value" id="value" onchange="updateValueitem(this, '.$v->id.')">
-                                    <option value="1"'.($v->value == 1 ? 'selected' : '').'>Ada</option>
-                                    <option value="0"'.($v->value == 0 ? 'selected' : '').'>Tidak Ada</option>
-                                </select>';
-                    } else {
-                        $value=($v->value == 1 ? 'Ada' : 'Tidak Ada');
+                $isAdmin = in_array(Auth::user()->group->name, ['Admin KPI', 'Admin Unit']);
 
-                    }
+                // Admin boleh edit jika is_employee = false
+                // User/pegawai boleh edit jika is_employee = true
+                $canEdit = $isAdmin
+                    ? $employee_kpi_indicator->kpi_indicator->is_employee == false
+                    : $employee_kpi_indicator->kpi_indicator->is_employee == true;
+
+                if ($canEdit) {
+
+                    $value = '
+                        <div class="d-flex align-items-center" style="gap: 10px;">
+
+                        <div class="n-chk">
+                            <label class="new-control new-radio radio-success">
+                            <input type="radio" class="new-control-input"name="value_'.$v->id.'"
+                                                            value="1"
+                                                            onchange="updateValueitem(this, '.$v->id.')"
+                                                            '.($v->value == 1 ? 'checked' : '').'>
+                            <span class="new-control-indicator"></span>Ada
+                            </label>
+                        </div>
+                        <div class="n-chk">
+                            <label class="new-control new-radio radio-success">
+                            <input type="radio" class="new-control-input"name="value_'.$v->id.'"
+                                                            value="0"
+                                                            onchange="updateValueitem(this, '.$v->id.')"
+                                                            '.($v->value == 0 ? 'checked' : '').'>
+                            <span class="new-control-indicator"></span>Tidak Ada
+                            </label>
+                        </div>
+                        </div>';
+
+                } else {
+
+                    $value = ($v->value == 1 ? 'Ada' : 'Tidak Ada');
                 }
-                return $value ;
+
+                return $value;
             })
             ->addColumn('value_raw', function ($v) {
                 return $v->value;
@@ -77,7 +96,7 @@ class EmployeeKpiIndicatorItemController extends Controller
         }
     }
 
-    ## Edit KPI
+    ## Update
     public function update(Request $request, EmployeeKpiIndicatorItem $employee_kpi_indicator_item)
     {
         if ($request->ajax()) {

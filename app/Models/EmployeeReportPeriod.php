@@ -12,6 +12,7 @@ class EmployeeReportPeriod extends Model
     protected $fillable = [
         'employee_report_category_id',
         'employee_id',
+        'day',
         'date',
     ];
 
@@ -20,7 +21,11 @@ class EmployeeReportPeriod extends Model
     }
     
     public function employee(){
-        return $this->belongsTo('App\Models\Employe');
+        return $this->belongsTo('App\Models\Employee');
+    }
+
+    public function employee_reports(){
+        return $this->hasMany('App\Models\EmployeeReport');
     }
 
 }
