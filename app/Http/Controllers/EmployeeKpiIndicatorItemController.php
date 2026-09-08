@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeKpiIndicatorItem;
+use App\Models\KpiIndicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
 class EmployeeKpiIndicatorItemController extends Controller
@@ -101,44 +103,83 @@ class EmployeeKpiIndicatorItemController extends Controller
     {
         if ($request->ajax()) {
 
-            $employee_kpi_indicator_item->value = $request->value;
-            $employee_kpi_indicator_item->save();
+             $result = DB::transaction(function () use ($request, $employee_kpi_indicator_item) {
 
-            // Hitung ulang
-            $items = EmployeeKpiIndicatorItem::where(
-                'employee_kpi_indicator_id',
-                $employee_kpi_indicator_item->employee_kpi_indicator_id
-            )->get();
+                $employee_kpi_indicator_item->value = $request->value;
+                $employee_kpi_indicator_item->save();
 
-            $total = $items->sum('value');
-            $count = $items->count();
+                // Hitung ulang
+                $items = EmployeeKpiIndicatorItem::where(
+                    'employee_kpi_indicator_id',
+                    $employee_kpi_indicator_item->employee_kpi_indicator_id
+                )->get();
 
-            $presentase = $count > 0
-                ? ($total / $count) * 100
-                : 0;
+                $total = $items->sum('value');
+                $count = $items->count();
 
-            // Konversi ke score 1-5
-            if ($presentase >= 90) {
-                $score = 5;
-            } elseif ($presentase >= 80) {
-                $score = 4;
-            } elseif ($presentase >= 70) {
-                $score = 3;
-            } elseif ($presentase >= 60) {
-                $score = 2;
-            } else {
-                $score = 1;
-            }
+                $presentase = $count > 0
+                    ? ($total / $count) * 100
+                    : 0;
+
+                // Konversi ke score 1-5
+                if ($presentase >= 90) {
+                    $score = 5;
+                } elseif ($presentase >= 80) {
+                    $score = 4;
+                } elseif ($presentase >= 70) {
+                    $score = 3;
+                } elseif ($presentase >= 60) {
+                    $score = 2;
+                } else {
+                    $score = 1;
+                }
+
+                $score2 = $this->calculateKpiScore($employee_kpi_indicator_item->employee_kpi_indicator_id);
+                
+                $employee_kpi_indicator = EmployeeKpiIndicator::where('id',$employee_kpi_indicator_item->employee_kpi_indicator_id)->first();
+                $kpi_indicator = KpiIndicator::where('id',$employee_kpi_indicator->kpi_indicator_id)->first();
+                $employee_kpi_indicator->score = $score2;
+                $employee_kpi_indicator->value = ($kpi_indicator->weight / 5) * $score2;
+                $employee_kpi_indicator->save();
+
+                return [
+                    'presentase' => $presentase,
+                    'score' => $score,
+                ];
+            });
 
             activity()->log('Edit Employee Kpi Indicator Item Data With ID = ' . $employee_kpi_indicator_item->id);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Simpan Nilai Berhasil',
-                'presentase' => $presentase,
-                'score' => $score
+                'presentase' => $result['presentase'],
+                'score' => $result['score']
             ]);
         }
+    }
+
+    
+    function calculateKpiScore($employee_kpi_indicator_id){
+        $total = EmployeeKpiIndicatorItem::where(
+            'employee_kpi_indicator_id',
+            $employee_kpi_indicator_id
+        )->sum('value');
+
+        $count = EmployeeKpiIndicatorItem::where(
+            'employee_kpi_indicator_id',
+            $employee_kpi_indicator_id
+        )->count();
+
+        $score = $count > 0 ? ($total / $count) * 100 : 0;
+
+        return match (true) {
+            $score >= 90 => 5,
+            $score >= 80 => 4,
+            $score >= 70 => 3,
+            $score >= 60 => 2,
+            default      => 1,
+        };
     }
 
 }
