@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -16,7 +17,8 @@ class UserController extends Controller
     public function index()
     {
         $title = "User";
-		return view('admin.user.index',compact('title'));
+        $work_unit = WorkUnit::get();
+		return view('admin.user.index',compact('title','work_unit'));
     }
 
     ## Get Data
@@ -43,6 +45,14 @@ class UserController extends Controller
             ->addColumn('number', function () use (&$counter) {
                 return $counter++;
             })
+            ->addColumn('show_group', function ($v) {
+                if($v->group_id==4){
+                    $status ='<span class="badge badge-info">Admin KPI</span>';
+                }else{
+                    $status ='<span class="badge badge-warning">Admin Unit ('.$v->work_unit?->name.')</span>';
+                }
+                return $status;
+            })
             ->addColumn('show_status', function ($v) {
                 if($v->status=='Active'){
                     $status ='<span class="badge badge-success">Aktif</span>';
@@ -56,13 +66,13 @@ class UserController extends Controller
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                         </a>';
                 if($v->id != 1){
-                    $btn .= '<a href="#" onclick="deleteData('.$v->id.')" id="'.$v->id.'" class="warning confirm" data-toggle="tooltip" data-placement="top" title="Hapus">
+                    $btn .= '<a href="#" onclick="deleteData('.$v->id.')" id="'.$v->id.'" class="warning confirm" data-toggle="tooltip" data-placement="top" title="Delete">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                             </a>';
                 }
                 return $btn;
             })
-            ->rawColumns(['group','show_status','action'])->make(true);
+            ->rawColumns(['show_group','show_status','action'])->make(true);
         }
         
     }
@@ -74,6 +84,8 @@ class UserController extends Controller
             $attributes = [
                 'name' => 'Nama User',
                 'email' => 'Email',
+                'group_id' => 'Grup',
+                'work_unit_id' => 'Unit kerja',
                 'password' => 'Password',
                 'status' => 'Status'
             ];
@@ -82,21 +94,37 @@ class UserController extends Controller
                 $rules = [
                     'name' => 'required|string|max:255',
                     'email' => 'required|string|email|max:255|unique:users',
+                    'group_id' => 'required',
                     'password' => 'required|string|min:8|confirmed',
                     'status' => 'required'
                 ];
+
+                if($request->group_id == 5){
+                    $rules['work_unit_id'] = 'required';
+                }
             } else {
                 if($request->password){
                     $rules = [
                         'name' => 'required|string|max:255',
                         'password' => 'required|string|min:8|confirmed',
+                        'group_id' => 'required',
                         'status' => 'required'
                     ];
+                        
+                    if($request->group_id == 5){
+                        $rules['work_unit_id'] = 'required';
+                    }
+                    
                 } else {
                     $rules = [
                         'name' => 'required|string|max:255',
+                        'group_id' => 'required',
                         'status' => 'required',
                     ];
+                        
+                    if($request->group_id == 5){
+                        $rules['work_unit_id'] = 'required';
+                    }
                 }
             }
 
@@ -112,11 +140,17 @@ class UserController extends Controller
         if ($request->ajax()) {
             $user = New User();
             $user->fill($request->all());
-            $user->group_id = 4;
+
+            $user->group_id = $request->group_id;
+            if($request->group_id == 5){
+                $user->work_unit_id = $request->work_unit_id;
+            } else {
+                $user->work_unit_id = NULL;
+            }
             $user->save();
             
-            Activity()->log('Tambah Data Admin KPI');
-            return response()->json(['success' => true,'message' => 'Tambah Data Admin KPI Berhasil']);
+            Activity()->log('Create Data User');
+            return response()->json(['success' => true,'message' => 'Tambah Data User Berhasil']);
         }
     }
 
@@ -136,17 +170,33 @@ class UserController extends Controller
             if($request->password){
                 $user->name = $request->name;
                 $user->email = $request->email;
+                    
+                $user->group_id = $request->group_id;
+                if($request->group_id == 5){
+                    $user->work_unit_id = $request->work_unit_id;
+                } else {
+                    $user->work_unit_id = NULL;
+                }
+
                 $user->password = Hash::make($request->password);
                 $user->status = $request->status;
             } else {
                 $user->name = $request->name;
                 $user->email = $request->email;
+                    
+                $user->group_id = $request->group_id;
+                if($request->group_id == 5){
+                    $user->work_unit_id = $request->work_unit_id;
+                } else {
+                    $user->work_unit_id = NULL;
+                }
+                
                 $user->status = $request->status;
             }
             $user->save();
     
-            activity()->log('Ubah Data Admin KPI dengan ID = '.$user->id);
-            return response()->json(['success' => true,'message' => 'Ubah Data Admin KPI Berhasil']);
+            activity()->log('Edit Data User dengan ID = '.$user->id);
+            return response()->json(['success' => true,'message' => 'Ubah Data User Berhasil']);
         }
     }
 
@@ -156,8 +206,8 @@ class UserController extends Controller
         if ($request->ajax()) {
             $user = User::where('id',$user)->first();
             $user->delete();
-            activity()->log('Hapus Data Admin KPI dengan ID = '.$user->id);
-            return response()->json(['success' => true,'message' => 'Hapus Data Admin KPI Berhasil']);
+            activity()->log('Delete Data User dengan ID = '.$user->id);
+            return response()->json(['success' => true,'message' => 'Hapus Data User Berhasil']);
         }
     }
 
@@ -231,7 +281,7 @@ class UserController extends Controller
         
         $user->save();
         
-        activity()->log('Ubah Data Profil dengan ID = '.$user->id);
+        activity()->log('Edit Data Profil dengan ID = '.$user->id);
         return response()->json(['success' => true,'message' => 'Update Data Profil User Berhasil']);
     }
 }

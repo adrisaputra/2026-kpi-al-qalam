@@ -18,6 +18,7 @@ class User extends Authenticatable
         'password',
         'group_id',
         'employee_id',
+        'work_unit_id',
         'photo',
         'phone',
         'status',
@@ -51,7 +52,11 @@ class User extends Authenticatable
     }
 
     public function employee(){
-        return $this->belongsTo('App\Models\Employee')->withTrashed();
+        return $this->belongsTo('App\Models\Employee');
+    }
+
+    public function work_unit(){
+        return $this->belongsTo('App\Models\WorkUnit');
     }
 
     public function isAdminKPI()

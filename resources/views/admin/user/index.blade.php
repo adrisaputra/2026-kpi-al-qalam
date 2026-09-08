@@ -46,6 +46,7 @@
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
 											<th>Nama User</th>
+											<th>Grup</th>
 											<th>Status</th>
 											<th style="width: 8%"></th>
 										</tr>
@@ -71,6 +72,7 @@
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'name', name: 'name'},
+                {data: 'show_group', name: 'group.id'},
                 {data: 'show_status', name: 'status'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
@@ -95,6 +97,8 @@
             var id_user = $('#id_user').val();
             var name = $('#name').val();
             var email = $('#email').val();
+            var group_id = $('#group_id').val();
+            var work_unit_id = $('#work_unit_id').val();
             var password = $('#password').val();
             var password_confirmation = $('#password_confirmation').val();
             var status = $('#status').val();
@@ -104,6 +108,8 @@
             formData.append('id', id_user);
             formData.append('name', name);
             formData.append('email', email);
+            formData.append('group_id', group_id);
+            formData.append('work_unit_id', work_unit_id);
             formData.append('password', password);
             formData.append('password_confirmation', password_confirmation);
             formData.append('status', status);

@@ -26,7 +26,7 @@
                                 <option value="{{ $v->id }}">{{ $v->name }}</option>
                             @endforeach
                         </select>
-                        <div id="kpi_category_id-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                        <div id="report_category_id-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                 </div>

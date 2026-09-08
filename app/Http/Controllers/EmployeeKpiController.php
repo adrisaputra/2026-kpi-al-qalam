@@ -8,6 +8,7 @@ use App\Models\EmployeeKpi;
 use App\Models\KpiCategory;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -41,15 +42,21 @@ class EmployeeKpiController extends Controller
                     'work_units.name as work_unit_name'
                 );
         
-        
-            if ($request->has('get_work_unit') && !empty($request->input('get_work_unit'))) {
-                $get_work_unit = $request->input('get_work_unit');
+            if(Auth::user()->group->name == 'Admin KPI'){
+                if ($request->has('get_work_unit') && !empty($request->input('get_work_unit'))) {
+                    $get_work_unit = $request->input('get_work_unit');
+                    $query->whereHas('work_unit', function($q) use ($get_work_unit) {
+                        $q->where('id', $get_work_unit);
+                    });
+                }
+            } else {
+                $get_work_unit = Auth::user()->work_unit_id;
                 $query->whereHas('work_unit', function($q) use ($get_work_unit) {
                     $q->where('id', $get_work_unit);
                 });
             }
-            $employee = $query->limit(10);
 
+            $employee = $query->limit(10);
             
             return DataTables::of($employee)
                 ->addIndexColumn()

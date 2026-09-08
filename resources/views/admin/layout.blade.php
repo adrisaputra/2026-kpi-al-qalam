@@ -192,78 +192,80 @@ $setting = \App\Helpers\Helpers::setting();
                         </a>
                     </li>
 
-                    @if(Auth::user()->group->name == "Admin KPI")
+                    @if(in_array(Auth::user()->group->name, ['Admin KPI','Admin Unit']))
+                        
+                        <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
+                            <a href="{{ url('employee_kpi') }}" @if(in_array(Request::segment(1), ['employee_kpi','employee_kpi_detail','employee_kpi_period','employee_kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>KPI</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
-                        <a href="{{ url('employee_kpi') }}" @if(in_array(Request::segment(1), ['employee_kpi','employee_kpi_detail','employee_kpi_period','employee_kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>KPI</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
+                            <a href="{{ url('employee_report') }}" @if(in_array(Request::segment(1), ['employee_report','employee_report_category','employee_report_period','employee_report_value'])) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>Rapor</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" employee_report") active @endif">
-                        <a href="{{ url('employee_report') }}" @if(in_array(Request::segment(1), ['employee_report','employee_report_category'])) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-profile-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Rapor</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" print") active @endif">
+                            <a href="{{ url('print') }}" @if(Request::segment(1)=="print" ) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-print-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>Laporan</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" report") active @endif">
-                        <a href="{{ url('report') }}" @if(Request::segment(1)=="report" ) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-print-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Laporan</span>
-                            </div>
-                        </a>
-                    </li>
+                        @if(Auth::user()->group->name == 'Admin KPI')
+                        <li class="menu menu-heading">
+                            <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg><span>PENGATURAN</span></div>
+                        </li>
 
-                    <li class="menu menu-heading">
-                        <div class="heading"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                            </svg><span>PENGATURAN</span></div>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" kpi_category") active @endif">
+                            <a href="{{ url('kpi_category') }}" @if(Request::segment(1)=="kpi_category" ) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>Kategori KPI</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" kpi_category") active @endif">
-                        <a href="{{ url('kpi_category') }}" @if(Request::segment(1)=="kpi_category" ) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Kategori KPI</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" report_category") active @endif">
+                            <a href="{{ url('report_category') }}" @if(Request::segment(1)=="report_category" ) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>Kategori Rapor</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" report_category") active @endif">
-                        <a href="{{ url('report_category') }}" @if(Request::segment(1)=="report_category" ) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Kategori Rapor</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" log") active @endif">
+                            <a href="{{ url('log') }}" @if(Request::segment(1)=="log" ) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-timer-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>Log Aktifitas</span>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="menu @if(Request::segment(1)==" log") active @endif">
-                        <a href="{{ url('log') }}" @if(Request::segment(1)=="log" ) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-timer-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>Log Aktifitas</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu @if(Request::segment(1)==" user") active @endif">
+                            <a href="{{ url('user') }}" @if(Request::segment(1)=="user" ) aria-expanded="true" @endif class="dropdown-toggle">
+                                <div class="">
+                                    <img src="{{ asset('storage/menu/icons8-customer-100.png') }}" width="30" height="30" style="margin-right: 18px">
+                                    <span>User</span>
+                                </div>
+                            </a>
+                        </li>
+                        @endif
 
-                    <li class="menu @if(Request::segment(1)==" user") active @endif">
-                        <a href="{{ url('user') }}" @if(Request::segment(1)=="user" ) aria-expanded="true" @endif class="dropdown-toggle">
-                            <div class="">
-                                <img src="{{ asset('storage/menu/icons8-customer-100.png') }}" width="30" height="30" style="margin-right: 18px">
-                                <span>User</span>
-                            </div>
-                        </a>
-                    </li>
-
-                    @elseif(Auth::user()->group_id == 3)
+                    @elseif(Auth::user()->group->name == 'Employee')
 
                     <li class="menu @if(Request::segment(1)==" employee_kpi") active @endif">
                         <a href="{{ url('employee_kpi_detail/'.Crypt::encrypt(Auth::user()->employee_id)) }}" @if(in_array(Request::segment(1), ['employee_kpi_detail','employee_kpi_period','employee_kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
