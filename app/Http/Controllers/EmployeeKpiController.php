@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeKpi;
+use App\Models\EmployeeKpiIndicator;
 use App\Models\KpiCategory;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
@@ -29,6 +30,9 @@ class EmployeeKpiController extends Controller
 
         if ($request->ajax()) {
             $counter = 1;
+
+            $month = $request->input('get_month') ?? date('m');
+            $year = $request->input('get_year') ?? date('Y');
 
             $query = Employee::query()
                 ->leftJoin(
@@ -73,8 +77,26 @@ class EmployeeKpiController extends Controller
                     return Helpers::date($v->tmt);
                 })
                 ->addColumn('education', function ($v) {
-                    // return $v->last_education_history?->major;
-                    return $v->education;
+                })
+                ->addColumn('score', function ($v) use ($month,$year){
+                    $score = EmployeeKpiIndicator::whereHas('employee_kpi_period',
+                                                function ($query) use ($v, $month, $year) {
+                                                    $query->where('employee_id', $v->id)
+                                                        ->where('month', $month)
+                                                        ->where('year', $year);
+                                                }
+                                            )->sum('score');
+                    return $score;
+                })
+                ->addColumn('value', function ($v) use ($month,$year){
+                    $value = EmployeeKpiIndicator::whereHas('employee_kpi_period',
+                                                function ($query) use ($v, $month, $year) {
+                                                    $query->where('employee_id', $v->id)
+                                                        ->where('month', $month)
+                                                        ->where('year', $year);
+                                                }
+                                            )->sum('value');
+                    return number_format(round($value, 2), 2, '.', '');
                 })
                 ->addColumn('action', function ($v) use ($request){
                     $kpi = url('employee_kpi_detail', Crypt::encrypt($v->id));

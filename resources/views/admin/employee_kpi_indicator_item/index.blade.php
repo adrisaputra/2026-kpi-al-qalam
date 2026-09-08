@@ -50,7 +50,10 @@
 						</div>
 						
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						    <p style="font-size:18px;font-weight:bold;text-align:center">Indikator KPI : {{ $employee_kpi_indicator->kpi_indicator->indicator }}</p>
+						    <p style="font-size:18px;font-weight:bold;text-align:center">
+                                Indikator KPI : {{ $employee_kpi_indicator->kpi_indicator->indicator }}<br>
+                                Bulan {{ \App\Helpers\Helpers::month_name($employee_kpi_indicator->employee_kpi_period->month) }} Tahun {{ $employee_kpi_indicator->employee_kpi_period->year }}
+                            </p>
                             <p style="font-size:16px;margin-top:20px;">
                                 <div class="row">
                                     <div class="col-md-3">Persentase Ketercapaian %</div>
@@ -78,7 +81,7 @@
                 </div>
 
             </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('backend/assets/js/jquery-3.4.1.min.js')}}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     var table;

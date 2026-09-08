@@ -7,9 +7,9 @@
 
 		<div class="row layout-top-spacing">
 
-			@if(Auth::user()->group_id == 1)
+			@if(in_array(Auth::user()->group->name, ['Admin KPI','Admin Unit']))
 			<div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-				<a href="{{ url('employee') }}">
+				<a href="#">
 					<div class="widget widget-one_hybrid widget-followers" style="background:rgba(231, 23, 23, 0.88);">
 						<div class="widget-heading">
 							<div class="row" style="color: #ffffff;">
@@ -33,7 +33,7 @@
 				</a>
 			</div>
 			<div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-				<a href="{{ url('employee') }}">
+				<a href="#">
 					<div class="widget widget-one_hybrid widget-followers" style="background: #03A9F4;">
 						<div class="widget-heading">
 							<div class="row" style="color: #ffffff;">
@@ -57,7 +57,7 @@
 				</a>
 			</div>
 			<div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-				<a href="{{ url('employee') }}">
+				<a href="#">
 					<div class="widget widget-one_hybrid widget-followers" style="background:rgb(244, 54, 133);">
 						<div class="widget-heading">
 							<div class="row" style="color: #ffffff;">
@@ -84,9 +84,57 @@
 				<div id="containers"></div>
 			</div>
 
-			@endif
+			@else
 
-			@if(Auth::user()->group_id == 3)
+			<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+				<a href="#">
+					<div class="widget widget-one_hybrid widget-followers" style="background:rgba(231, 23, 23, 0.88);">
+						<div class="widget-heading">
+							<div class="row" style="color: #ffffff;">
+								<div class="col-md-8">
+									<p class="w-value" style="color: #ffffff;font-size: 35px;">{{ \App\Helpers\Helpers::format_number($kpi) }}</p>
+									<h6 style="color: #ffffff;">Nilai KPI Bulan Ini</h6>
+								</div>
+								<div class="col-md-4">
+									<center>
+										<img src="{{ asset('storage/menu/icons8-test-passed-100.png') }}" width="80" height="80" style="margin-right: 20px">
+									</center>
+								</div>
+							</div>
+						</div>
+						<div class="widget-content">    
+							<div class="w-chart">
+								<div id="hybrid_followers"></div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+				<a href="#">
+					<div class="widget widget-one_hybrid widget-followers" style="background: #03A9F4;">
+						<div class="widget-heading">
+							<div class="row" style="color: #ffffff;">
+								<div class="col-md-8">
+									<p class="w-value" style="color: #ffffff;font-size: 35px;">{{ \App\Helpers\Helpers::format_number($report) }}</p>
+									<h6 style="color: #ffffff;">Nilai Rapor Bulan Ini</h6>
+								</div>
+								<div class="col-md-4">
+									<center>
+										<img src="{{ asset('storage/menu/icons8-test-passed-100.png') }}" width="80" height="80" style="margin-right: 20px">
+									</center>
+								</div>
+							</div>
+						</div>
+						<div class="widget-content">    
+							<div class="w-chart">
+								<div id="hybrid_followers"></div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+
 			@endif
             
 		</div>

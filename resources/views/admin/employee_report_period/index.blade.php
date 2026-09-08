@@ -90,8 +90,15 @@
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3" style="text-align:right;">TOTAL</th>
+                                            <th id="total_value">0</th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
 								</table>
-                                
                             </div>	
                         </div>
                     </div>
@@ -128,6 +135,18 @@
 			],
             paging: false,
             pageLength: -1, // Menampilkan 100 data per halaman
+            footerCallback: function (row, data, start, end, display) {
+
+                let totalValue = 0;
+
+                data.forEach(function (item) {
+
+                    totalValue += parseFloat(item.total) || 0;
+
+                });
+
+                $('#total_value').text(totalValue.toFixed(2));
+            },
 			drawCallback: function () {
                 var api = this.api();
 

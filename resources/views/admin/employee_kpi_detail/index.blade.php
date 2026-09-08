@@ -45,11 +45,36 @@
                             <hr>
                             @if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit']))
                             <div class="row">
-                                <div class="col-xl-6 col-md-12 col-sm-12 col-12">
+                                <div class="col-xl-8 col-md-12 col-sm-12 col-12">
                                     <a href="#" class="btn mb-2 mr-1 btn-success" data-placement="top" data-toggle="modal" data-target="#exampleModal" title="Tambah Data" onClick="clearForm()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
 									<a href="{{ url(Request::segment(1).'/'.Request::segment(2)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
 									<a href="{{ url('employee_kpi') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                 </div>
+                                
+                                <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                    <select id="get_month" name="get_month" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
+                                        <option value="01" @if(date('m') == '01') selected @endif>Januari</option>
+                                        <option value="02" @if(date('m') == '02') selected @endif>Februari</option>
+                                        <option value="03" @if(date('m') == '03') selected @endif>Maret</option>
+                                        <option value="04" @if(date('m') == '04') selected @endif>April</option>
+                                        <option value="05" @if(date('m') == '05') selected @endif>Mei</option>
+                                        <option value="06" @if(date('m') == '06') selected @endif>Juni</option>
+                                        <option value="07" @if(date('m') == '07') selected @endif>Juli</option>
+                                        <option value="08" @if(date('m') == '08') selected @endif>Agustus</option>
+                                        <option value="09" @if(date('m') == '09') selected @endif>September</option>
+                                        <option value="10" @if(date('m') == '10') selected @endif>Oktober</option>
+                                        <option value="11" @if(date('m') == '11') selected @endif>November</option>
+                                        <option value="12" @if(date('m') == '12') selected @endif>Desember</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                    <select id="get_year" name="get_year" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
+                                        @for($i=2026;$i<=date('Y');$i++)
+                                            <option value="{{ $i }}" @if(date('Y')==$i) selected @endif>{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                                        
                             </div>
                             @endif
                         </div>
@@ -67,6 +92,8 @@
 											<th style="width: 2%">No</th>
 											<th>Kategori KPI</th>
 											<th>KPI</th>
+											<th>Skor</th>
+											<th>Nilai</th>
 											<th style="width: 15%"></th>
 										</tr>
 									</thead>
@@ -78,7 +105,7 @@
                 </div>
 
             </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('backend/assets/js/jquery-3.4.1.min.js')}}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     var table;
@@ -90,13 +117,19 @@
 			ajax: {
 				url: "{{ route('employee_kpi_detail.list', ['employee' => $employee->id]) }}",
 				type: 'GET',
-				dataType: 'json'
+				dataType: 'json',
+				data: function (d) {
+					d.get_month = $('#get_month').val(); // Kirim nilai combobox office dalam request
+                    d.get_year = $('#get_year').val(); // Kirim nilai combobox office dalam request
+                }
 			},
             columns: [
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'display_kpi_category_name', name: 'kpi_category_name'}, // ASC/DESC jalan
                 {data: 'display_kpi_name', name: 'kpi_name'}, // ASC/DESC jalan
+                {data: 'score', name: 'score'},
+                {data: 'value', name: 'value'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
@@ -115,6 +148,13 @@
             }
         });
 
+        $('#get_month').on('change', function () {
+            table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        });
+        
+        $('#get_year').on('change', function () {
+            table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        });
         
         $('#myForm').submit(function (e) {
             e.preventDefault(); // Hindari pengiriman form secara default
@@ -317,8 +357,5 @@
 		});
 	
     }
-
-
-
 </script>
 @endsection

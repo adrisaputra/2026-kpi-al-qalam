@@ -40,9 +40,13 @@ class EmployeeKpiIndicatorController extends Controller
                     $kpi_indicator = KpiIndicator::where('kpi_id',$employee_kpi->kpi->id)->get();
                     
                     foreach($kpi_indicator as $v){
+
                         $employee_kpi_indicator = new EmployeeKpiIndicator();
                         $employee_kpi_indicator->employee_kpi_period_id = $employee_kpi_period->id;
                         $employee_kpi_indicator->kpi_indicator_id = $v->id;
+                        $employee_kpi_indicator->score = 1;
+                        $employee_kpi_indicator->value = $v->id;
+                        $employee_kpi_indicator->value = ($v->weight / 5) * 1;
                         $employee_kpi_indicator->save();
 
                         foreach($v->kpi_indicator_items as $x){    

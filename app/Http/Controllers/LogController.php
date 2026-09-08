@@ -22,9 +22,7 @@ class LogController extends Controller
         if ($request->ajax()) {
             $counter = 1;
 
-            $log = Log::whereHas('user', function ($q){
-                $q->where('name','!=','superadmin');
-            })->limit(10);
+            $log = Log::limit(10);
 
             return DataTables::of($log)
             ->addIndexColumn()

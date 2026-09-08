@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeReport;
 use App\Models\EmployeeReportCategory;
 use App\Models\ReportCategory;
 use Illuminate\Http\Request;
@@ -28,6 +29,9 @@ class EmployeeReportCategoryController extends Controller
         if ($request->ajax()) {
             $counters = 1;
 
+            $month = $request->input('get_month') ?? date('m');
+            $year = $request->input('get_year') ?? date('Y');
+
             $employee_report_category = EmployeeReportCategory::where('employee_id', $employee)->get();
 
             return DataTables::of($employee_report_category)
@@ -37,6 +41,22 @@ class EmployeeReportCategoryController extends Controller
             })
             ->addColumn('display_report_category_name', function ($v) {
                 return $v->report_category?->name;
+            })
+            ->addColumn('value', function ($v) use ($month,$year){
+                $value = EmployeeReport::
+                        whereHas('employee_report_period',
+                            function ($query) use ($v,$month,$year) {
+                                $query->whereMonth('date', $month)
+                                        ->whereYear('date', $year)
+                                ->whereHas('employee_report_category',
+                                    function ($query) use ($v) {
+                                        $query->where('employee_id', $v->employee_id)
+                                        ->where('id', $v->id);
+                                    }
+                                );
+                            }
+                        )->sum('value');
+                return $value;
             })
             ->addColumn('action', function ($v){
                 $employee_report_period = url('employee_report_period', Crypt::encrypt($v->id));

@@ -57,11 +57,13 @@ class EmployeeKpiPeriodController extends Controller
                 return $v->kpi_indicator->weight;
             })
             ->addColumn('score', function ($v) {
-                return $this->calculateKpiScore($v);
+                // return $this->calculateKpiScore($v);
+                return $v->score;
             })
             ->addColumn('value', function ($v) {
-                $score = $this->calculateKpiScore($v);
-                return ($v->kpi_indicator->weight / 5) * $score;
+                // $score = $this->calculateKpiScore($v);
+                // return ($v->kpi_indicator->weight / 5) * $score;
+                return $v->value;
             })
             ->addColumn('action', function ($v) {
                 $employee_kpi_item = url('employee_kpi_indicator_item', Crypt::encrypt($v->id));

@@ -44,7 +44,7 @@ class KpiIndicatorController extends Controller
             })
             ->addColumn('kpi_indicator_item', function ($v) {
                 $url = url('kpi_indicator_item', Crypt::encrypt($v->id));
-                $btn = '<a href="' . $url . '"  target="_blank" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                $btn = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                             <span>Lihat Indikator Item</span>';
 
                     if ($v->kpi_indicator_items->count() > 0) {

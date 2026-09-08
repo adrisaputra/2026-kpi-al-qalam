@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Employee;
+use App\Models\EmployeeKpiIndicator;
+use App\Models\EmployeeKpiPeriod;
+use App\Models\EmployeeReport;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +29,9 @@ class EmployeeReportController extends Controller
 
         if ($request->ajax()) {
             $counter = 1;
+
+            $month = $request->input('get_month');
+            $year = $request->input('get_year');
 
             $query = Employee::query()
                 ->leftJoin(
@@ -55,7 +61,7 @@ class EmployeeReportController extends Controller
 
             $employee = $query->limit(10);
 
-            
+
             return DataTables::of($employee)
                 ->addIndexColumn()
                 ->addColumn('number', function () use (&$counter) {
@@ -71,8 +77,17 @@ class EmployeeReportController extends Controller
                     return Helpers::date($v->tmt);
                 })
                 ->addColumn('education', function ($v) {
-                    // return $v->last_education_history?->major;
                     return $v->education;
+                })
+                ->addColumn('value', function ($v) use ($month,$year){
+                    $value = EmployeeReport::whereHas('employee_report_period',
+                                                function ($query) use ($v, $month, $year) {
+                                                    $query->where('employee_id', $v->id)
+                                                        ->whereMonth('date', $month)
+                                                        ->whereYear('date', $year);
+                                                }
+                                            )->sum('value');
+                    return $value;
                 })
                 ->addColumn('action', function ($v){
                     $report = url('employee_report_category', Crypt::encrypt($v->id));

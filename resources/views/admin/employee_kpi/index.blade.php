@@ -19,10 +19,34 @@
 	
 							<div class="widget-content widget-content-area">
 								<div class="row">
-									<div class="col-xl-9 col-md-12 col-sm-12 col-12">
+									<div class="@if(Auth::user()->group->name == 'Admin KPI') col-xl-5 @else col-xl-8 @endif col-md-12 col-sm-12 col-12">
 										<a href="{{ url(Request::segment(1)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
 									</div>
                                     
+                                    <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                        <select id="get_month" name="get_month" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
+                                            <option value="01" @if(date('m') == '01') selected @endif>Januari</option>
+                                            <option value="02" @if(date('m') == '02') selected @endif>Februari</option>
+                                            <option value="03" @if(date('m') == '03') selected @endif>Maret</option>
+                                            <option value="04" @if(date('m') == '04') selected @endif>April</option>
+                                            <option value="05" @if(date('m') == '05') selected @endif>Mei</option>
+                                            <option value="06" @if(date('m') == '06') selected @endif>Juni</option>
+                                            <option value="07" @if(date('m') == '07') selected @endif>Juli</option>
+                                            <option value="08" @if(date('m') == '08') selected @endif>Agustus</option>
+                                            <option value="09" @if(date('m') == '09') selected @endif>September</option>
+                                            <option value="10" @if(date('m') == '10') selected @endif>Oktober</option>
+                                            <option value="11" @if(date('m') == '11') selected @endif>November</option>
+                                            <option value="12" @if(date('m') == '12') selected @endif>Desember</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                        <select id="get_year" name="get_year" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
+                                            @for($i=2026;$i<=date('Y');$i++)
+                                                <option value="{{ $i }}" @if(date('Y')==$i) selected @endif>{{ $i }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                        
                                     @if(Auth::user()->group->name == 'Admin KPI')
 									<div class="col-xl-3 col-md-12 col-sm-12 col-12">
 										<select id="get_work_unit" name="get_work_unit" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
@@ -55,6 +79,8 @@
 											<th>NIY</th>
 											<th>TMT</th>
 											<th>Unit Kerja</th>
+											<th>Skor</th>
+											<th>Nilai</th>
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
@@ -78,8 +104,10 @@
 			ajax: {
 				url: "{{ route('employee_kpi.list') }}",
 				data: function (d) {
+					d.get_month = $('#get_month').val(); // Kirim nilai combobox office dalam request
+                    d.get_year = $('#get_year').val(); // Kirim nilai combobox office dalam request
 					d.get_work_unit = $('#get_work_unit').val(); // Kirim nilai combobox office dalam request
-				}
+                }
 			},
             columns: [
 				{data: 'id', name: 'id', visible: false},
@@ -88,6 +116,8 @@
                 {data: 'niy', name: 'employees.niy'},
                 {data: 'tmt_display', name: 'employees.tmt'}, 
                 {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
+                {data: 'score', name: 'score'}, 
+                {data: 'value', name: 'value'}, 
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
@@ -105,6 +135,12 @@
         });
         
         // Tambahkan event listener untuk perubahan combo box office
+        $('#get_month').on('change', function () {
+            table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        });
+        $('#get_year').on('change', function () {
+            table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        });
         $('#get_work_unit').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
         });

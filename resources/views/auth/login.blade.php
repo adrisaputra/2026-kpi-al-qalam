@@ -36,7 +36,7 @@ $setting = \App\Helpers\Helpers::setting();
         .bg-side {
             flex: 1;
             position: relative;
-            background: linear-gradient(135deg, #2196F3 0%,  #00bcd463 100%), url({{ asset('storage/upload/setting/'.$setting->background_login) }}) no-repeat center center;
+            background: linear-gradient(135deg, #f32121 0%,  #d4750063 100%), url({{ asset('storage/upload/setting/'.$setting->background_login) }}) no-repeat center center;
             background-size: cover;
             display: flex;
             flex-direction: column;
