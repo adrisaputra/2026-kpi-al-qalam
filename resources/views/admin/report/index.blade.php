@@ -69,7 +69,7 @@
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'name', name: 'name'},
-                {data: 'is_special_value', name: 'is_special_value'},
+                {data: 'category', name: 'category'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
@@ -201,7 +201,7 @@
             success: function (response) {
                 document.getElementById("id_report").value = response.data.id;
                 document.getElementById("name").value = response.data.name;
-                document.getElementById("is_special_value").checked = response.data.is_special_value == 1;
+                document.getElementById("category").value = response.data.category;
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal

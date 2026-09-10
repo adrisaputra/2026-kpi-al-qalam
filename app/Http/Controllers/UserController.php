@@ -31,14 +31,15 @@ class UserController extends Controller
             // $query = User::query()
             // ->leftJoin('employees', 'employees.id', '=', 'users.employee_id')
             // ->select('users.*', 'employees.name as employee_name');
-        
-            $query = User::query()
-                ->whereHas('group.group_application', function($query){
-                    $query->where('group_id','!=',3)
-                    ->where('application_id',2);
-                });
-
-            $user = $query->where('users.name','!=','superadmin')->limit(10);
+            $user = User::query()
+                ->whereHas('group', function ($query) {
+                    $query->where('id', '!=', 3);
+                })
+                ->whereHas('group.group_application', function ($query) {
+                    $query->where('application_id', 2);
+                })
+                ->where('users.name', '!=', 'superadmin')
+                ->limit(10);
 
             return DataTables::of($user)
             ->addIndexColumn()

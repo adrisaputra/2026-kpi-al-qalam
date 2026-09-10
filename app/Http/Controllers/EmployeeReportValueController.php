@@ -52,15 +52,48 @@ class EmployeeReportValueController extends Controller
 
                 if (in_array(Auth::user()->group->name, ['Admin KPI', 'Admin Unit'])) {
 
-                    if ($v->report->is_special_value == true) {
-                        $value = in_array($v->value, [1, 2]) ? 'Ada' : 'Tidak Ada';
+                    if (in_array($v->report->category, ['1', '2', '3', '4'])) {
+                        $value = $v->value;
                     } else {
-                        $value = ($v->value == 1 ? 'Ada' : 'Tidak Ada');
+                        $value = $v->value;
                     }
 
                 } else {
 
-                    if ($v->report->is_special_value == true) {
+                    if ($v->report->category == 1) {
+
+                        $value = '
+                            <div class="d-flex align-items-center" style="gap: 15px;">
+
+                                <div class="n-chk">
+                                    <label class="new-control new-radio radio-success">
+                                        <input type="radio"
+                                            class="new-control-input"
+                                            name="value_'.$v->id.'"
+                                            value="1"
+                                            onchange="updateValueitem(this, '.$v->id.')"
+                                            '.($v->value == 1 ? 'checked' : '').'>
+                                        <span class="new-control-indicator"></span>
+                                        Ya
+                                    </label>
+                                </div>
+
+                                <div class="n-chk">
+                                    <label class="new-control new-radio radio-success">
+                                        <input type="radio"
+                                            class="new-control-input"
+                                            name="value_'.$v->id.'"
+                                            value="0"
+                                            onchange="updateValueitem(this, '.$v->id.')"
+                                            '.($v->value == 0 ? 'checked' : '').'>
+                                        <span class="new-control-indicator"></span>
+                                        Tidak
+                                    </label>
+                                </div>
+
+                            </div>';
+                       
+                    } else if($v->report->category == 2) {
 
                         $value = '
                             <div class="d-flex align-items-center" style="gap: 15px;">
@@ -106,7 +139,7 @@ class EmployeeReportValueController extends Controller
 
                             </div>';
 
-                    } else {
+                    } else if($v->report->category == 2) {
 
                         $value = '
                             <div class="d-flex align-items-center" style="gap: 15px;">
@@ -120,7 +153,20 @@ class EmployeeReportValueController extends Controller
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 1 ? 'checked' : '').'>
                                         <span class="new-control-indicator"></span>
-                                        Ya
+                                        1
+                                    </label>
+                                </div>
+
+                                <div class="n-chk">
+                                    <label class="new-control new-radio radio-success">
+                                        <input type="radio"
+                                            class="new-control-input"
+                                            name="value_'.$v->id.'"
+                                            value="2"
+                                            onchange="updateValueitem(this, '.$v->id.')"
+                                            '.($v->value == 2 ? 'checked' : '').'>
+                                        <span class="new-control-indicator"></span>
+                                        2
                                     </label>
                                 </div>
 
@@ -133,11 +179,18 @@ class EmployeeReportValueController extends Controller
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 0 ? 'checked' : '').'>
                                         <span class="new-control-indicator"></span>
-                                        Tidak
+                                        0
                                     </label>
                                 </div>
 
                             </div>';
+
+                    } else if(in_array($v->report->category,[3,4])) {
+                        $value = '<input type="text" name="value_'.$v->id.'" value='.$v->value.' onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="name">';
+                    } else if($v->report->category == 5) {
+                        $url = url('employee_report_file', Crypt::encrypt($v->id));
+                        $value = '<a href="' . $url . '" target="_blank" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                                    <span>Lihat File Gambar</span></a>';
                     }
                 }
 

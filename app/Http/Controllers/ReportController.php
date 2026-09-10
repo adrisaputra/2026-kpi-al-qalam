@@ -33,13 +33,21 @@ class ReportController extends Controller
             ->addColumn('number', function () use (&$counters) {
                 return $counters++;
             })
-            ->addColumn('is_special_value', function ($v) {
-                if($v->is_special_value==true){
-                    $status ='<span class="badge badge-success">Ya</span>';
-                }else{
-                    $status ='<span class="badge badge-danger">Tidak</span>';
+            ->addColumn('category', function ($v) {
+                if ($v->category == 1) {
+                    $category = '<span class="badge badge-success">Inputan Pilihan 0 dan 1</span>';
+                } elseif ($v->category == 2) {
+                    $category = '<span class="badge badge-primary">Inputan Pilihan 0, 1 dan 2</span>';
+                } elseif ($v->category == 3) {
+                    $category = '<span class="badge badge-danger">Inputan Manual</span>';
+                } elseif ($v->category == 4) {
+                    $category = '<span class="badge badge-warning">Inputan Manual + Rumus</span>';
+                } elseif ($v->category == 5) {
+                    $category = '<span class="badge badge-info">Inputan File Gambar</span>';
+                } else {
+                    $category = '<span class="badge badge-default">-</span>';
                 }
-                return $status;
+                return $category;
             })
             ->addColumn('action', function ($v) {
                 $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal">
@@ -50,7 +58,7 @@ class ReportController extends Controller
                         </a>';
                 return $btn;
             })
-            ->rawColumns(['is_special_value','action'])
+            ->rawColumns(['category','action'])
             ->make(true);
         }
     }
@@ -87,7 +95,8 @@ class ReportController extends Controller
             $report = new Report();
             $report->report_category_id = $request->report_category_id;
             $report->name = $request->name;
-            $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
+            $report->category = $request->category;
+            // $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
             $report->save();
             activity()->log('Create Report Data');
             return response()->json(['success' => true, 'message' => 'Tambah Report Berhasil']);
@@ -109,7 +118,8 @@ class ReportController extends Controller
 
             $report->report_category_id = $request->report_category_id;
             $report->name = $request->name;
-            $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
+            $report->category = $request->category;
+            // $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
             $report->save();
 
             activity()->log('Edit Report Data With ID = ' . $report->id);

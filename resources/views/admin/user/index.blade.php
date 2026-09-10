@@ -72,7 +72,7 @@
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'name', name: 'name'},
-                {data: 'show_group', name: 'group.id'},
+                {data: 'show_group', name: 'name'},
                 {data: 'show_status', name: 'status'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],

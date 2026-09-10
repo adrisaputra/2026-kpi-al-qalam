@@ -15,7 +15,11 @@ class Report extends Model
     protected $fillable = [
         'report_category_id',
         'name',
-        'is_special_value'
+        'category',
+        'is_special_value',
+        'manual_input',
+        'file_input',
+        'jp'
     ];
 
     public function report_category(){

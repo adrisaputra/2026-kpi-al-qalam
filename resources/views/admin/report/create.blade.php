@@ -24,12 +24,18 @@
                         <div id="name-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
-                    <div class="n-chk">
-                        <label class="new-control new-checkbox checkbox-success">
-                        <input type="checkbox" class="new-control-input" name="is_special_value" id="is_special_value">
-                        <span class="new-control-indicator"></span>Pilihan Angka 2
-                        </label>
-                    </div>
+					<div class="form-group" style="margin-top:20px">
+						<p>{{ __('Jenis Inputan') }} <span class="required" style="color: #dd4b39;">*</span></p>
+						<select class="form-control form-control-sm" name="category" id="category">
+							<option value="">- Pilih Jenis Inputan -</option>
+							<option value="1">Inputan Pilihan 0 dan 1</option>
+							<option value="2">Inputan Pilihan 0, 1 dan 2</option>
+							<option value="3">Inputan Manual</option>
+							<option value="4">Inputan Manual + Rumus </option>
+							<option value="5">Inputan File Gambar</option>
+						</select>
+						<div id="category-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+					</div>
 
                 </div>
                 <div class="modal-footer">

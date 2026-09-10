@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Employee;
-use App\Models\EmployeeKpiIndicator;
-use App\Models\EmployeeKpiPeriod;
 use App\Models\EmployeeReport;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
