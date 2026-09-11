@@ -17,48 +17,33 @@
                                 </div>
                             </div>
 
+					   	<form action="{{ url(Request::segment(1).'/search') }}" method="GET">		
 							<div class="widget-content widget-content-area">
-                                
-                            <p style="font-size:16px;margin-top:-20px;">
-                                <div class="row">
-                                    <div class="col-md-2">Nama</div>
-                                    <div class="col-md-10">: <b>{{ $employee_report->employee_report_period->employee->name }}</b></div>
-                                    <div class="col-md-2">NIK</div>
-                                    <div class="col-md-10">: {{ $employee_report->employee_report_period->employee->nik }}</div>
-                                    <div class="col-md-2">NIY</div>
-                                    <div class="col-md-10">: {{ $employee_report->employee_report_period->employee->niy }}</div>
-                                    <div class="col-md-2">Unit Kerja</div>
-                                    <div class="col-md-10">: {{ $employee_report->employee_report_period->employee->work_unit?->name }}</div>
-                                    <div class="col-md-2">Kategori Rapor</div>
-                                    <div class="col-md-10">: {{ $employee_report->employee_report_period->employee_report_category->report_category->name }}</div>
-                                </div>
-                            </p>	
 								<div class="row">
-									<div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                        @if(Auth::user()->group->name == 'Employee')
-    										<a href="#" class="btn mb-2 mr-1 btn-success" data-placement="top" data-toggle="modal" data-target="#exampleModal" title="Tambah Data" onClick="clearForm()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
-									    @endif
-                                        <a href="{{ url('employee_report_value/'.Crypt::encrypt( $employee_report->employee_report_period->id)) }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
-                                    </div> 
+									<div class="col-xl-8 col-md-12 col-sm-12 col-12">
+										<a href="#" class="btn mb-2 mr-1 btn-success" data-placement="top" data-toggle="modal" data-target="#exampleModal" title="Tambah Data" onClick="clearForm()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
+										<a href="{{ url(Request::segment(1).'/'.Request::segment(2)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
+									    <a href="{{ url('report_category') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
+                                    </div>
 								</div>
 							</div>
+						</form>
 						
-						    @include('admin.employee_report_file.create')
+						@include('admin.report_range.create')
 								
-                            <div class="widget-content widget-content-area" style="padding-top: 0px;">
-							<p style="font-size:18px;font-weight:bold;text-align:center">
-                                Hari/Tanggal : {{ $employee_report->employee_report_period->day }}, {{ date('d-m-Y', strtotime( $employee_report->employee_report_period->date)) }}<br>
-							    Nama Penilaian : {{ $employee_report->report->name }}
-                            </p>
+                        <div class="widget-content widget-content-area" style="padding-top: 0px;">
+						<p style="font-size:18px;font-weight:bold;text-align:center">{{ $report_category->name}}</p>	
 							<div class="table-responsive">
-								<table class="table table-bordered table-hover mb-12" id="employee-report-file-table">
+								<table class="table table-bordered table-hover mb-12" id="report_range-category-table">
 									<thead>
 										<tr>
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
-											<th style="width: 40%">Gambar</th>
-											<th>Keterangan</th>
-											<th style="width: 10%"></th>
+											<th>Nama</th>
+											<th>Nilai Min</th>
+											<th>Nilai Max</th>
+											<th>Skor</th>
+											<th style="width: 15%"></th>
 										</tr>
 									</thead>
 								</table>
@@ -68,30 +53,34 @@
                 </div>
 
             </div>
-<script src="{{ asset('backend/assets/js/jquery-3.4.1.min.js')}}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     var table;
 
     $(document).ready(function () {
-        table = $('#employee-report-file-table').DataTable({
+        table = $('#report_range-category-table').DataTable({
             processing: true,
             serverSide: true,
 			ajax: {
-                url: "{{ route('employee_report_file.list', ['employee_report' => $employee_report->id]) }}",
+				url: "{{ route('report_range.list', ['report_category' => Crypt::encrypt($report_category->id)]) }}",
+				type: 'GET',
+				dataType: 'json',
 			},
             columns: [
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
-                {data: 'display_image', name: 'image'},
-                {data: 'desc', name: 'desc'},
+                {data: 'name', name: 'name'},
+                {data: 'min_value', name: 'min_value'},
+                {data: 'max_value', name: 'max_value'},
+                {data: 'score', name: 'score'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
-				[2, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
+				[0, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
 			],
             paging: true,
-            pageLength: 25, // 👈 jumlah data per halaman
+            pageLength: 50,
 			drawCallback: function () {
                 var api = this.api();
                 var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman
@@ -100,25 +89,22 @@
                 });
             }
         });
-        
+
         $('#myForm').submit(function (e) {
             e.preventDefault(); // Hindari pengiriman form secara default
 
             var action = document.getElementById('action').innerText;
-            var id_employee_report_file = $('#id_employee_report_file').val();
+            var id_report_range = $('#id_report_range').val();
+            var name = $('#name').val();
 
             // Buat objek FormData untuk mengirim data form, termasuk file
             var formData = new FormData();
-            formData.append('id', id_employee_report_file);
+            formData.append('id', id_report_range);
+            formData.append('name', name);
             formData.append('_token', "{{ csrf_token() }}");
 
-            var fileInput = document.getElementById('image');
-            if (fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]);
-            }
-
             // Kirim permintaan validasi ke controller via Ajax
-            var url = "{{ url('/employee_report_file/validate') }}";
+            var url = "{{ url('/report_range/validate') }}";
             $.ajax({
                 url: url + "/" + action,
                 type: "POST",
@@ -133,7 +119,7 @@
                     if (action === "Simpan") {
                         send();
                     } else {
-                        update(id_employee_report_file);
+                        update(id_report_range);
                     }
 
                 },
@@ -188,7 +174,7 @@
 
         // Kirim data formulir ke server menggunakan AJAX
         $.ajax({
-            url: "{{ url('employee_report_file/store') }}",
+            url: "{{ url('report_range/store') }}",
             type: "POST",
             data: formData,
             contentType: false, // Biarkan jQuery menentukan contentType secara otomatis
@@ -212,22 +198,16 @@
         document.getElementById("action").textContent = "Update";
         // Kirim data formulir ke server menggunakan AJAX
 
-        var url = "{{ url('/employee_report_file/edit') }}";
+        var url = "{{ url('/report_range/edit') }}";
         $.ajax({
             url: url + "/" + id,
             type: "GET",
             success: function (response) {
-                document.getElementById("id_employee_report_file").value = response.data.id;
-                document.getElementById("employee_report_id").value = response.data.employee_report_id;
-                document.getElementById("desc").value = response.data.desc;
-                
-                if(response.data.image){
-                    var image = '<br><a href="{{ asset("storage/upload/employee_report_file/") }}/' + response.data.image + '" class="btn mb-2 mr-1 btn-sm btn-info snackbar-bg-info" target="_blank">Lihat Gambar Sebelumnya</a>';
-                    document.getElementById("show_image").innerHTML = image;
-                } else {
-                    document.getElementById("show_image").innerHTML = '';
-                }
-                
+                document.getElementById("id_report_range").value = response.data.id;
+                document.getElementById("name").value = response.data.name;
+                document.getElementById("min_value").value = response.data.min_value;
+                document.getElementById("max_value").value = response.data.max_value;
+                document.getElementById("score").value = response.data.score;
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal
@@ -245,7 +225,7 @@
         
         // Kirim data formulir ke server menggunakan AJAX
 
-        var url = "{{ url('/employee_report_file/edit') }}";
+        var url = "{{ url('/report_range/edit') }}";
         $.ajax({
             url: url + "/" + id,
             type: "POST",
@@ -282,7 +262,7 @@
 					'Data Berhasil Dihapus.',
 					'success'
 				).then(function () {
-					var url = "{{ url('/employee_report_file/delete') }}";
+					var url = "{{ url('/report_range/delete') }}";
                     $.ajax({
                         url: url + "/" + id,
                         success: function (response) {

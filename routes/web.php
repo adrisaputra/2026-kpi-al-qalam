@@ -20,6 +20,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ReportCategoryController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportRangeController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
@@ -116,6 +117,9 @@ Route::middleware(['role:Admin KPI,Admin Unit'])->group(function () {
     Route::get('/employee_report', [EmployeeReportController::class, 'index'])->name('employee_report.index');
     Route::get('/employee_report/list', [EmployeeReportController::class, 'get_employee_report_index'])->name('employee_report.list');
    
+    ## Raport
+    Route::get('/report/get/{report_category}/{report?}',[ReportController::class, 'get']);
+
     ## Print
     Route::get('/print', [PrintController::class, 'index'])->name('print.index');
     Route::post('/print', [PrintController::class, 'print']);
@@ -179,7 +183,15 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/report/edit/{report}', [ReportController::class, 'edit']);
     Route::put('/report/edit/{report}', [ReportController::class, 'update']);
     Route::get('/report/delete/{report}',[ReportController::class, 'delete']);
-    Route::get('/report/get/{report_category}/{report?}',[ReportController::class, 'get']);
+
+    ## Report
+    Route::get('/report_range/{report_category}', [ReportRangeController::class, 'index'])->name('report_range.index');
+    Route::get('/report_range/list/{report_category}', [ReportRangeController::class, 'get_report_range_index'])->name('report_range.list');
+    Route::post('/report_range/store', [ReportRangeController::class, 'store']);
+    Route::post('/report_range/validate/{action}', [ReportRangeController::class, 'validate']);
+    Route::get('/report_range/edit/{report_range}', [ReportRangeController::class, 'edit']);
+    Route::put('/report_range/edit/{report_range}', [ReportRangeController::class, 'update']);
+    Route::get('/report_range/delete/{report_range}',[ReportRangeController::class, 'delete']);
 
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');

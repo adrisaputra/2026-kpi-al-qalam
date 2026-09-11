@@ -12,7 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('report_ranges', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id',11);
+            
+            $table->unsignedInteger('report_category_id');
+            $table->foreign("report_category_id")->references('id')->on("report_categories");
+                                
+            $table->string('name');
+            $table->decimal('min_value', 10, 2);
+            $table->decimal('max_value', 10, 2)->nullable();
+            $table->decimal('score', 5, 2);
             $table->timestamps();
         });
     }

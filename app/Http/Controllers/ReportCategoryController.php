@@ -32,6 +32,7 @@ class ReportCategoryController extends Controller
             })
             ->addColumn('report', function ($v) {
                 $url = url('report', Crypt::encrypt($v->id));
+                $url_range = url('report_range', Crypt::encrypt($v->id));
                 $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                             <span>Lihat Rapor</span>';
 
@@ -41,6 +42,9 @@ class ReportCategoryController extends Controller
                     }
 
                     $btn .= '</a>';
+                    
+                $btn .= '<a href="' . $url_range . '" class="btn btn-danger btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                            <span>Range Rapor</span></a>';
                     
                 return $btn;
             })

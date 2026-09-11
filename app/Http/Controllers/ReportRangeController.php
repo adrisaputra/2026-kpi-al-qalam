@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report;
 use App\Models\ReportCategory;
+use App\Models\ReportRange;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Yajra\DataTables\DataTables;
 
-class ReportController extends Controller
+class ReportRangeController extends Controller
 {
     public function index($report_category)
     {
-        $title = "Rapor";
+        $title = "Range Rapor";
         $report_category = Crypt::decrypt($report_category);
         $report_category = ReportCategory::where('id', $report_category)->first();
-        return view('admin.report.index', compact('title', 'report_category'));
+        return view('admin.report_range.index', compact('title', 'report_category'));
     }
 
-    public function get_report_index(Request $request, $report_category)
+    public function get_report_range_index(Request $request, $report_category)
     {
         if ($request->ajax()) {
             $counters = 1;
@@ -26,9 +26,9 @@ class ReportController extends Controller
             $report_category = Crypt::decrypt($report_category);
             $report_category = ReportCategory::where('id', $report_category)->first();
 
-            $report = Report::where('report_category_id', $report_category->id)->limit(10);
+            $report_range = ReportRange::where('report_category_id', $report_category->id)->limit(10);
 
-            return DataTables::of($report)
+            return DataTables::of($report_range)
             ->addIndexColumn()
             ->addColumn('number', function () use (&$counters) {
                 return $counters++;
@@ -68,16 +68,25 @@ class ReportController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'name' => 'Nama Item Penilaian'
+                'name' => 'Nama',
+                'min_value' => 'Nilai Min',
+                'max_value' => 'Nilai Max',
+                'score' => 'Skor'
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'name' => 'required|max:255',
+                    'min_value' => 'numeric|nullable',
+                    'max_value' => 'numeric|nullable',
+                    'score' => 'numeric|nullable',
                 ];
             } else {
                 $rules = [
-                    'name' => 'required|max:255'
+                    'name' => 'required|max:255',
+                    'min_value' => 'numeric|nullable',
+                    'max_value' => 'numeric|nullable',
+                    'score' => 'numeric|nullable',
                 ];
             }
 
@@ -87,73 +96,57 @@ class ReportController extends Controller
         }
     }
 
-    ## Save Report 
+    ## Save Report Range 
     public function store(Request $request)
     {
         if ($request->ajax()) {
 
-            $report = new Report();
-            $report->report_category_id = $request->report_category_id;
-            $report->name = $request->name;
-            $report->category = $request->category;
-            // $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
-            $report->save();
-            activity()->log('Create Report Data');
-            return response()->json(['success' => true, 'message' => 'Tambah Report Berhasil']);
+            $report_range = new ReportRange();
+            $report_range->report_category_id = $request->report_category_id;
+            $report_range->name = $request->name;
+            $report_range->min_value = $request->min_value;
+            $report_range->max_value = $request->max_value;
+            $report_range->score = $request->score;
+            $report_range->save();
+
+            activity()->log('Create Report Range Data');
+            return response()->json(['success' => true, 'message' => 'Tambah Range Rapor Berhasil']);
         }
     }
 
-    ## Get Report
-    public function edit(Request $request, Report $report)
+    ## Get ReportRange
+    public function edit(Request $request, ReportRange $report_range)
     {
         if ($request->ajax()) {
-            return response()->json(['success' => true, 'data' => $report]);
+            return response()->json(['success' => true, 'data' => $report_range]);
         }
     }
 
-    ## Edit Report
-    public function update(Request $request, Report $report)
+    ## Edit Report Range
+    public function update(Request $request, ReportRange $report_range)
     {
         if ($request->ajax()) {
 
-            $report->report_category_id = $request->report_category_id;
-            $report->name = $request->name;
-            $report->category = $request->category;
-            // $report->is_special_value = $request->has('is_special_value') ? 1 : 0;
-            $report->save();
+            $report_range->report_category_id = $request->report_category_id;
+            $report_range->name = $request->name;
+            $report_range->min_value = $request->min_value;
+            $report_range->max_value = $request->max_value;
+            $report_range->score = $request->score;
+            $report_range->save();
 
-            activity()->log('Edit Report Data With ID = ' . $report->id);
-            return response()->json(['success' => true, 'message' => 'Ubah Report Berhasil']);
+            activity()->log('Edit Report Range Data With ID = ' . $report_range->id);
+            return response()->json(['success' => true, 'message' => 'Ubah Range Rapor Berhasil']);
         }
     }
 
-    ## Delete Report
-    public function delete(Request $request, Report $report)
+    ## Delete Report Range
+    public function delete(Request $request, ReportRange $report_range)
     {
         if ($request->ajax()) {
-            $report->delete();
-            activity()->log('Delete Report Data With ID = ' . $report->id);
-            return response()->json(['success' => true, 'message' => 'Hapus Report Berhasil']);
+            $report_range->delete();
+            activity()->log('Delete Report Range Data With ID = ' . $report_range->id);
+            return response()->json(['success' => true, 'message' => 'Hapus Range Rapor Berhasil']);
         }
     }
 
-    // ## Get Data
-    public function get($report_category, $report_id = NULL)
-    {
-        $report = Report::where('report_category_id', $report_category)
-            ->orderBy('id', 'ASC')->get();
-
-        echo "<option value=''>- Pilih Report -</option>";
-        foreach ($report as $v) {
-            if ($report_id) {
-                if ($report_id == $v->id) {
-                    echo "<option value='" . $v->id . "' selected>" . $v->name . "</option>";
-                } else {
-                    echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-                }
-            } else {
-                echo "<option value='" . $v->id . "' >" . $v->name . "</option>";
-            }
-        }
-    }
 }
