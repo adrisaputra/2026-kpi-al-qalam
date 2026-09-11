@@ -23,4 +23,12 @@ class EmployeeReport extends Model
         return $this->belongsTo('App\Models\Report');
     }
 
+    public function employee_report_file(){
+        return $this->hasOne('App\Models\EmployeeReportFile');
+    }
+    
+    public function employee_report_files(){
+        return $this->hasMany('App\Models\EmployeeReportFile');
+    }
+    
 }

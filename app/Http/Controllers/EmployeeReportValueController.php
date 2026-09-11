@@ -189,8 +189,16 @@ class EmployeeReportValueController extends Controller
                         $value = '<input type="text" name="value_'.$v->id.'" value='.$v->value.' onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="name">';
                     } else if($v->report->category == 5) {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
-                        $value = '<a href="' . $url . '" target="_blank" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                                    <span>Lihat File Gambar</span></a>';
+                        $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                                    <span>Lihat File Gambar</span>';
+
+                            if ($v->employee_report_files->count() > 0) {
+                                $value .= '<span class="badge badge-danger counter">'.$v->employee_report_files->count().'</span>';
+
+                            }
+
+                            $value .= '</a>';
+                            
                     }
                 }
 

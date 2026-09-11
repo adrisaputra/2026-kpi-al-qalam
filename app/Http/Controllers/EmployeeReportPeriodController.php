@@ -16,7 +16,7 @@ class EmployeeReportPeriodController extends Controller
 {
     public function index($employee_report_category)
     {
-        $title = "KPI";
+        $title = "Rapor";
         $employee_report_category = Crypt::decrypt($employee_report_category);
         $employee_report_category = EmployeeReportCategory::where('id',$employee_report_category)->first();
         $employee = Employee::where('id',$employee_report_category->employee_id)->first();

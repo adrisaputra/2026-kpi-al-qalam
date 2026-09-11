@@ -15,28 +15,22 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_report" />
-                    <input type="hidden" class="form-control form-control-sm" name="report_category_id" id="report_category_id" value="{{ $report_category->id }}"/>
+                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_employee_report_file" />
+                    <input type="hidden" class="form-control form-control-sm" name="employee_report_id" id="employee_report_id" value="{{ $employee_report->id }}"/>
 
-                    <div class="form-group">
-                        <p>{{ __('Nama Item Penilaian') }} <span class="required" style="color: #dd4b39;">*</span></p>
-                        <input type="text" class="form-control form-control-sm" name="name" id="name">
-                        <div id="name-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    <div class="fv-row mb-7">
+                        <label class="fw-bold fs-6 mb-2">{{ __('Gambar') }}</label>
+                        <p style="font-size:12px">Format harus berupa berkas berjenis: jpg,jpeg atau png.<p>
+                        <input type="file" name="image" id="image" class="form-control  form-control-sm">
+                        <span class="text-red" id="show_image"></span>
+                        <div id="image-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
-					<div class="form-group" style="margin-top:20px">
-						<p>{{ __('Jenis Inputan') }} <span class="required" style="color: #dd4b39;">*</span></p>
-						<select class="form-control form-control-sm" name="category" id="category">
-							<option value="">- Pilih Jenis Inputan -</option>
-							<option value="1">Inputan Pilihan 0 dan 1</option>
-							<option value="2">Inputan Pilihan 0, 1 dan 2</option>
-							<option value="3">Inputan Manual</option>
-							<option value="4">Inputan Manual + Rumus </option>
-							<option value="5">Inputan File Gambar</option>
-							{{--<option value="6">Inputan Alasan</option>--}}
-						</select>
-						<div id="category-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-					</div>
+                    <div class="form-group">
+                        <p>{{ __('Keterangan') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <input type="text" class="form-control form-control-sm" name="desc" id="desc">
+                        <div id="desc-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
 
                 </div>
                 <div class="modal-footer">

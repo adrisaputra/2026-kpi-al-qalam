@@ -34,7 +34,7 @@
                                     <div class="col-md-10">: {{ $employee_report_period->employee->niy }}</div>
                                     <div class="col-md-2">Unit Kerja</div>
                                     <div class="col-md-10">: {{ $employee_report_period->employee->work_unit?->name }}</div>
-                                    <div class="col-md-2">Kategori KPI</div>
+                                    <div class="col-md-2">Kategori Rapor</div>
                                     <div class="col-md-10">: {{ $employee_report_period->employee_report_category->report_category->name }}</div>
                                 </div>
                             </p>	

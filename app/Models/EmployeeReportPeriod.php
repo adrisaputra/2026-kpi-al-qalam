@@ -24,6 +24,10 @@ class EmployeeReportPeriod extends Model
         return $this->belongsTo('App\Models\Employee');
     }
 
+    public function employee_report(){
+        return $this->hasOne('App\Models\EmployeeReport');
+    }
+
     public function employee_reports(){
         return $this->hasMany('App\Models\EmployeeReport');
     }

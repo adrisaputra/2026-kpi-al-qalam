@@ -7,6 +7,7 @@ use App\Http\Controllers\EmployeeKpiIndicatorItemController;
 use App\Http\Controllers\EmployeeKpiPeriodController;
 use App\Http\Controllers\EmployeeReportCategoryController;
 use App\Http\Controllers\EmployeeReportController;
+use App\Http\Controllers\EmployeeReportFileController;
 use App\Http\Controllers\EmployeeReportPeriodController;
 use App\Http\Controllers\EmployeeReportValueController;
 use App\Http\Controllers\HomeController;
@@ -89,6 +90,15 @@ Route::middleware(['role:Admin KPI,Admin Unit,Employee'])->group(function () {
     Route::get('/employee_report_value/list/{employee_report_period}', [EmployeeReportValueController::class, 'get_employee_report_value_index'])->name('employee_report_value.list');
     Route::put('/employee_report_value/edit/{employee_report}', [EmployeeReportValueController::class, 'update']);
    
+    ## Employee Report File
+    Route::get('/employee_report_file/{employee_report}', [EmployeeReportFileController::class, 'index'])->name('employee_report_file.index');
+    Route::get('/employee_report_file/list/{employee_report}', [EmployeeReportFileController::class, 'get_employee_report_file_index'])->name('employee_report_file.list');
+    Route::post('/employee_report_file/store', [EmployeeReportFileController::class, 'store']);
+    Route::post('/employee_report_file/validate/{action}', [EmployeeReportFileController::class, 'validate']);
+    Route::get('/employee_report_file/edit/{employee_report_file}', [EmployeeReportFileController::class, 'edit']);
+    Route::put('/employee_report_file/edit/{employee_report_file}', [EmployeeReportFileController::class, 'update']);
+    Route::get('/employee_report_file/delete/{employee_report_file}',[EmployeeReportFileController::class, 'delete']);
+
     ## Edit Profile
     Route::get('/edit_profil/{user}',[UserController::class, 'edit_profil']);
     Route::post('/edit_profil/validate/{action}', [UserController::class, 'validate_profile']);
