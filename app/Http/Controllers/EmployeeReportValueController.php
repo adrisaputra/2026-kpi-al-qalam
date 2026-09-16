@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\EmployeeReport;
 use App\Models\EmployeeReportPeriod;
 use App\Models\Report;
@@ -22,6 +23,7 @@ class EmployeeReportValueController extends Controller
             EmployeeReport::firstOrCreate([
                 'employee_report_period_id' => $employee_report_period->id,
                 'report_id' => $v->id,
+                'name' => $v->name,
             ]);
         }
         return view('admin.employee_report_value.index', compact('title', 'employee_report_period'));
@@ -44,7 +46,7 @@ class EmployeeReportValueController extends Controller
                 return $counters++;
             })
             ->addColumn('name', function ($v) {
-                return $v->report->name;
+                return $v->name;
             })
             ->addColumn('value', function ($v) {
 
@@ -79,6 +81,7 @@ class EmployeeReportValueController extends Controller
                                         <input type="radio"
                                             class="new-control-input"
                                             name="value_'.$v->id.'"
+                                            id="value_'.$v->id.'"
                                             value="1"
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 1 ? 'checked' : '').'>
@@ -92,6 +95,7 @@ class EmployeeReportValueController extends Controller
                                         <input type="radio"
                                             class="new-control-input"
                                             name="value_'.$v->id.'"
+                                            id="value_'.$v->id.'"
                                             value="0"
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 0 ? 'checked' : '').'>
@@ -112,6 +116,7 @@ class EmployeeReportValueController extends Controller
                                         <input type="radio"
                                             class="new-control-input"
                                             name="value_'.$v->id.'"
+                                            id="value_'.$v->id.'"
                                             value="1"
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 1 ? 'checked' : '').'>
@@ -125,6 +130,7 @@ class EmployeeReportValueController extends Controller
                                         <input type="radio"
                                             class="new-control-input"
                                             name="value_'.$v->id.'"
+                                            id="value_'.$v->id.'"
                                             value="2"
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 2 ? 'checked' : '').'>
@@ -138,6 +144,7 @@ class EmployeeReportValueController extends Controller
                                         <input type="radio"
                                             class="new-control-input"
                                             name="value_'.$v->id.'"
+                                            id="value_'.$v->id.'"
                                             value="0"
                                             onchange="updateValueitem(this, '.$v->id.')"
                                             '.($v->value == 0 ? 'checked' : '').'>
@@ -148,54 +155,27 @@ class EmployeeReportValueController extends Controller
 
                             </div>';
 
-                    } else if($v->report->category == 2) {
+                    } else if($v->report->category == 3) {
+                        $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'">';
+                    } else if($v->report->category == 4) {
 
-                        $value = '
-                            <div class="d-flex align-items-center" style="gap: 15px;">
+                        $employee = Employee::get();
+                        $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'" placeholder="Masukkan Jumlah Jam" >';
+                        $value .= '<br>
+                                    <select class="basic form-control form-control-sm" name="employee_id_'.$v->id.'" 
+                                            onchange="updateValueitem(this, '.$v->id.')" 
+                                            class="form-select form-select-sm" 
+                                            id="employee_id_'.$v->id.'">
+                                        <option value="">- Pegawai yang digantikan -</option>';
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            value="1"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 1 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        1
-                                    </label>
-                                </div>
+                        foreach ($employee as $x) {
+                            $value .= '<option value="'.$x->id.'" '.($v->employee_id == $x->id ? 'selected' : '').'>'
+                                        .e($x->name).
+                                    '</option>';
+                        }
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            value="2"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 2 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        2
-                                    </label>
-                                </div>
-
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            value="0"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 0 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        0
-                                    </label>
-                                </div>
-
-                            </div>';
-
-                    } else if(in_array($v->report->category,[3,4])) {
-                        $value = '<input type="text" name="value_'.$v->id.'" value='.$v->value.' onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="name">';
+                        $value .= '</select>';
+                        $value .= '<br><input type="text" name="reason_'.$v->id.'" value="'.e($v->reason).'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" placeholder="Alasan" id="reason_'.$v->id.'">';
                     } else if($v->report->category == 5) {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
                         $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
@@ -227,6 +207,8 @@ class EmployeeReportValueController extends Controller
         if ($request->ajax()) {
 
             $employee_report->value = $request->value;
+            $employee_report->employee_id = $request->employee_id;
+            $employee_report->reason = $request->reason;
             $employee_report->save();
 
             activity()->log('Edit Employee Report With ID = ' . $employee_report->id);

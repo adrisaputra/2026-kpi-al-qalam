@@ -13,7 +13,6 @@ class KpiIndicator extends Model
     
     protected $fillable = [
         'kpi_id',
-        'name',
         'indicator',
         'target',
         'weight',

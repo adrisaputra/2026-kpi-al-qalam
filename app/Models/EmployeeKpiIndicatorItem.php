@@ -12,6 +12,7 @@ class EmployeeKpiIndicatorItem extends Model
     protected $fillable = [
         'employee_kpi_indicator_id',
         'kpi_indicator_item_id',
+        'measurement_tool',
         'value'
     ];
 

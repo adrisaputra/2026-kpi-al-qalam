@@ -56,7 +56,7 @@
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
 											<th>Nama Penilaian</th>
-											<th style="width: 150px;">Nilai</th>
+											<th style="width: 30%;">Nilai</th>
 										</tr>
 									</thead>
 								</table>
@@ -66,7 +66,7 @@
                 </div>
 
             </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('backend/assets/js/jquery-3.4.1.min.js')}}"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     var table;
@@ -106,6 +106,14 @@
 
                 
             }
+
+
+        });
+    
+        table.on('draw.dt', function () {
+            $('.basic').select2({
+                width: '100%'
+            });
         });
 
     });
@@ -134,7 +142,27 @@
 
     // Create Data
     function updateValueitem(element, id) {
-        let value = $(element).val();
+        let value = null;
+        let employee_id = null;
+        let reason = null;
+
+        // Jika yang berubah adalah radio button
+        if ($(element).is(':radio')) {
+            value = $('input[name="value_' + id + '"]:checked').val();
+        } 
+        // Jika input manual
+        else {
+            value = $('#value_' + id).val();
+        }
+
+        // Category 4
+        if ($('#employee_id_' + id).length) {
+            employee_id = $('#employee_id_' + id).val();
+        }
+
+        if ($('#reason_' + id).length) {
+            reason = $('#reason_' + id).val();
+        }
 
         console.log('ID:', id);
         console.log('Value:', value);
@@ -145,6 +173,8 @@
             type: "PUT",
             data: {
                 value : value,
+                employee_id : employee_id,
+                reason : reason,
                 _token: "{{ csrf_token() }}"
             },
             success: function (response) {

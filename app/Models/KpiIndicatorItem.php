@@ -13,9 +13,8 @@ class KpiIndicatorItem extends Model
     
     protected $fillable = [
         'kpi_indicator_id',
-        'name',
-        'indicator',
-        'target',
+        'measurement_tool',
+        'physical_evidence'
     ];
 
     public function kpi_indicator(){

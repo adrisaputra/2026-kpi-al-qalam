@@ -44,8 +44,10 @@ class EmployeeKpiIndicatorController extends Controller
                         $employee_kpi_indicator = new EmployeeKpiIndicator();
                         $employee_kpi_indicator->employee_kpi_period_id = $employee_kpi_period->id;
                         $employee_kpi_indicator->kpi_indicator_id = $v->id;
+                        $employee_kpi_indicator->indicator = $v->indicator;
+                        $employee_kpi_indicator->target = $v->target;
+                        $employee_kpi_indicator->weight = $v->weight;
                         $employee_kpi_indicator->score = 1;
-                        $employee_kpi_indicator->value = $v->id;
                         $employee_kpi_indicator->value = ($v->weight / 5) * 1;
                         $employee_kpi_indicator->save();
 
@@ -53,6 +55,8 @@ class EmployeeKpiIndicatorController extends Controller
                             $employee_kpi_indicator_item = new EmployeeKpiIndicatorItem();
                             $employee_kpi_indicator_item->employee_kpi_indicator_id = $employee_kpi_indicator->id;
                             $employee_kpi_indicator_item->kpi_indicator_item_id = $x->id;
+                            $employee_kpi_indicator_item->measurement_tool = $x->measurement_tool;
+                            $employee_kpi_indicator_item->physical_evidence = $x->physical_evidence;
                             $employee_kpi_indicator_item->save();
                         }
                     }

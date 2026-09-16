@@ -107,7 +107,7 @@ class EmployeeKpiController extends Controller
                 })
                 ->filterColumn('name', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
-                        $q->where('name', 'like', "%{$keyword}%")
+                        $q->where('employees.name', 'like', "%{$keyword}%")
                             ->orWhere('nik', 'like', "%{$keyword}%");
                     });
                 })

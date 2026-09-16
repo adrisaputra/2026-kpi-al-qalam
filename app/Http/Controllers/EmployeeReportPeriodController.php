@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Helpers;
 use App\Models\Employee;
-use App\Models\EmployeeReport;
 use App\Models\EmployeeReportCategory;
 use App\Models\EmployeeReportPeriod;
 use Carbon\Carbon;

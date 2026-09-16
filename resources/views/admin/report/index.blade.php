@@ -40,7 +40,7 @@
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
 											<th>Item Penilaian</th>
-											<th>Pilihan Angka 2</th>
+											<th>Kategori Inputan</th>
 											<th style="width: 15%"></th>
 										</tr>
 									</thead>
