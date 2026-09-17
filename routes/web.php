@@ -156,6 +156,8 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi_indicator/edit/{kpi_indicator}', [KpiIndicatorController::class, 'edit']);
     Route::put('/kpi_indicator/edit/{kpi_indicator}', [KpiIndicatorController::class, 'update']);
     Route::get('/kpi_indicator/delete/{kpi_indicator}',[KpiIndicatorController::class, 'delete']);
+    Route::get('/kpi_indicator/delete/{kpi_indicator}',[KpiIndicatorController::class, 'delete']);
+    Route::post('/kpi_indicator/import', [KpiIndicatorController::class, 'import']);
 
     ## KPI Indicator Item
     Route::get('/kpi_indicator_item/{kpi_indicator}', [KpiIndicatorItemController::class, 'index'])->name('kpi_indicator_item.index');
@@ -165,6 +167,7 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi_indicator_item/edit/{kpi_indicator_item}', [KpiIndicatorItemController::class, 'edit']);
     Route::put('/kpi_indicator_item/edit/{kpi_indicator_item}', [KpiIndicatorItemController::class, 'update']);
     Route::get('/kpi_indicator_item/delete/{kpi_indicator_item}',[KpiIndicatorItemController::class, 'delete']);
+    Route::post('/kpi_indicator_item/import', [KpiIndicatorItemController::class, 'import']);
 
     ## Report Category
     Route::get('/report_category', [ReportCategoryController::class, 'index'])->name('report_category.index');

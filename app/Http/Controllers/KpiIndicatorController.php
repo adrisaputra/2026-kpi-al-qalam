@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Kpi;
 use App\Models\KpiIndicator;
+use App\Models\KpiIndicatorItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yajra\DataTables\DataTables;
 
 class KpiIndicatorController extends Controller
@@ -144,6 +147,106 @@ class KpiIndicatorController extends Controller
             activity()->log('Delete Indikator KPI Data With ID = ' . $kpi_indicator->id);
             return response()->json(['success' => true, 'message' => 'Hapus Indikator KPI Berhasil']);
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $reader = new Xlsx();
+
+        $spreadsheet = $reader->load(
+            $request->file('file')->getRealPath()
+        );
+
+        $data = $spreadsheet->getSheet(0)->toArray();
+
+        $kpiIndicatorImported = 0;
+        $kpiIndicatorItemImported = 0;
+
+        DB::transaction(function () use (
+            $data,
+            $request,
+            &$kpiIndicatorImported,
+            &$kpiIndicatorItemImported
+        ) {
+
+            $currentKpiIndicator = null;
+
+            foreach ($data as $index => $row) {
+
+                // Skip header
+                if ($index == 0) {
+                    continue;
+                }
+
+                /*
+                * Kolom Excel:
+                * 0 = No
+                * 1 = Indikator KPI
+                * 2 = Target
+                * 3 = Bobot
+                * 4 = Di Input pegawai
+                * 5 = Alat Ukur
+                * 6 = Bukti Fisik
+                */
+
+                $indicator = trim($row[1] ?? '');
+                $target = $row[2] ?? null;
+                $weight = $row[3] ?? null;
+                $isEmployee = $row[4] ?? null;
+
+                $measurementTool = trim($row[5] ?? '');
+                $physicalEvidence = trim($row[6] ?? '');
+
+                /*
+                * Jika kolom Indikator KPI terisi,
+                * berarti ini indikator baru.
+                */
+                if ($indicator !== '') {
+
+                    $currentKpiIndicator = KpiIndicator::create([
+                        'kpi_id'      => $request->kpi_id,
+                        'indicator'   => $indicator,
+                        'target'      => $target,
+                        'weight'      => $weight,
+                        'is_employee' => $isEmployee,
+                    ]);
+
+                    $kpiIndicatorImported++;
+                }
+
+                /*
+                * Jika ada Alat Ukur / Bukti Fisik,
+                * masukkan ke kpi_indicator_items
+                * menggunakan ID indikator yang sedang aktif.
+                */
+                if (
+                    $currentKpiIndicator &&
+                    ($measurementTool !== '' || $physicalEvidence !== '')
+                ) {
+
+                    KpiIndicatorItem::create([
+                        'kpi_indicator_id' => $currentKpiIndicator->id,
+                        'measurement_tool' => $measurementTool !== ''
+                            ? $measurementTool
+                            : null,
+                        'physical_evidence' => $physicalEvidence !== ''
+                            ? $physicalEvidence
+                            : null,
+                    ]);
+
+                    $kpiIndicatorItemImported++;
+                }
+            }
+        });
+
+        return back()->with(
+            'success',
+            "KPI indikator: {$kpiIndicatorImported} data dan KPI indikator item: {$kpiIndicatorItemImported} data berhasil diimport."
+        );
     }
 
 }

@@ -6,6 +6,7 @@ use App\Models\KpiIndicator;
 use App\Models\KpiIndicatorItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Yajra\DataTables\DataTables;
 
 class KpiIndicatorItemController extends Controller
@@ -118,6 +119,44 @@ class KpiIndicatorItemController extends Controller
             activity()->log('Delete Indikator KPI Data With ID = ' . $kpi_indicator_item->id);
             return response()->json(['success' => true, 'message' => 'Hapus Indikator KPI Berhasil']);
         }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $reader = new Xlsx();
+        $spreadsheet = $reader->load($request->file('file')->getRealPath());
+
+        $kpiIndicatorImported = 0;
+
+        $data = $spreadsheet->getSheet(0)->toArray();
+
+        foreach ($data as $index => $row) {
+
+            if ($index == 0) continue;
+
+            if (empty(array_filter($row))) {
+                continue;
+            }
+
+            KpiIndicatorItem::Create(
+                [
+                    'kpi_indicator_id'          => $request->kpi_indicator_id,
+                    'measurement_tool'       => $row[1] ?? null,
+                    'physical_evidence'          => $row[2] ?? null
+                ]
+            );
+
+            $kpiIndicatorImported++;
+        }
+
+        return back()->with(
+            'success',
+            "Kpi Indikator item: {$kpiIndicatorImported} data berhasil diimport."
+        );
     }
 
 }
