@@ -116,7 +116,10 @@ Route::middleware(['role:Admin KPI,Admin Unit,Employee'])->group(function () {
 });
 
 Route::middleware(['role:Admin KPI,Admin Unit'])->group(function () {
-    
+
+    ## KPI
+    Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
+
     ## Employee KPI
     Route::get('/employee_kpi', [EmployeeKpiController::class, 'index'])->name('employee_kpi.index');
     Route::get('/employee_kpi/list', [EmployeeKpiController::class, 'get_employee_kpi_index'])->name('employee_kpi.list');
@@ -127,10 +130,6 @@ Route::middleware(['role:Admin KPI,Admin Unit'])->group(function () {
    
     ## Raport
     Route::get('/report/get/{report_category}/{report?}',[ReportController::class, 'get']);
-
-    ## Print
-    Route::get('/print', [PrintController::class, 'index'])->name('print.index');
-    Route::post('/print', [PrintController::class, 'print']);
 
 });
 
@@ -154,7 +153,6 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi/edit/{kpi}', [KpiController::class, 'edit']);
     Route::put('/kpi/edit/{kpi}', [KpiController::class, 'update']);
     Route::get('/kpi/delete/{kpi}',[KpiController::class, 'delete']);
-    Route::get('/kpi/get/{kpi_category}/{kpi?}',[KpiController::class, 'get']);
 
     ## KPI Indicator
     Route::get('/kpi_indicator/{kpi}', [KpiIndicatorController::class, 'index'])->name('kpi_indicator.index');
@@ -213,6 +211,10 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/report_range/edit/{report_range}', [ReportRangeController::class, 'edit']);
     Route::put('/report_range/edit/{report_range}', [ReportRangeController::class, 'update']);
     Route::get('/report_range/delete/{report_range}',[ReportRangeController::class, 'delete']);
+
+    ## Print
+    Route::get('/print', [PrintController::class, 'index'])->name('print.index');
+    Route::post('/print', [PrintController::class, 'print']);
 
     ## User
     Route::get('/user', [UserController::class, 'index'])->name('users.index');

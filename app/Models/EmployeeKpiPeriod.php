@@ -16,6 +16,10 @@ class EmployeeKpiPeriod extends Model
         'year'
     ];
 
+    public function employee_kpi(){
+        return $this->belongsTo('App\Models\EmployeeKpi');
+    }
+
     public function employee(){
         return $this->belongsTo('App\Models\Employee');
     }

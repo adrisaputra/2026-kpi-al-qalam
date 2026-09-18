@@ -92,7 +92,7 @@
 						<div class="widget-heading">
 							<div class="row" style="color: #ffffff;">
 								<div class="col-md-8">
-									<p class="w-value" style="color: #ffffff;font-size: 35px;">{{ \App\Helpers\Helpers::format_number($kpi) }}</p>
+									<p class="w-value" style="color: #ffffff;font-size: 35px;">{{ $kpi }}</p>
 									<h6 style="color: #ffffff;">Nilai KPI Bulan Ini</h6>
 								</div>
 								<div class="col-md-4">

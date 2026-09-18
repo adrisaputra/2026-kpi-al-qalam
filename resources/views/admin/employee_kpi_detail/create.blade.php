@@ -37,6 +37,35 @@
                         <div id="kpi_id-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 0rem;">
+                        <p>{{ __('Bulan') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <select id="month" name="month" class="basic form-control form-control-sm" style="margin-bottom: 0rem;">
+                            <option value="01" @if(date('m') == '01') selected @endif>Januari</option>
+                            <option value="02" @if(date('m') == '02') selected @endif>Februari</option>
+                            <option value="03" @if(date('m') == '03') selected @endif>Maret</option>
+                            <option value="04" @if(date('m') == '04') selected @endif>April</option>
+                            <option value="05" @if(date('m') == '05') selected @endif>Mei</option>
+                            <option value="06" @if(date('m') == '06') selected @endif>Juni</option>
+                            <option value="07" @if(date('m') == '07') selected @endif>Juli</option>
+                            <option value="08" @if(date('m') == '08') selected @endif>Agustus</option>
+                            <option value="09" @if(date('m') == '09') selected @endif>September</option>
+                            <option value="10" @if(date('m') == '10') selected @endif>Oktober</option>
+                            <option value="11" @if(date('m') == '11') selected @endif>November</option>
+                            <option value="12" @if(date('m') == '12') selected @endif>Desember</option>
+                        </select>
+                        <div id="month-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <p>{{ __('Tahun') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <select id="year" name="year" class="basic form-control form-control-sm">
+                            @for($i=2026;$i<=date('Y');$i++)
+                                <option value="{{ $i }}" @if(date('Y')==$i) selected @endif>{{ $i }}</option>
+                            @endfor
+                        </select>
+                        <div id="year-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Tutup</button>

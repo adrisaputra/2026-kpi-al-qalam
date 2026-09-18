@@ -32,7 +32,11 @@ class EmployeeReportCategoryController extends Controller
             $month = $request->input('get_month') ?? date('m');
             $year = $request->input('get_year') ?? date('Y');
 
-            $employee_report_category = EmployeeReportCategory::where('employee_id', $employee)->get();
+            $employee_report_category = EmployeeReportCategory::
+                                        where('employee_id', $employee)
+                                        ->where('month', $month)
+                                        ->where('year', $year)
+                                        ->get();
 
             return DataTables::of($employee_report_category)
             ->addIndexColumn()
@@ -85,15 +89,21 @@ class EmployeeReportCategoryController extends Controller
 
             $attributes = [
                 'report_category_id' => 'Kategori Rapor',
+                'month' => 'Bulan',
+                'year' => 'Tahun',
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'report_category_id' => 'required'
+                    'report_category_id' => 'required',
+                    'month' => 'required',
+                    'year' => 'required'
                 ];
             } else {
                 $rules = [
-                    'report_category_id' => 'required'
+                    'report_category_id' => 'required',
+                    'month' => 'required',
+                    'year' => 'required'
                 ];
             }
 
@@ -111,6 +121,8 @@ class EmployeeReportCategoryController extends Controller
             $employee_report_category = new EmployeeReportCategory();
             $employee_report_category->employee_id = $request->employee_id;
             $employee_report_category->report_category_id = $request->report_category_id;
+            $employee_report_category->month = $request->month;
+            $employee_report_category->year = $request->year;
             $employee_report_category->save();
             activity()->log('Create Employee KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Kategori Rapor Berhasil']);
@@ -132,6 +144,8 @@ class EmployeeReportCategoryController extends Controller
 
             $employee_report_category->employee_id = $request->employee_id;
             $employee_report_category->report_category_id = $request->report_category_id;
+            $employee_report_category->month = $request->month;
+            $employee_report_category->year = $request->year;
             $employee_report_category->save();
 
             activity()->log('Edit Employee KPI Data With ID = ' . $employee_report_category->id);

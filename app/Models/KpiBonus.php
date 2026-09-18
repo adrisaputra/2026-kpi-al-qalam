@@ -13,6 +13,7 @@ class KpiBonus extends Model
     
     protected $fillable = [
         'kpi_id',
+        'category',
         'indicator',
         'target',
         'weight',

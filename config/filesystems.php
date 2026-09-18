@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        'pegawai_storage' => [
+            'driver' => 'local',
+            'root' => base_path('../2026-e-pegawai-al-qalam/storage/app/public'),
+            'url' => env('PEGAWAI_STORAGE_URL'),
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

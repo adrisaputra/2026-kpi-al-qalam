@@ -42,11 +42,14 @@
                         <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
-                    <div class="n-chk">
-                        <label class="new-control new-checkbox checkbox-success">
-                        <input type="checkbox" class="new-control-input" name="is_employee" id="is_employee">
-                        <span class="new-control-indicator"></span>Di input Pegawai ?
-                        </label>
+                    <div class="form-group">
+                        <p>{{ __('Jenis Inputan') }} <span class="required" style="color: #dd4b39;">*</span></p>
+						<select class="form-control form-control-sm" name="is_employee" id="is_employee">
+							<option value="">- Pilih Jenis Inputan -</option>
+							<option value="0">Di Input Admin Unit</option>
+							<option value="1">Di Input Pegawai</option>
+						</select>
+                        <div id="is_employee-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                 </div>

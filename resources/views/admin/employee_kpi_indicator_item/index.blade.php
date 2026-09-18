@@ -37,7 +37,7 @@
                                     <div class="col-md-2">Kategori KPI</div>
                                     <div class="col-md-10">: {{ $employee_kpi_indicator->employee_kpi_period->employee->employee_kpi->kpi->kpi_category->name }}</div>
                                     <div class="col-md-2">KPI</div>
-                                    <div class="col-md-10">: {{ $employee_kpi_indicator->employee_kpi_period->employee->employee_kpi->kpi->name }}</div>
+                                    <div class="col-md-10">: {{ $employee_kpi_indicator->employee_kpi_period->employee_kpi->kpi->name }}</div>
                                 </div>
                             </p>	
                         

@@ -39,9 +39,9 @@ class KpiIndicatorController extends Controller
             })
             ->addColumn('is_employee', function ($v) {
                 if($v->is_employee==true){
-                    $status ='<span class="badge badge-success">Ya</span>';
+                    $status ='<span class="badge badge-danger">Diinput Pegawai</span>';
                 }else{
-                    $status ='<span class="badge badge-danger">Tidak</span>';
+                    $status ='<span class="badge badge-success">Diinput Admin Unit</span>';
                 }
                 return $status;
             })
@@ -78,16 +78,19 @@ class KpiIndicatorController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'indicator' => 'Indikator'
+                'indicator' => 'Indikator',
+                'is_employee' => 'Jenis Inputan'
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'indicator' => 'required|max:255'
+                    'indicator' => 'required|max:255',
+                    'is_employee' => 'required|max:255'
                 ];
             } else {
                 $rules = [
-                    'indicator' => 'required|max:255'
+                    'indicator' => 'required|max:255',
+                    'is_employee' => 'required|max:255'
                 ];
             }
 
@@ -107,7 +110,8 @@ class KpiIndicatorController extends Controller
             $kpi_indicator->indicator = $request->indicator;
             $kpi_indicator->target = $request->target;
             $kpi_indicator->weight = $request->weight;
-            $kpi_indicator->is_employee = $request->has('is_employee') ? 1 : 0;
+            $kpi_indicator->is_employee = $request->is_employee;
+            // $kpi_indicator->is_employee = $request->has('is_employee') ? 1 : 0;
             $kpi_indicator->save();
             activity()->log('Create Indikator KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Indikator KPI Berhasil']);
@@ -131,7 +135,8 @@ class KpiIndicatorController extends Controller
             $kpi_indicator->indicator = $request->indicator;
             $kpi_indicator->target = $request->target;
             $kpi_indicator->weight = $request->weight;
-            $kpi_indicator->is_employee = $request->has('is_employee') ? 1 : 0;
+            $kpi_indicator->is_employee = $request->is_employee;
+            // $kpi_indicator->is_employee = $request->has('is_employee') ? 1 : 0;
             $kpi_indicator->save();
 
             activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_indicator->id);

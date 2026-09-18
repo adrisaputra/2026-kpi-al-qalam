@@ -14,8 +14,8 @@ class Report extends Model
     protected $connection = 'mysql';
     protected $fillable = [
         'report_category_id',
-        'name',
         'category',
+        'name',
         'is_special_value',
         'manual_input',
         'file_input',

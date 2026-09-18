@@ -23,6 +23,7 @@ class EmployeeReportValueController extends Controller
             EmployeeReport::firstOrCreate([
                 'employee_report_period_id' => $employee_report_period->id,
                 'report_id' => $v->id,
+                'category' => $v->category,
                 'name' => $v->name,
             ]);
         }

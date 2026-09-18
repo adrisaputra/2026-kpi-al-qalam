@@ -36,9 +36,9 @@ class KpiBonusController extends Controller
             })
             ->addColumn('is_employee', function ($v) {
                 if($v->is_employee==true){
-                    $status ='<span class="badge badge-success">Ya</span>';
+                    $status ='<span class="badge badge-danger">Diinput Pegawai</span>';
                 }else{
-                    $status ='<span class="badge badge-danger">Tidak</span>';
+                    $status ='<span class="badge badge-success">Diinput Admin Unit</span>';
                 }
                 return $status;
             })
@@ -61,16 +61,22 @@ class KpiBonusController extends Controller
         if ($request->ajax()) {
 
             $attributes = [
-                'indicator' => 'Indikator'
+                'category' => 'Kategori',
+                'indicator' => 'Indikator',
+                'is_employee' => 'Jenis Inputan'
             ];
 
             if ($action === "Simpan") {
                 $rules = [
-                    'indicator' => 'required|max:255'
+                    'category' => 'required|max:255',
+                    'indicator' => 'required|max:255',
+                    'is_employee' => 'required|max:255'
                 ];
             } else {
                 $rules = [
-                    'indicator' => 'required|max:255'
+                    'category' => 'required|max:255',
+                    'indicator' => 'required|max:255',
+                    'is_employee' => 'required|max:255'
                 ];
             }
 
@@ -87,10 +93,12 @@ class KpiBonusController extends Controller
 
             $kpi_bonus = new KpiBonus();
             $kpi_bonus->kpi_id = $request->kpi_id;
+            $kpi_bonus->category = $request->category;
             $kpi_bonus->indicator = $request->indicator;
             $kpi_bonus->target = $request->target;
             $kpi_bonus->weight = $request->weight;
-            $kpi_bonus->is_employee = $request->has('is_employee') ? 1 : 0;
+            $kpi_bonus->is_employee = $request->is_employee;
+            // $kpi_bonus->is_employee = $request->has('is_employee') ? 1 : 0;
             $kpi_bonus->save();
             activity()->log('Create Indikator KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Indikator KPI Berhasil']);
@@ -111,10 +119,12 @@ class KpiBonusController extends Controller
         if ($request->ajax()) {
 
             $kpi_bonus->kpi_id = $request->kpi_id;
+            $kpi_bonus->category = $request->category;
             $kpi_bonus->indicator = $request->indicator;
             $kpi_bonus->target = $request->target;
             $kpi_bonus->weight = $request->weight;
-            $kpi_bonus->is_employee = $request->has('is_employee') ? 1 : 0;
+            $kpi_bonus->is_employee = $request->is_employee;
+            // $kpi_bonus->is_employee = $request->has('is_employee') ? 1 : 0;
             $kpi_bonus->save();
 
             activity()->log('Edit Indikator KPI Data With ID = ' . $kpi_bonus->id);

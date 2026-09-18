@@ -12,6 +12,7 @@ class EmployeeReport extends Model
     protected $fillable = [
         'employee_report_period_id',
         'report_id',
+        'category',
         'name',
         'value',
         'employee_id',

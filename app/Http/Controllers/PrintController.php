@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\EmployeeKpi;
+use App\Models\EmployeeKpiBonus;
+use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeReport;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
@@ -29,8 +32,10 @@ class PrintController extends Controller
     {
         if ($request->category_report == 1) {
             return $this->print_recap_report($request);
-        }else if ($request->category_report == 2) {
-            return $this->print_kpi_final($request);
+        } else if ($request->category_report == 2) {
+            return $this->print_kpi_monthly($request);
+        } else if ($request->category_report == 3) {
+            return $this->print_kpi_yearly($request);
         } 
     }
     
@@ -126,7 +131,172 @@ class PrintController extends Controller
         return redirect(url('/') . "/public/upload/report/" . $fileName);
     }
 
-    public function print_kpi_final(Request $request)
+    public function print_kpi_monthly(Request $request)
+    {
+        $spreadsheet = new Spreadsheet();
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        if ($request->work_unit_id) {
+            $work_unit = WorkUnit::where('id', $request->work_unit_id)->first();
+            $employee = Employee::where('work_unit_id', $request->work_unit_id)->orderBy('name', 'ASC')->get();
+            
+        } else {
+            $work_unit = NULL;
+            $employee = Employee::orderBy('name', 'ASC')->get();
+        }
+
+        // Atur lebar kolom
+        $sheet->getColumnDimension('A')->setWidth(5);   // No
+        $sheet->getColumnDimension('B')->setWidth(40);  // Nama
+        $sheet->getColumnDimension('C')->setWidth(10);  // Nilai Rapor
+        $sheet->getColumnDimension('D')->setWidth(10);  // KPI
+        $sheet->getColumnDimension('E')->setWidth(15);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(15);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(15);
+        $sheet->getColumnDimension('L')->setWidth(15);
+        $sheet->getColumnDimension('M')->setWidth(15);
+        $sheet->getColumnDimension('N')->setWidth(15);
+
+        if ($work_unit) {
+            $sheet->mergeCells('A1:N1');
+            $sheet->mergeCells('A2:N2');
+            $sheet->mergeCells('A3:N3');
+            $sheet->setCellValue('A1', 'REKAP BULANAN PENILAIAN KPI YAYASAN PENDIDIKAN ALQALAM KENDARI');
+            $sheet->setCellValue('A2', strtoupper($work_unit->name));
+            $sheet->setCellValue('A3', 'BULAN '.$request->month.' TAHUN '.$request->year);
+            $sheet->getStyle('A1:N3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A1:N3')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('A1:N3')->getFont()->setBold(true);
+            $sheet->getStyle('A1:N3')->getAlignment()->setWrapText(true);
+        } else {
+            $sheet->mergeCells('A1:N1');
+            $sheet->mergeCells('A2:N2');
+            $sheet->setCellValue('A1', 'REKAP BULANAN PENILAIAN KPI YAYASAN PENDIDIKAN ALQALAM KENDARI');
+            $sheet->setCellValue('A2', 'BULAN '.$request->month.' TAHUN '.$request->year);
+            $sheet->getStyle('A1:N2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle('A1:N2')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+            $sheet->getStyle('A1:N2')->getFont()->setBold(true);
+            $sheet->getStyle('A1:N2')->getAlignment()->setWrapText(true);
+        }
+
+        // Header tabel
+        $sheet->setCellValue('A5', 'No');
+        $sheet->setCellValue('B5', 'Nama');
+        $sheet->setCellValue('C5', 'Rapor');
+        $sheet->setCellValue('D5', 'KPI');
+        $sheet->setCellValue('E5', 'Rata-rata Bulanan');
+        $sheet->setCellValue('F5', 'Predikat');
+        $sheet->setCellValue('G5', '% Tukin');
+        $sheet->setCellValue('H5', 'Besaran Tukin');
+        $sheet->setCellValue('I5', 'Tukin Diterima');
+        $sheet->setCellValue('J5', 'Bonus Layak TTQ');
+        $sheet->setCellValue('K5', 'Kelebihan JP dari SK');
+        $sheet->setCellValue('L5', 'Guru pengganti');
+        $sheet->setCellValue('M5', 'Ketercapaian Catering');
+        $sheet->setCellValue('N5', 'Total');
+
+        $sheet->getStyle('A5:N5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A5:N5')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A5:N5')->getFont()->setBold(true);
+        $sheet->getStyle('A5:N5')->getAlignment()->setWrapText(true);
+
+        $rows = 6;
+        $no = 1;
+
+        foreach ($employee as $v) {
+
+            $employee_report = EmployeeReport::
+                    whereHas('employee_report_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->whereMonth('date', $request->month)
+                        ->whereyear('date', $request->year);
+                    })->sum('value');
+            
+            $employee_report_gr = EmployeeReport::
+                    whereHas('employee_report_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->whereMonth('date', $request->month)
+                        ->whereyear('date', $request->year)
+                        ->where('category', 4);
+                    })->sum('value');
+            
+            $employee_kpi = EmployeeKpiIndicator::
+                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->where('month', $request->month)
+                        ->where('year', $request->year);
+                    })->sum('value');
+            
+            $employee_kpi_ttq = EmployeeKpiBonus::
+                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->where('month', $request->month)
+                        ->where('year', $request->year)
+                        ->where('category', 1);
+                    })->sum('value');
+            
+            $employee_kpi_catering = EmployeeKpiBonus::
+                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->where('month', $request->month)
+                        ->where('year', $request->year)
+                        ->where('category', 2);
+                    })->sum('value');
+            
+            $employee_kpi_jp = EmployeeKpiBonus::
+                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+                        $query->where('employee_id', $v->id)
+                        ->where('month', $request->month)
+                        ->where('year', $request->year)
+                        ->where('category', 3);
+                    })->sum('value');
+            
+            $sheet->setCellValue('A' . $rows, $no++);
+            $sheet->setCellValue('B' . $rows, $v->name);
+            $sheet->setCellValue('C' . $rows, $employee_report);
+            $sheet->setCellValue('D' . $rows, $employee_kpi);
+            $sheet->setCellValue('E' . $rows, '=AVERAGE(C'.$rows.':D'.$rows.')');
+            $sheet->setCellValue('F' . $rows, '=IF(E' . $rows . '>=90,"Sangat Baik",IF(E' . $rows . '>=80,"Baik",IF(E' . $rows . '>=70,"Cukup",IF(E' . $rows . '>=60,"Kurang","Perlu Pembinaan"))))');
+            $sheet->setCellValue('G' . $rows, '=IF(E' . $rows . '>=90,100%,IF(E' . $rows . '>=80,90%,IF(E' . $rows . '>=70,80%,IF(E' . $rows . '>=60,70%,IF(E' . $rows . '>=50,60%,IF(E' . $rows . '>=40,50%,IF(E' . $rows . '>=30,40%,30%)))))))');
+            $sheet->setCellValue('H' . $rows, '200000');
+            $sheet->setCellValue('I' . $rows,'=H' . $rows . '*G' . $rows);
+            $sheet->setCellValue('J' . $rows, $employee_kpi_ttq);
+            $sheet->setCellValue('K' . $rows, $employee_kpi_jp);
+            $sheet->setCellValue('L' . $rows, $employee_report_gr * 5000);
+            $sheet->setCellValue('M' . $rows, $employee_kpi_catering);
+            $sheet->setCellValue('N' . $rows, '=SUM(I' . $rows . ':M' . $rows . ')');
+            $sheet->getStyle('H' . $rows . ':N' . $rows)->getNumberFormat()->setFormatCode('#,##0');
+            $rows++;
+        }
+
+        // Border dan alignment
+        $sheet->getStyle('A5:N' . ($rows - 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('A5:A' . ($rows - 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('U5:N' . ($rows - 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $type = 'xlsx';
+        if ($work_unit) {
+            $fileName = "REKAP TOTAL NILAI KPI YAYASAN PENDIDIKAN ALQALAM KENDARI (" . strtoupper($work_unit->name) . ") BULAN ".$request->month." TAHUN ".$request->year.".". $type;
+        } else {
+            $fileName = "REKAP TOTAL NILAI KPI YAYASAN PENDIDIKAN ALQALAM KENDARI BULAN ".$request->month." TAHUN ".$request->year." .". $type;
+        }
+
+        if ($type == 'xlsx') {
+            $writer = new Xlsx($spreadsheet);
+        } else if ($type == 'xls') {
+            $writer = new Xls($spreadsheet);
+        }
+        $writer->save("public/upload/report/" . $fileName);
+        header("Content-Type: application/vnd.ms-excel");
+        return redirect(url('/') . "/public/upload/report/" . $fileName);
+    }
+
+    public function print_kpi_yearly(Request $request)
     {
         $spreadsheet = new Spreadsheet();
         $spreadsheet->setActiveSheetIndex(0);

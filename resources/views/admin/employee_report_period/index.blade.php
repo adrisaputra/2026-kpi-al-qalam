@@ -48,36 +48,41 @@
 									<a href="{{ url('employee_report_category/'.Crypt::encrypt($employee->id)) }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                 </div>
 
-                                <div class="col-xl-3 col-md-12 col-sm-12 col-12">
-                                    <select id="get_month" name="get_month" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
-                                        <option value="01" @if(date('m') == '01') selected @endif>Januari</option>
-                                        <option value="02" @if(date('m') == '02') selected @endif>Februari</option>
-                                        <option value="03" @if(date('m') == '03') selected @endif>Maret</option>
-                                        <option value="04" @if(date('m') == '04') selected @endif>April</option>
-                                        <option value="05" @if(date('m') == '05') selected @endif>Mei</option>
-                                        <option value="06" @if(date('m') == '06') selected @endif>Juni</option>
-                                        <option value="07" @if(date('m') == '07') selected @endif>Juli</option>
-                                        <option value="08" @if(date('m') == '08') selected @endif>Agustus</option>
-                                        <option value="09" @if(date('m') == '09') selected @endif>September</option>
-                                        <option value="10" @if(date('m') == '10') selected @endif>Oktober</option>
-                                        <option value="11" @if(date('m') == '11') selected @endif>November</option>
-                                        <option value="12" @if(date('m') == '12') selected @endif>Desember</option>
+                                <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                    <input type="hidden" value="{{ $employee_report_category->month }}" id="get_month" name="get_month" class="form-control form-control-sm" style="height: 38px;padding: 5px;">
+                                    <input type="hidden" value="{{ $employee_report_category->year }}" id="get_year" name="get_year" class="form-control form-control-sm" style="height: 38px;padding: 5px;">
+								</div>
+
+                                {{--<div class="col-xl-2 col-md-12 col-sm-12 col-12">    
+                                    <select id="get_month" name="get_month" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;" disabled>
+                                        <option value="01" @if($employee_kpi->month == '01') selected @endif>Januari</option>
+                                        <option value="02" @if($employee_kpi->month == '02') selected @endif>Februari</option>
+                                        <option value="03" @if($employee_kpi->month == '03') selected @endif>Maret</option>
+                                        <option value="04" @if($employee_kpi->month == '04') selected @endif>April</option>
+                                        <option value="05" @if($employee_kpi->month == '05') selected @endif>Mei</option>
+                                        <option value="06" @if($employee_kpi->month == '06') selected @endif>Juni</option>
+                                        <option value="07" @if($employee_kpi->month == '07') selected @endif>Juli</option>
+                                        <option value="08" @if($employee_kpi->month == '08') selected @endif>Agustus</option>
+                                        <option value="09" @if($employee_kpi->month == '09') selected @endif>September</option>
+                                        <option value="10" @if($employee_kpi->month == '10') selected @endif>Oktober</option>
+                                        <option value="11" @if($employee_kpi->month == '11') selected @endif>November</option>
+                                        <option value="12" @if($employee_kpi->month == '12') selected @endif>Desember</option>
 									</select>
 								</div>
-								<div class="col-xl-3 col-md-12 col-sm-12 col-12">
-                                    <select id="get_year" name="get_year" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
+								<div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                    <select id="get_year" name="get_year" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;" disabled>
                                         @for($i=2026;$i<=date('Y');$i++)
-                                            <option value="{{ $i }}" @if(date('Y')==$i) selected @endif>{{ $i }}</option>
+                                            <option value="{{ $i }}" @if($employee_kpi->year==$i) selected @endif>{{ $i }}</option>
                                         @endfor
                                     </select>
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
 						
 						{{-- @include('admin.kpi.create') --}}
 								
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						{{-- <p style="font-size:18px;font-weight:bold;text-align:center">{{ $kpi_category->name}}</p>	 --}}
+						<p style="font-size:20px;font-weight:bold;text-align:center">Bulan {{ \App\Helpers\Helpers::month_name($employee_report_category->month) }} Tahun {{ $employee_report_category->year }}</p>
 						
                             <div class="table-responsive">
 								<table class="table table-bordered table-hover mb-12" id="employee-kpi-indicator-table">

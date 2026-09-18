@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeKpi;
+use App\Models\EmployeeKpiBonus;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\Kpi;
 use App\Models\KpiCategory;
@@ -33,7 +35,11 @@ class EmployeeKpiDetailController extends Controller
             $month = $request->input('get_month') ?? date('m');
             $year = $request->input('get_year') ?? date('Y');
 
-            $employee_kpi = EmployeeKpi::where('employee_id', $employee)->get();
+            $employee_kpi = EmployeeKpi::
+                            where('employee_id', $employee)
+                            ->where('month', $month)
+                            ->where('year', $year)
+                            ->get();
 
             return DataTables::of($employee_kpi)
             ->addIndexColumn()
@@ -69,6 +75,17 @@ class EmployeeKpiDetailController extends Controller
                 return number_format(round($value, 2), 2, '.', '');
             })
             
+            ->addColumn('value2', function ($v) use ($month,$year){
+                $value = EmployeeKpiBonus::whereHas('employee_kpi_period',
+                                            function ($query) use ($v, $month, $year) {
+                                                $query->where('employee_kpi_id', $v->id)
+                                                    ->where('employee_id', $v->employee_id)
+                                                    ->where('month', $month)
+                                                    ->where('year', $year);
+                                            }
+                                        )->sum('value');
+                return Helpers::format_number($value);
+            })
             ->addColumn('action', function ($v){
                 $employee_kpi_item = url('employee_kpi_period', Crypt::encrypt($v->id));
                 $btn = '<a href="'.$employee_kpi_item.'" title="Detail">
@@ -96,18 +113,24 @@ class EmployeeKpiDetailController extends Controller
 
             $attributes = [
                 'kpi_category_id' => 'Kategori KPI',
-                'kpi_id' => 'KPI'
+                'kpi_id' => 'KPI',
+                'month' => 'Bulan',
+                'year' => 'Tahun',
             ];
 
             if ($action === "Simpan") {
                 $rules = [
                     'kpi_category_id' => 'required',
-                    'kpi_id' => 'required'
+                    'kpi_id' => 'required',
+                    'month' => 'required',
+                    'year' => 'required'
                 ];
             } else {
                 $rules = [
                     'kpi_category_id' => 'required',
-                    'kpi_id' => 'required'
+                    'kpi_id' => 'required',
+                    'month' => 'required',
+                    'year' => 'required'
                 ];
             }
 
@@ -125,6 +148,8 @@ class EmployeeKpiDetailController extends Controller
             $employee_kpi = new EmployeeKpi();
             $employee_kpi->employee_id = $request->employee_id;
             $employee_kpi->kpi_id = $request->kpi_id;
+            $employee_kpi->month = $request->month;
+            $employee_kpi->year = $request->year;
             $employee_kpi->save();
             activity()->log('Create Employee KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Employee KPI Berhasil']);
@@ -147,6 +172,8 @@ class EmployeeKpiDetailController extends Controller
 
             $employee_kpi->employee_id = $request->employee_id;
             $employee_kpi->kpi_id = $request->kpi_id;
+            $employee_kpi->month = $request->month;
+            $employee_kpi->year = $request->year;
             $employee_kpi->save();
 
             activity()->log('Edit Employee KPI Data With ID = ' . $employee_kpi->id);

@@ -18,11 +18,16 @@
                     <input type="hidden" class="form-control form-control-sm" name="id" id="id_kpi_bonus" />
                     <input type="hidden" class="form-control form-control-sm" name="kpi_id" id="kpi_id" value="{{ $kpi->id }}"/>
 
-                    {{--<div class="form-group">
-                        <p>{{ __('Nama') }} <span class="required" style="color: #dd4b39;">*</span></p>
-                        <input type="text" class="form-control form-control-sm" name="name" id="name">
-                        <div id="name-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>--}}
+                    <div class="form-group">
+                        <p>{{ __('Kategori') }} <span class="required" style="color: #dd4b39;">*</span></p>
+						<select class="form-control form-control-sm" name="category" id="category">
+							<option value="">- Pilih Kategori -</option>
+							<option value="1">Bonus Layak TTQ</option>
+							<option value="2">Catering</option>
+							<option value="3">Kelebihan JP</option>
+						</select>
+                        <div id="category-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
 
                     <div class="form-group">
                         <p>{{ __('Indikator') }} <span class="required" style="color: #dd4b39;">*</span></p>
@@ -42,11 +47,14 @@
                         <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
-                    <div class="n-chk">
-                        <label class="new-control new-checkbox checkbox-success">
-                        <input type="checkbox" class="new-control-input" name="is_employee" id="is_employee">
-                        <span class="new-control-indicator"></span>Di input Pegawai ?
-                        </label>
+                    <div class="form-group">
+                        <p>{{ __('Jenis Inputan') }} <span class="required" style="color: #dd4b39;">*</span></p>
+						<select class="form-control form-control-sm" name="is_employee" id="is_employee">
+							<option value="">- Pilih Jenis Inputan -</option>
+							<option value="0">Di Input Admin Unit</option>
+							<option value="1">Di Input Pegawai</option>
+						</select>
+                        <div id="is_employee-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                 </div>

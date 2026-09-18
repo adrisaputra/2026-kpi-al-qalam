@@ -53,7 +53,7 @@
 											<th>Indikator</th>
 											<th>Target</th>
 											<th>Bobot</th>
-											<th>Di input Pegawai ?</th>
+											<th>Jenis Inputan</th>
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
@@ -129,12 +129,16 @@
 
             var action = document.getElementById('action').innerText;
             var id_kpi_bonus = $('#id_kpi_bonus').val();
+            var category = $('#category').val();
             var indicator = $('#indicator').val();
+            var is_employee = $('#is_employee').val();
 
             // Buat objek FormData untuk mengirim data form, termasuk file
             var formData = new FormData();
             formData.append('id', id_kpi_bonus);
+            formData.append('category', category);
             formData.append('indicator', indicator);
+            formData.append('is_employee', is_employee);
             formData.append('_token', "{{ csrf_token() }}");
 
             // Kirim permintaan validasi ke controller via Ajax
