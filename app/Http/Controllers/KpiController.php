@@ -35,11 +35,22 @@ class KpiController extends Controller
             })
             ->addColumn('kpi_indicator', function ($v) {
                 $url = url('kpi_indicator', Crypt::encrypt($v->id));
+                $url2 = url('kpi_bonus', Crypt::encrypt($v->id));
                 $btn = '<a href="' . $url . '" class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                             <span>Lihat Indikator KPI</span>';
 
                     if ($v->kpi_indicators->count() > 0) {
                         $btn .= '<span class="badge badge-danger counter">'.$v->kpi_indicators->count().'</span>';
+
+                    }
+
+                    $btn .= '</a>';
+                    
+                $btn .= '<a href="' . $url2 . '" class="btn btn-success btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                            <span>Lihat Bonus</span>';
+
+                    if ($v->kpi_bonuss->count() > 0) {
+                        $btn .= '<span class="badge badge-danger counter">'.$v->kpi_bonuss->count().'</span>';
 
                     }
 

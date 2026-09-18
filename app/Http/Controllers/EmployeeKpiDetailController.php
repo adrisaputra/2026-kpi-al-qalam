@@ -68,6 +68,7 @@ class EmployeeKpiDetailController extends Controller
                                         )->sum('value');
                 return number_format(round($value, 2), 2, '.', '');
             })
+            
             ->addColumn('action', function ($v){
                 $employee_kpi_item = url('employee_kpi_period', Crypt::encrypt($v->id));
                 $btn = '<a href="'.$employee_kpi_item.'" title="Detail">

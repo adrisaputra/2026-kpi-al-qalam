@@ -29,4 +29,12 @@ class Kpi extends Model
         return $this->hasMany('App\Models\KpiIndicator');
     }
 
+    public function kpi_bonus(){
+        return $this->HasOne('App\Models\KpiBonus');
+    }
+
+    public function kpi_bonuss(){
+        return $this->hasMany('App\Models\KpiBonus');
+    }
+
 }

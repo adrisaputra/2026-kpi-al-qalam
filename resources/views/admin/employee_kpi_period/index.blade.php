@@ -76,26 +76,26 @@
                             </div>
                         </div>
 						
-						{{-- @include('admin.kpi.create') --}}
+						@include('admin.employee_kpi_period.create') 
 								
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						{{-- <p style="font-size:18px;font-weight:bold;text-align:center">{{ $kpi_category->name}}</p>	 --}}
+						<p style="font-size:18px;font-weight:bold;text-align:center">Indikator KPI</p>
 						
-                            <div class="table-responsive">
-								<table class="table table-bordered table-hover mb-12" id="employee-kpi-indicator-table">
-									<thead>
-										<tr>
-											<th style="width: 2%">Number</th>
-											<th style="width: 2%">No</th>
-											<th>Indikator Id</th>
-											<th>Indikator KPI</th>
-											<th>Target</th>
-											<th style="width: 5%">Bobot (%)</th>
-											<th style="width: 5%">Skor (1-5)</th>
-											<th style="width: 5%">Nilai</th>
-											<th style="width: 10%"></th>
-										</tr>
-									</thead>
+                            <div class="table-responsive" style="background-color: white;padding:10px 10px 10px 10px;border-radius: 15px;">
+                                <table class="table table-bordered table-hover mb-12" id="employee-kpi-indicator-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 2%">Number</th>
+                                            <th style="width: 2%">No</th>
+                                            <th>Indikator Id</th>
+                                            <th>Indikator KPI</th>
+                                            <th>Target</th>
+                                            <th style="width: 5%">Bobot (%)</th>
+                                            <th style="width: 5%">Skor (1-5)</th>
+                                            <th style="width: 5%">Nilai</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
                                     <tbody></tbody>
                                     <tfoot>
                                         <tr>
@@ -106,9 +106,44 @@
                                             <th></th>
                                         </tr>
                                     </tfoot>
-								</table>
+                                </table>
                                 
-                            </div>	
+                            </div>	   
+
+                        </div>
+                        <hr>
+                        <div class="widget-content widget-content-area" style="padding-top: 0px;" >
+						<p style="font-size:18px;font-weight:bold;text-align:center">Bonus</p>
+						
+                            <div class="table-responsive" style="background-color: white;padding:10px 10px 10px 10px;border-radius: 15px;">
+                                <table class="table table-bordered table-hover mb-12" id="employee-kpi-bonus-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 2%">Number</th>
+                                            <th style="width: 2%">No</th>
+                                            <th>Indikator Id</th>
+                                            <th>Indikator KPI</th>
+                                            <th>Target</th>
+                                            <th style="width: 5%">Bobot (%)</th>
+                                            <th style="width: 5%">Skor (Rp)</th>
+                                            <th style="width: 5%">Nilai (Rp)</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5" style="text-align:right;">TOTAL</th>
+                                            <th id="total_weight_bonus">0</th>
+                                            <th id="total_score_bonus">0</th>
+                                            <th id="total_value_bonus">0</th>
+                                            <th></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                
+                            </div>	                         
+
                         </div>
                     </div>
                 </div>
@@ -118,6 +153,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script>
     var table;
+    var table2;
 
     $(document).ready(function () {
         table = $('#employee-kpi-indicator-table').DataTable({
@@ -186,16 +222,129 @@
             }
         });
 
+        table2 = $('#employee-kpi-bonus-table').DataTable({
+            processing: true,
+            serverSide: true,
+			ajax: {
+				url: "{{ route('employee_kpi_period_bonus.list', ['employee_kpi' => $employee_kpi->id]) }}",
+				type: 'GET',
+				dataType: 'json',
+				data: function (d) {
+					d.get_month = $('#get_month').val(); // Kirim nilai combobox office dalam request
+					d.get_year = $('#get_year').val(); // Kirim nilai combobox office dalam request
+				}
+			},
+            columns: [
+				{data: 'id', name: 'id', visible: false},
+				{data: 'number', name: 'number'}, // Kolom nomor urut
+                {data: 'indicator_id', name: 'indicator_id', visible: false},
+                {data: 'indicator', name: 'kpi_indicator'},
+                {data: 'target', name: 'target'},
+                {data: 'weight', name: 'weight'},
+                {data: 'score', name: 'score'},
+                {data: 'value', name: 'value'},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ],
+			order: [
+				[2, 'asc'] // Mengatur pengurutan kolom pertama (id) secara descending
+			],
+            paging: false,
+            pageLength: -1, // Menampilkan 100 data per halaman
+            // TOTAL
+            footerCallback: function (row, data, start, end, display) {
+
+                let totalWeightBonus = 0;
+                let totalScoreBonus = 0;
+                let totalValueBonus = 0;
+
+                data.forEach(function (item) {
+
+                    totalWeightBonus += parseFloat(item.weight) || 0;
+                    totalScoreBonus += parseNumberIndonesia(item.score);
+                    totalValueBonus += parseNumberIndonesia(item.value);
+
+                });
+
+                $('#total_weight_bonus').text(totalWeightBonus);
+                $('#total_score_bonus').text(formatRupiah2(totalScoreBonus));
+                $('#total_value_bonus').text(formatRupiah2(totalValueBonus));
+            },
+			drawCallback: function () {
+                var api = this.api();
+
+                var startIndex = api.context[0]._iDisplayStart;
+
+                api.column(1, {page: 'current'}).nodes().each(function (cell, i) {
+                    cell.innerHTML = startIndex + i + 1;
+                });
+
+                
+                // Disable tombol jika DataTables kosong
+                if (api.rows({ page: 'current' }).count() === 0) {
+                    $('#create_period').removeClass('disabled').removeAttr('aria-disabled');
+                } else {
+                    $('#create_period').addClass('disabled').attr('aria-disabled', 'true');
+                }
+            }
+        });
+
+        $('#myForm').submit(function (e) {
+            e.preventDefault(); // Hindari pengiriman form secara default
+
+            var id_employee_kpi_bonus = $('#id_employee_kpi_bonus').val();
+            var score = $('#score').val();
+            var value = $('#value').val();
+
+            // Buat objek FormData untuk mengirim data form, termasuk file
+            var formData = new FormData();
+            formData.append('id', id_employee_kpi_bonus);
+            formData.append('score', score);
+            formData.append('value', value);
+            formData.append('_token', "{{ csrf_token() }}");
+
+            // Kirim permintaan validasi ke controller via Ajax
+            var url = "{{ url('/employee_kpi_bonus/validate') }}";
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formData,
+                contentType: false, // Tidak mengatur contentType secara otomatis
+                processData: false, // Tidak memproses data secara otomatis
+                success: function (response) {
+                   
+                    $('.invalid-feedback').html(''); // Hapus pesan kesalahan
+                    $('.is-invalid').removeClass('is-invalid'); // Hapus kelas is-invalid dari bidang-bidang yang divalidasi
+
+                    update(id_employee_kpi_bonus);
+
+                },
+                error: function (xhr) {
+                    var errors = xhr.responseJSON.errors;
+
+                    // Bersihkan semua pesan kesalahan sebelum menampilkan yang baru
+                    $('.fv-plugins-message-container').html('');
+
+                    // Tampilkan pesan kesalahan untuk setiap bidang jika ada
+                    if (errors) {
+                        $.each(errors, function (key, value) {
+                            $('#' + key + '-error').html(value[0]);
+                        });
+                    }
+                }
+            });
+        });
     });
 
     // Tambahkan event listener untuk perubahan combo box office
     $('#get_month').on('change', function () {
         table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        table2.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
     });
 
     // Tambahkan event listener untuk perubahan combo box office
     $('#get_year').on('change', function () {
         table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+        table2.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
     });
 
     // Fungsi untuk menampilkan notifikasi toast dengan ikon centang
@@ -219,6 +368,59 @@
         });
     }
     
+    // Get Data
+    function getData(id){
+        document.getElementById("head_title").textContent = "Ubah Nilai";
+        document.getElementById("action").textContent = "Update";
+        // Kirim data formulir ke server menggunakan AJAX
+
+        var url = "{{ url('/employee_kpi_bonus/edit') }}";
+        $.ajax({
+            url: url + "/" + id,
+            type: "GET",
+            success: function (response) {
+                document.getElementById("id_employee_kpi_bonus").value = response.data.id;
+                document.getElementById("score").value = formatRupiah2(response.data.score);
+                document.getElementById("value").value = formatRupiah2(response.data.value);
+            },
+            error: function (xhr) {
+                // Tangani kesalahan jika pengiriman formulir gagal
+                showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
+                console.error("Error pengiriman formulir:", xhr);
+            }
+        });
+    }
+
+    // Update Data
+    function update(id) {
+        var formData = new FormData($('#myForm')[0]); // Buat objek FormData dari formulir
+        formData.append('_token', "{{ csrf_token() }}");
+        formData.append('_method', "PUT");
+        
+        // Kirim data formulir ke server menggunakan AJAX
+
+        var url = "{{ url('/employee_kpi_bonus/edit') }}";
+        $.ajax({
+            url: url + "/" + id,
+            type: "POST",
+            data: formData,
+            contentType: false, // Biarkan jQuery menentukan contentType secara otomatis
+            processData: false, // Biarkan jQuery menangani proses data secara otomatis
+            success: function (response) {
+                showSuccessToast(response.message); // Tampilkan notifikasi toast untuk keberhasilan
+                $('#myForm')[0].reset(); // Reset form setelah berhasil memperbarui data
+                $('#exampleModal').modal('hide'); // Tutup modal setelah berhasil memperbarui data
+                table2.ajax.reload(null, false); // Muat ulang DataTables setelah update
+            },
+            error: function (xhr) {
+                // Tangani kesalahan jika pengiriman formulir gagal
+                showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
+                console.error("Error pengiriman formulir:", xhr);
+            }
+        });
+    }
+    
+
     // Create Employee KPI Indicator
     function generateKpiIndicator(employee_kpi_id) {
         swal({
@@ -262,6 +464,23 @@
 	
     }
 
+    // Fungsi bantu untuk format Rupiah
+    function formatRupiah2(angka) {
+        return new Intl.NumberFormat('id-ID', {
+            minimumFractionDigits: 0
+        }).format(angka);
+    }
+        
+    function parseNumberIndonesia(value) {
+        if (value === null || value === undefined || value === '') {
+            return 0;
+        }
 
+        return parseFloat(
+            String(value)
+                .replace(/\./g, '')
+                .replace(',', '.')
+        ) || 0;
+    }
 </script>
 @endsection

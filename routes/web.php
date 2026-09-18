@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmployeeKpiBonusController;
 use App\Http\Controllers\EmployeeKpiController;
 use App\Http\Controllers\EmployeeKpiDetailController;
 use App\Http\Controllers\EmployeeKpiIndicatorController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\EmployeeReportFileController;
 use App\Http\Controllers\EmployeeReportPeriodController;
 use App\Http\Controllers\EmployeeReportValueController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KpiBonusController;
 use App\Http\Controllers\KpiCategoryController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\KpiIndicatorController;
@@ -63,6 +65,12 @@ Route::middleware(['role:Admin KPI,Admin Unit,Employee'])->group(function () {
     ## Employee KPI Periode
     Route::get('/employee_kpi_period/{employee_kpi}', [EmployeeKpiPeriodController::class, 'index'])->name('employee_kpi_period.index');
     Route::get('/employee_kpi_period/list/{employee_kpi}', [EmployeeKpiPeriodController::class, 'get_employee_kpi_period_index'])->name('employee_kpi_period.list');
+    Route::get('/employee_kpi_period_bonus/list/{employee_kpi}', [EmployeeKpiPeriodController::class, 'get_employee_kpi_period_bonus_index'])->name('employee_kpi_period_bonus.list');
+    
+    ## Employee KPI Bonus
+    Route::post('/employee_kpi_bonus/validate', [EmployeeKpiBonusController::class, 'validate']);
+    Route::get('/employee_kpi_bonus/edit/{employee_kpi_bonus}', [EmployeeKpiBonusController::class, 'edit']);
+    Route::put('/employee_kpi_bonus/edit/{employee_kpi_bonus}', [EmployeeKpiBonusController::class, 'update']);
     
     ## Employee KPI Indicator
     Route::post('/employee_kpi_indicator/store', [EmployeeKpiIndicatorController::class, 'store']);
@@ -169,6 +177,16 @@ Route::middleware(['role:Admin KPI'])->group(function () {
     Route::get('/kpi_indicator_item/delete/{kpi_indicator_item}',[KpiIndicatorItemController::class, 'delete']);
     Route::post('/kpi_indicator_item/import', [KpiIndicatorItemController::class, 'import']);
 
+    ## KPI Bonus
+    Route::get('/kpi_bonus/{kpi}', [KpiBonusController::class, 'index'])->name('kpi_bonus.index');
+    Route::get('/kpi_bonus/list/{kpi}', [KpiBonusController::class, 'get_kpi_bonus_index'])->name('kpi_bonus.list');
+    Route::post('/kpi_bonus/store', [KpiBonusController::class, 'store']);
+    Route::post('/kpi_bonus/validate/{action}', [KpiBonusController::class, 'validate']);
+    Route::get('/kpi_bonus/edit/{kpi_bonus}', [KpiBonusController::class, 'edit']);
+    Route::put('/kpi_bonus/edit/{kpi_bonus}', [KpiBonusController::class, 'update']);
+    Route::get('/kpi_bonus/delete/{kpi_bonus}',[KpiBonusController::class, 'delete']);
+    Route::get('/kpi_bonus/delete/{kpi_bonus}',[KpiBonusController::class, 'delete']);
+    
     ## Report Category
     Route::get('/report_category', [ReportCategoryController::class, 'index'])->name('report_category.index');
     Route::get('/report_category/list', [ReportCategoryController::class, 'get_report_category_index'])->name('report_category.list');

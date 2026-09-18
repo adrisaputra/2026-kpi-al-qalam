@@ -15,13 +15,16 @@
                 </div>
 
                 <div class="modal-body">
-                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_kpi" />
-                    <input type="hidden" class="form-control form-control-sm" name="kpi_category_id" id="kpi_category_id" value="{{ $kpi_category->id }}"/>
-
+                    <input type="hidden" class="form-control form-control-sm" name="id" id="id_employee_kpi_bonus" />
                     <div class="form-group">
-                        <p>{{ __('Nama') }} <span class="required" style="color: #dd4b39;">*</span></p>
-                        <input type="text" class="form-control form-control-sm" name="name" id="name">
-                        <div id="name-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                        <p>{{ __('Skor') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <input type="text" class="form-control form-control-sm" name="score" id="score" onkeyup="formatRupiah(this, '.')">
+                        <div id="score-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
+                    <div class="form-group">
+                        <p>{{ __('Nilai') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <input type="text" class="form-control form-control-sm" name="value" id="value" onkeyup="formatRupiah(this, '.')">
+                        <div id="value-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                 </div>
@@ -34,3 +37,22 @@
     </div>
 
 </form>
+
+<script>
+    function formatRupiah(objek, separator) {
+        a = objek.value;
+        b = a.replace(/[^\d]/g, "");
+        c = "";
+        panjang = b.length;
+        j = 0;
+        for (i = panjang; i > 0; i--) {
+            j = j + 1;
+            if (((j % 3) == 1) && (j != 1)) {
+                c = b.substr(i - 1, 1) + separator + c;
+            } else {
+                c = b.substr(i - 1, 1) + c;
+            }
+        }
+        objek.value = c;
+    }
+</script>

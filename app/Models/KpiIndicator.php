@@ -35,4 +35,8 @@ class KpiIndicator extends Model
         return $this->HasOne('App\Models\EmployeeKpiIndicator');
     }
 
+    public function employee_kpi_bonus(){
+        return $this->HasOne('App\Models\EmployeeKpiBonus');
+    }
+
 }

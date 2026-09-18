@@ -48,6 +48,7 @@ $setting = \App\Helpers\Helpers::setting();
     <link rel="stylesheet" type="text/css" href="{{ asset('backend/assets/css/forms/switches.css') }}">
     <link rel="stylesheet" href="{{ asset('backend/assets/css/fullcalendar.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('backend/assets/css/forms/theme-checkbox-radio.css') }}">
+    <link href="{{ asset('backend/assets/css/components/tabs-accordian/custom-tabs.css') }}" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
     <!-- CSS -->

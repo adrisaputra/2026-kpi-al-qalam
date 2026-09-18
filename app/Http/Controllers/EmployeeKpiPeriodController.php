@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeKpi;
+use App\Models\EmployeeKpiBonus;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeKpiIndicatorItem;
 use App\Models\EmployeeKpiPeriod;
@@ -81,6 +83,60 @@ class EmployeeKpiPeriodController extends Controller
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list text-info"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                         </a>';
                     }
+                }
+                
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+        }
+    }
+
+    public function get_employee_kpi_period_bonus_index(Request $request, $employee_kpi)
+    {
+        if ($request->ajax()) {
+            $counters = 1;
+
+            $month = $request->input('get_month') ? $request->input('get_month') : date('m');
+            $year = $request->input('get_year') ? $request->input('get_year') : date('Y');
+
+            $employee_kpi_period = EmployeeKpiPeriod::where('employee_kpi_id', $employee_kpi)->where('month', $month)->where('year', $year)->first();
+            if($employee_kpi_period ){
+                $employee_kpi_bonus = EmployeeKpiBonus::with('kpi_indicator')
+                                        ->where('employee_kpi_period_id', $employee_kpi_period->id)->get();
+            } else {
+                $employee_kpi_bonus = EmployeeKpiBonus::where('employee_kpi_period_id', NULL)->get();
+            }
+
+            return DataTables::of($employee_kpi_bonus)
+            ->addIndexColumn()
+            ->addColumn('number', function () use (&$counters) {
+                return $counters++;
+            })
+            ->addColumn('indicator_id', function ($v) {
+                return $v->kpi_indicator->id;
+            })
+            ->addColumn('indicator', function ($v) {
+                return $v->indicator;
+            })
+            ->addColumn('target', function ($v) {
+                return $v->target;
+            })
+            ->addColumn('weight', function ($v) {
+                return $v->weight;
+            })
+            ->addColumn('score', function ($v) {
+                return Helpers::format_number($v->score);
+            })
+            ->addColumn('value', function ($v) {
+                return Helpers::format_number($v->value);
+            })
+            ->addColumn('action', function ($v) {
+                $btn = null;
+                if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit'])){ 
+                    $btn = '<a href="#" onClick="getData('.$v->id.')" id="'.$v->id.'" title="Edit" data-toggle="modal" data-target="#exampleModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        </a>';
                 }
                 
                 return $btn;
