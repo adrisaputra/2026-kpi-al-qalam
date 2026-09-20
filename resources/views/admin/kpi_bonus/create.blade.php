@@ -30,28 +30,16 @@
                     </div>
 
                     <div class="form-group">
-                        <p>{{ __('Indikator') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <p>{{ __('Nama Bonus') }} <span class="required" style="color: #dd4b39;">*</span></p>
                         <input type="text" class="form-control form-control-sm" name="indicator" id="indicator">
                         <div id="indicator-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <p>{{ __('Target') }}</p>
-                        <input type="text" class="form-control form-control-sm" name="target" id="target">
-                        <div id="target-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <p>{{ __('Bobot') }}</p>
-                        <input type="number" class="form-control form-control-sm" name="weight" id="weight">
-                        <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
 
                     <div class="form-group">
                         <p>{{ __('Jenis Inputan') }} <span class="required" style="color: #dd4b39;">*</span></p>
 						<select class="form-control form-control-sm" name="is_employee" id="is_employee">
 							<option value="">- Pilih Jenis Inputan -</option>
-							<option value="0">Di Input Admin Unit</option>
+							<option value="0">Di Input Admin Yayasan</option>
 							<option value="1">Di Input Pegawai</option>
 						</select>
                         <div id="is_employee-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>

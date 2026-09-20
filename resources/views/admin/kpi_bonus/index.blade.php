@@ -50,14 +50,14 @@
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
 											{{--<th>Nama Indikator KPI</th>--}}
-											<th>Indikator</th>
-											<th>Target</th>
-											<th>Bobot</th>
+											<th>Nama Bonus</th>
+											{{--<th>Target</th>
+											<th>Bobot</th>--}}
 											<th>Jenis Inputan</th>
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
-                                    <tbody></tbody>
+                                    {{--<tbody></tbody>
                                     <tfoot>
                                         <tr>
                                             <th colspan="4">TOTAL</th>
@@ -65,7 +65,7 @@
                                             <th></th>
                                             <th></th>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot>--}}
 								</table>
                             </div>
                         </div>
@@ -92,8 +92,8 @@
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 // {data: 'name', name: 'name'},
                 {data: 'indicator', name: 'indicator'},
-                {data: 'target', name: 'target'},
-                {data: 'weight', name: 'weight'},
+                // {data: 'target', name: 'target'},
+                // {data: 'weight', name: 'weight'},
                 {data: 'is_employee', name: 'is_employee'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
@@ -103,18 +103,18 @@
             paging: true,
             pageLength: 100, // Menampilkan 100 data per halaman
             // TOTAL
-            footerCallback: function (row, data, start, end, display) {
+            // footerCallback: function (row, data, start, end, display) {
 
-                let total = 0;
+            //     let total = 0;
 
-                data.forEach(function (item) {
+            //     data.forEach(function (item) {
 
-                    total += parseFloat(item.weight) || 0;
+            //         total += parseFloat(item.weight) || 0;
 
-                });
+            //     });
 
-                $('#total').text(total);
-            },
+            //     $('#total').text(total);
+            // },
 			drawCallback: function () {
                 var api = this.api();
                 var startIndex = api.context[0]._iDisplayStart; // Indeks baris pertama di halaman
@@ -242,11 +242,12 @@
             type: "GET",
             success: function (response) {
                 document.getElementById("id_kpi_bonus").value = response.data.id;
-                // document.getElementById("name").value = response.data.name;
+                document.getElementById("category").value = response.data.category;
                 document.getElementById("indicator").value = response.data.indicator;
-                document.getElementById("target").value = response.data.target;
-                document.getElementById("weight").value = response.data.weight;
-                document.getElementById("is_employee").checked = response.data.is_employee == 1;
+                // document.getElementById("target").value = response.data.target;
+                // document.getElementById("weight").value = response.data.weight;
+                document.getElementById("is_employee").value = response.data.is_employee;
+                // document.getElementById("is_employee").checked = response.data.is_employee == 1;
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal

@@ -52,9 +52,13 @@ class LoginController extends Controller
         }
 
         $user = User::whereHas('group.group_application', function($query){
-                    $query->where('application_id',2);
-                })->where('name', $request->name)
-            ->orWhere('email', $request->name)
+                $query->where('application_id',2);
+            })
+            ->whereIn('group_id',[4,5])
+            ->where(function ($query) use ($request) {
+                $query->where('name', $request->name)
+                    ->orWhere('email', $request->name);
+            })
             ->first();
 
         if (!$user) {

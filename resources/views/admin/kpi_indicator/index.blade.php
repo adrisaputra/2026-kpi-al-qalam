@@ -248,7 +248,8 @@
                 document.getElementById("indicator").value = response.data.indicator;
                 document.getElementById("target").value = response.data.target;
                 document.getElementById("weight").value = response.data.weight;
-                document.getElementById("is_employee").checked = response.data.is_employee == 1;
+                document.getElementById("is_employee").value = response.data.is_employee;
+                // document.getElementById("is_employee").checked = response.data.is_employee == 1;
             },
             error: function (xhr) {
                 // Tangani kesalahan jika pengiriman formulir gagal

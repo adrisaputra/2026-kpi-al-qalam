@@ -16,13 +16,28 @@
 
                 <div class="modal-body">
                     <input type="hidden" class="form-control form-control-sm" name="id" id="id_employee_kpi_bonus" />
+                    <input type="hidden" class="form-control form-control-sm" name="category" id="category" />
+
                     <div class="form-group">
-                        <p>{{ __('Skor') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <p>{{ __('Nama Bonus') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <input type="text" class="form-control form-control-sm" id="indicator" disabled>
+                        <div id="indicator-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
+
+                    <div class="form-group" id='show_weight'>
+                        <p>{{ __('Jumlah JP') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                        <input type="text" class="form-control form-control-sm" name="weight" id="weight" onkeyup="formatRupiah(this, '.')">
+                        <div id="weight-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
+                    </div>
+
+                    <div class="form-group" id='show_score'>
+                        <p>{{ __('Jumlah Bonus Per JP (Rp)') }} <span class="required" style="color: #dd4b39;">*</span></p>
                         <input type="text" class="form-control form-control-sm" name="score" id="score" onkeyup="formatRupiah(this, '.')">
                         <div id="score-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>
-                    <div class="form-group">
-                        <p>{{ __('Nilai') }} <span class="required" style="color: #dd4b39;">*</span></p>
+                    
+                    <div class="form-group" id='show_value'>
+                        <p>{{ __('Jumlah Bonus (Rp)') }} <span class="required" style="color: #dd4b39;">*</span></p>
                         <input type="text" class="form-control form-control-sm" name="value" id="value" onkeyup="formatRupiah(this, '.')">
                         <div id="value-error" class="fv-plugins-message-container invalid-feedback" style="display: block;"></div>
                     </div>

@@ -81,6 +81,7 @@
 											<th>Unit Kerja</th>
 											<th>Skor</th>
 											<th>Nilai</th>
+											<th>Total Nilai</th>
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
@@ -118,6 +119,7 @@
                 {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
                 {data: 'score', name: 'score'}, 
                 {data: 'value', name: 'value'}, 
+                {data: 'total_value', name: 'total_value'}, 
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [

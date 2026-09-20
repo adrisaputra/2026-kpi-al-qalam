@@ -38,7 +38,7 @@ class KpiBonusController extends Controller
                 if($v->is_employee==true){
                     $status ='<span class="badge badge-danger">Diinput Pegawai</span>';
                 }else{
-                    $status ='<span class="badge badge-success">Diinput Admin Unit</span>';
+                    $status ='<span class="badge badge-success">Diinput Admin Yayasan</span>';
                 }
                 return $status;
             })

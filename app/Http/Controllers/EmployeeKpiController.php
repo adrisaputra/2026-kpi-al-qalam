@@ -83,7 +83,8 @@ class EmployeeKpiController extends Controller
                                                 function ($query) use ($v, $month, $year) {
                                                     $query->where('employee_id', $v->id)
                                                         ->where('month', $month)
-                                                        ->where('year', $year);
+                                                        ->where('year', $year)
+                                                        ->whereHas('employee_kpi');
                                                 }
                                             )->sum('score');
                     return $score;
@@ -93,10 +94,46 @@ class EmployeeKpiController extends Controller
                                                 function ($query) use ($v, $month, $year) {
                                                     $query->where('employee_id', $v->id)
                                                         ->where('month', $month)
-                                                        ->where('year', $year);
+                                                        ->where('year', $year)
+                                                        ->whereHas('employee_kpi');
                                                 }
                                             )->sum('value');
                     return number_format(round($value, 2), 2, '.', '');
+                })
+                ->addColumn('total_value', function ($v) use ($month,$year){
+                            
+                    $employee_kpi = EmployeeKpi::where('employee_id', $v->id)
+                        ->where('month', $month)
+                        ->where('year', $year)
+                        ->get();
+
+                    $weight_task_value = 0;
+                    $total_employee_kpi = 0;
+
+                    foreach ($employee_kpi as $x) {
+
+                        $value = EmployeeKpiIndicator::whereHas(
+                            'employee_kpi_period',
+                            function ($query) use ($v, $x, $month, $year) {
+                                $query->where('employee_kpi_id', $x->id)
+                                    ->where('employee_id', $v->id)
+                                    ->where('month', $month)
+                                    ->where('year', $year)
+                                    ->whereHas('employee_kpi');
+                            }
+                        )->sum('value');
+
+                        // Bobot task saat ini
+                        $weight = $x->weight_task_value ?? 0;
+
+                        // Total bobot semua task
+                        $weight_task_value += $weight;
+
+                        // Hitung nilai berdasarkan bobot task ini
+                        $total_employee_kpi += $value * $weight / 100;
+                    }
+
+                    return number_format(round($total_employee_kpi, 2), 2, '.', '');
                 })
                 ->addColumn('action', function ($v) use ($request){
                     $kpi = url('employee_kpi_detail', Crypt::encrypt($v->id));

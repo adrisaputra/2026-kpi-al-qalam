@@ -231,7 +231,7 @@ $setting = \App\Helpers\Helpers::setting();
                         </li>
 
                         <li class="menu @if(Request::segment(1)==" kpi_category") active @endif">
-                            <a href="{{ url('kpi_category') }}" @if(in_array(Request::segment(1), ['kpi_category','kpi','kpi_indicator','kpi_indicator_item'])) aria-expanded="true" @endif class="dropdown-toggle">
+                            <a href="{{ url('kpi_category') }}" @if(in_array(Request::segment(1), ['kpi_category','kpi','kpi_indicator','kpi_indicator_item','kpi_bonus'])) aria-expanded="true" @endif class="dropdown-toggle">
                                 <div class="">
                                     <img src="{{ asset('storage/menu/icons8-menu-100.png') }}" width="30" height="30" style="margin-right: 18px">
                                     <span>Kategori KPI</span>

@@ -41,9 +41,17 @@ class EmployeeKpiBonusController extends Controller
     {
         if ($request->ajax()) {
 
-            $employee_kpi_bonus->score = $request->score;
-            $employee_kpi_bonus->value = $request->value;
-            $employee_kpi_bonus->save();
+            if($request->category == 3){
+                $employee_kpi_bonus->weight = $request->weight;
+                $employee_kpi_bonus->score = str_replace(".", "", $request->score ?? 0);
+                $employee_kpi_bonus->value = $employee_kpi_bonus->weight * $employee_kpi_bonus->score;
+                $employee_kpi_bonus->save();
+            } else {
+                $employee_kpi_bonus->weight = 0;
+                $employee_kpi_bonus->score = 0;
+                $employee_kpi_bonus->value = str_replace(".", "", $request->value ?? 0);
+                $employee_kpi_bonus->save();
+            }
 
             activity()->log('Edit Employee KPI Bonus Data With ID = ' . $employee_kpi_bonus->id);
             return response()->json(['success' => true, 'message' => 'Ubah Indikator KPI Berhasil']);

@@ -45,7 +45,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-xl-8 col-md-12 col-sm-12 col-12">
-                                    <a href="#" class="btn mb-2 mr-1 btn-success" id="create_period" onClick="generateKpiIndicator({{ $employee_kpi->id }});"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
+                                    {{--<a href="#" class="btn mb-2 mr-1 btn-success" id="create_period" onClick="generateKpiIndicator({{ $employee_kpi->id }});"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>--}}
                                     <a href="{{ url(Request::segment(1).'/'.Request::segment(2)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
 									<a href="{{ url('employee_kpi_detail/'.Crypt::encrypt($employee->id)) }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                 </div>
@@ -129,19 +129,16 @@
                                             <th style="width: 2%">No</th>
                                             <th>Indikator Id</th>
                                             <th>Indikator KPI</th>
-                                            <th>Target</th>
-                                            <th style="width: 5%">Bobot (%)</th>
-                                            <th style="width: 5%">Skor (Rp)</th>
-                                            <th style="width: 5%">Nilai (Rp)</th>
+                                            <th style="width: 5%">Jumlah JP</th>
+                                            <th style="width: 5%">Bonus Per JP (Rp)</th>
+                                            <th style="width: 5%">Jumlah Bonus (Rp)</th>
                                             <th style="width: 10%"></th>
                                         </tr>
                                     </thead>
                                     <tbody></tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="5" style="text-align:right;">TOTAL</th>
-                                            <th id="total_weight_bonus">0</th>
-                                            <th id="total_score_bonus">0</th>
+                                            <th colspan="6" style="text-align:right;">TOTAL</th>
                                             <th id="total_value_bonus">0</th>
                                             <th></th>
                                         </tr>
@@ -245,7 +242,6 @@
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'indicator_id', name: 'indicator_id', visible: false},
                 {data: 'indicator', name: 'kpi_indicator'},
-                {data: 'target', name: 'target'},
                 {data: 'weight', name: 'weight'},
                 {data: 'score', name: 'score'},
                 {data: 'value', name: 'value'},
@@ -259,20 +255,14 @@
             // TOTAL
             footerCallback: function (row, data, start, end, display) {
 
-                let totalWeightBonus = 0;
-                let totalScoreBonus = 0;
                 let totalValueBonus = 0;
 
                 data.forEach(function (item) {
 
-                    totalWeightBonus += parseFloat(item.weight) || 0;
-                    totalScoreBonus += parseNumberIndonesia(item.score);
                     totalValueBonus += parseNumberIndonesia(item.value);
 
                 });
 
-                $('#total_weight_bonus').text(totalWeightBonus);
-                $('#total_score_bonus').text(formatRupiah2(totalScoreBonus));
                 $('#total_value_bonus').text(formatRupiah2(totalValueBonus));
             },
 			drawCallback: function () {
@@ -379,7 +369,21 @@
             type: "GET",
             success: function (response) {
                 document.getElementById("id_employee_kpi_bonus").value = response.data.id;
-                document.getElementById("score").value = formatRupiah2(response.data.score);
+                document.getElementById("indicator").value = response.data.indicator;
+                document.getElementById("category").value = response.data.category;
+                if(response.data.category == 3){
+                    document.getElementById("show_weight").style.display = 'inline'; 
+                    document.getElementById("show_score").style.display = 'inline'; 
+                    document.getElementById("show_value").style.display = 'none'; 
+                } else {
+                    document.getElementById("show_weight").style.display = 'none'; 
+                    document.getElementById("show_score").style.display = 'none'; 
+                    document.getElementById("show_value").style.display = 'inline'; 
+                }
+            
+                document.getElementById("weight").value = formatRupiah2(response.data.weight);
+                document.getElementById("score").value = formatRupiah2(5000);
+                document.getElementById("score").readOnly = true;
                 document.getElementById("value").value = formatRupiah2(response.data.value);
             },
             error: function (xhr) {
@@ -451,6 +455,7 @@
                                 showFailedToast(response.message);
                             }
                             table.ajax.reload(null, false);
+                            table2.ajax.reload(null, false);
                         },
                         error: function (xhr) {
                             showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan

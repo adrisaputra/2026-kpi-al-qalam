@@ -69,10 +69,7 @@ class EmployeeKpiIndicatorController extends Controller
                         $employee_kpi_bonus->employee_kpi_period_id = $employee_kpi_period->id;
                         $employee_kpi_bonus->kpi_indicator_id = $v->id;
                         $employee_kpi_bonus->indicator = $v->indicator;
-                        $employee_kpi_bonus->target = $v->target;
-                        $employee_kpi_bonus->weight = $v->weight;
-                        $employee_kpi_bonus->score = 1;
-                        $employee_kpi_bonus->value = ($v->weight / 5) * 1;
+                        $employee_kpi_bonus->category = $v->category;
                         $employee_kpi_bonus->save();
                     }
                     

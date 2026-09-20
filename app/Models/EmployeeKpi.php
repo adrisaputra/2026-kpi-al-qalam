@@ -14,6 +14,8 @@ class EmployeeKpi extends Model
     protected $fillable = [
         'employee_id',
         'kpi_id',
+        'weight_task',
+        'weight_task_value',
         'month',
         'year'
     ];

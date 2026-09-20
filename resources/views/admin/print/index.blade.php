@@ -44,7 +44,8 @@
 											};">
                                             <option value="">- Jenis Laporan -</option>
                                             <option value="1">Rekap Rapor</option>
-                                            <option value="2">Rekap Total Nilai KPI Bulanan</option>
+                                            <option value="2">Rekap KPI</option>
+                                            <option value="3">Rekap Nilai Akhir</option>
                                         </select>
                                     </div>
                                 </div>

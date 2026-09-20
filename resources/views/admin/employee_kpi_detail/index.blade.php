@@ -49,7 +49,9 @@
                                         <a href="#" class="btn mb-2 mr-1 btn-success" data-placement="top" data-toggle="modal" data-target="#exampleModal" title="Tambah Data" onClick="clearForm()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></a>
                                     @endif
                                     <a href="{{ url(Request::segment(1).'/'.Request::segment(2)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
-									<a href="{{ url('employee_kpi') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
+                                    @if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit']))
+                                        <a href="{{ url('employee_kpi') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
+                                    @endif
                                 </div>
                                 
                                 <div class="col-xl-2 col-md-12 col-sm-12 col-12">
@@ -88,14 +90,19 @@
 								<table class="table table-bordered table-hover mb-12" id="employee-kpi-detail-table">
 									<thead>
 										<tr>
-											<th style="width: 2%">Number</th>
-											<th style="width: 2%">No</th>
-											<th>Kategori KPI</th>
-											<th>KPI</th>
+											<th style="width: 2%" rowspan=2>Number</th>
+											<th style="width: 2%" rowspan=2>No</th>
+											<th rowspan=2>Kategori KPI</th>
+											<th rowspan=2>KPI</th>
+											<th colspan=4><center>Indikator KPI</center></th>
+											<th rowspan=2>Bonus</th>
+											<th style="width: 15%" rowspan=2></th>
+										</tr>
+										<tr>
+											<th>Bobot Tugas</th>
 											<th>Skor</th>
 											<th>Nilai</th>
-											<th>Bonus</th>
-											<th style="width: 15%"></th>
+											<th>Total Nilai</th>
 										</tr>
 									</thead>
 								</table>
@@ -129,9 +136,11 @@
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'display_kpi_category_name', name: 'kpi_category_name'}, // ASC/DESC jalan
                 {data: 'display_kpi_name', name: 'kpi_name'}, // ASC/DESC jalan
+                {data: 'weight_task_value', name: 'weight_task_value'},
                 {data: 'score', name: 'score'},
                 {data: 'value', name: 'value'},
-                {data: 'value2', name: 'value2'},
+                {data: 'total_value', name: 'total_value'},
+                {data: 'bonus', name: 'bonus'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [
