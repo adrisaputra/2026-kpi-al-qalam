@@ -11,7 +11,7 @@ class EmployeeKpiBonus extends Model
     protected $connection = 'mysql';
     protected $fillable = [
         'employee_kpi_period_id',
-        'kpi_indicator_id',
+        'kpi_bonus_id',
         'category',
         'indicator',
         'target',
@@ -24,8 +24,8 @@ class EmployeeKpiBonus extends Model
         return $this->belongsTo('App\Models\EmployeeKpiPeriod');
     }
 
-    public function kpi_indicator(){
-        return $this->belongsTo('App\Models\KpiIndicator');
+    public function kpi_bonus(){
+        return $this->belongsTo('App\Models\KpiBonus');
     }
 
     public function employee_kpi_indicator_item(){

@@ -19,6 +19,25 @@ class EmployeeReportPeriodController extends Controller
         $employee_report_category = Crypt::decrypt($employee_report_category);
         $employee_report_category = EmployeeReportCategory::where('id',$employee_report_category)->first();
         $employee = Employee::where('id',$employee_report_category->employee_id)->first();
+
+        $startDate = Carbon::create($employee_report_category->year, $employee_report_category->month, 1);
+        $endDate   = $startDate->copy()->endOfMonth();
+
+        while ($startDate->lte($endDate)) {
+
+            // Senin - Jumat saja
+            if ($startDate->isWeekday()) {
+
+                EmployeeReportPeriod::firstOrCreate([
+                    'employee_report_category_id' => $employee_report_category->id,
+                    'employee_id' => $employee_report_category->employee_id,
+                    'day' => Helpers::day_name($startDate->format('l')),
+                    'date' => $startDate->format('Y-m-d'),
+                ]);
+            }
+
+            $startDate->addDay();
+        }
         return view('admin.employee_report_period.index', compact('title','employee_report_category','employee'));
     }
 

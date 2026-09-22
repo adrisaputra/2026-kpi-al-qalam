@@ -49,6 +49,10 @@ class Employee extends Model
         return $this->hasOne('App\Models\EmployeeKpi');
     }
 
+    public function employee_report(){
+        return $this->hasOne('App\Models\EmployeeReport');
+    }
+
     public function employee_report_period(){
         return $this->hasOne('App\Models\EmployeeReportPeriod');
     }

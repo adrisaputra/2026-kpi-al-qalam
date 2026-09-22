@@ -77,10 +77,33 @@
 						@include('admin.employee_report_category.create')
 								
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						{{-- <p style="font-size:18px;font-weight:bold;text-align:center">{{ $kpi_category->name}}</p>	 --}}
-						
+						<div id="report-empty-alert" class="alert alert-danger mb-4" role="alert" style="display: none;">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="feather feather-x close"
+                                        data-dismiss="alert">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+
+                                <h4 style="color: #ffffff;">
+                                    <i class="icon fa fa-info-circle"></i> Informasi !
+                                </h4>
+
+                                 <span id="report-empty-message"></span>
+                            </div>
+
                             <div class="table-responsive">
-								<table class="table table-bordered table-hover mb-12" id="employee-kpi-detail-table">
+								<table class="table table-bordered table-hover mb-12" id="employee-report-detail-table">
 									<thead>
 										<tr>
 											<th style="width: 2%">Number</th>
@@ -104,7 +127,7 @@
     var table;
 
     $(document).ready(function () {
-        table = $('#employee-kpi-detail-table').DataTable({
+        table = $('#employee-report-detail-table').DataTable({
             processing: true,
             serverSide: true,
 			ajax: {
@@ -130,21 +153,44 @@
             pageLength: -1, // Menampilkan 100 data per halaman
 			drawCallback: function () {
                 var api = this.api();
+                var dataCount = api.rows({ page: 'current' }).count();
 
-                var startIndex = api.context[0]._iDisplayStart;
+                if (dataCount === 0) {
 
-                api.column(1, {page: 'current'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = startIndex + i + 1;
-                });
+                    var month = $('#get_month').val();
+                    var year = $('#get_year').val();
+
+                    var monthName = $('#get_month option:selected').text();
+
+                    $('#report-empty-message').html(
+                        'Tugas Rapor bulan <strong>' + monthName + ' ' + year + '</strong> belum diisi.'
+                    );
+
+                    $('#report-empty-alert').show();
+
+                } else {
+
+                    $('#report-empty-alert').hide();
+
+                    var startIndex = api.context[0]._iDisplayStart;
+
+                    api.column(1, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+                }
             }
         });
 
         $('#get_month').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            var month = $.trim($('#get_month').val());
+            $('#month').val(month).trigger('change');
         });
         
         $('#get_year').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            var year = $.trim($('#get_year').val());
+            $('#year').val(year).trigger('change');
         });
         
         $('#myForm').submit(function (e) {

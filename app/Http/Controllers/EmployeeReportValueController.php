@@ -55,8 +55,12 @@ class EmployeeReportValueController extends Controller
 
                 if (in_array(Auth::user()->group->name, ['Admin KPI', 'Admin Unit'])) {
 
-                    if (in_array($v->report->category, ['1', '2', '3', '4'])) {
+                    if (in_array($v->report->category, ['1', '2', '3'])) {
                         $value = $v->value;
+                    } else if (in_array($v->report->category, ['4'])) {
+                        $value = '<b>Jumlah JP : </b>'.$v->value;
+                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee->name;
+                        $value .= '<br><br><b>Alasan : </b>'.$v->reason;
                     } else {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
                         $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">

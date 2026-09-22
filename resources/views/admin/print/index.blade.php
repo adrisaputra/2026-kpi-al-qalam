@@ -41,6 +41,9 @@
 											} else if (this.selectedIndex==2){ 
 												document.getElementById('show_month').style.display = 'inline'; 
 												document.getElementById('show_year').style.display = 'inline'; 
+											}else if (this.selectedIndex==3){ 
+												document.getElementById('show_month').style.display = 'inline'; 
+												document.getElementById('show_year').style.display = 'inline'; 
 											};">
                                             <option value="">- Jenis Laporan -</option>
                                             <option value="1">Rekap Rapor</option>

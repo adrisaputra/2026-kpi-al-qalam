@@ -52,7 +52,11 @@ class EmployeeKpiIndicatorItemController extends Controller
 
                 
                 if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit'])){ 
-                   $value = '
+                    if($employee_kpi_indicator->kpi_indicator->is_employee == true){
+                        $value = $v->value;
+                    } else {
+                        // $value = ($v->value == 1 ? 'Ada' : 'Tidak Ada');
+                        $value = '
                         <div class="d-flex align-items-center" style="gap: 10px;">
 
                         <div class="n-chk">
@@ -74,6 +78,7 @@ class EmployeeKpiIndicatorItemController extends Controller
                             </label>
                         </div>
                         </div>';
+                    }
                 }else{ 
                     if($employee_kpi_indicator->kpi_indicator->is_employee == true){
                         $value = '

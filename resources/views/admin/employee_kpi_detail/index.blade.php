@@ -84,8 +84,31 @@
 						@include('admin.employee_kpi_detail.create')
 								
                         <div class="widget-content widget-content-area" style="padding-top: 0px;">
-						{{-- <p style="font-size:18px;font-weight:bold;text-align:center">{{ $kpi_category->name}}</p>	 --}}
-						
+						    <div id="kpi-empty-alert" class="alert alert-danger mb-4" role="alert" style="display: none;">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="feather feather-x close"
+                                        data-dismiss="alert">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+
+                                <h4 style="color: #ffffff;">
+                                    <i class="icon fa fa-info-circle"></i> Informasi !
+                                </h4>
+
+                                 <span id="kpi-empty-message"></span>
+                            </div>
+
                             <div class="table-responsive">
 								<table class="table table-bordered table-hover mb-12" id="employee-kpi-detail-table">
 									<thead>
@@ -131,6 +154,15 @@
                     d.get_year = $('#get_year').val(); // Kirim nilai combobox office dalam request
                 }
 			},
+            // language: {
+            //     emptyTable: `
+            //         <div class="py-4 text-center text-muted">
+            //             <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+            //             <div class="fw-bold">Tugas KPI Bulan belum diisi</div>
+            //             <small>Belum ada tugas KPI untuk bulan dan tahun yang dipilih.</small>
+            //         </div>
+            //     `
+            // },
             columns: [
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
@@ -150,21 +182,51 @@
             pageLength: -1, // Menampilkan 100 data per halaman
 			drawCallback: function () {
                 var api = this.api();
+                var isEmployee = @json(Auth::user()->group->name == 'Employee');
+                var dataCount = api.rows({ page: 'current' }).count();
 
-                var startIndex = api.context[0]._iDisplayStart;
+                if (dataCount === 0) {
 
-                api.column(1, {page: 'current'}).nodes().each(function (cell, i) {
-                    cell.innerHTML = startIndex + i + 1;
-                });
+                    var month = $('#get_month').val();
+                    var year = $('#get_year').val();
+
+                    var monthName = $('#get_month option:selected').text();
+
+                    var message =
+                        'Tugas KPI bulan <strong>' + monthName + ' ' + year + '</strong> belum diisi.';
+
+                    if (isEmployee) {
+                        message += '<br>Silahkan hubungi Admin Yayasan atau Admin Unit untuk menambahkan tugas.';
+                    }
+
+                    $('#kpi-empty-message').html(message);
+
+                    $('#kpi-empty-alert').show();
+
+
+                } else {
+
+                    $('#kpi-empty-alert').hide();
+
+                    var startIndex = api.context[0]._iDisplayStart;
+
+                    api.column(1, { page: 'current' }).nodes().each(function (cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+                }
             }
         });
 
         $('#get_month').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            var month = $.trim($('#get_month').val());
+            $('#month').val(month).trigger('change');
         });
         
         $('#get_year').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            var year = $.trim($('#get_year').val());
+            $('#year').val(year).trigger('change');
         });
         
         $('#myForm').submit(function (e) {

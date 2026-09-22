@@ -19,6 +19,10 @@ class EmployeeReport extends Model
         'reason'
     ];
 
+    public function employee(){
+        return $this->belongsTo('App\Models\Employee');
+    }
+    
     public function employee_report_period(){
         return $this->belongsTo('App\Models\EmployeeReportPeriod');
     }
