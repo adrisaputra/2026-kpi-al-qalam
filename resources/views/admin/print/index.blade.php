@@ -38,16 +38,12 @@
                                         <select class="form-control form-control-sm" id="category_report" name="category_report" required  onchange=" if (this.selectedIndex==1){ 
 												document.getElementById('show_month').style.display = 'inline'; 
 												document.getElementById('show_year').style.display = 'inline'; 
-											} else if (this.selectedIndex==2){ 
-												document.getElementById('show_month').style.display = 'inline'; 
-												document.getElementById('show_year').style.display = 'inline'; 
-											}else if (this.selectedIndex==3){ 
+											} else if (this.selectedIndex==3){ 
 												document.getElementById('show_month').style.display = 'inline'; 
 												document.getElementById('show_year').style.display = 'inline'; 
 											};">
                                             <option value="">- Jenis Laporan -</option>
                                             <option value="1">Rekap Rapor</option>
-                                            <option value="2">Rekap KPI</option>
                                             <option value="3">Rekap Nilai Akhir</option>
                                         </select>
                                     </div>

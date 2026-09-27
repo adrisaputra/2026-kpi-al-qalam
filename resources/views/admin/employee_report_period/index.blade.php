@@ -91,6 +91,7 @@
 											<th style="width: 2%">Number</th>
 											<th style="width: 2%">No</th>
 											<th style="width: 30%">Hari/Tanggal</th>
+											<th style="width: 30%">Status</th>
 											<th style="width: 30%">Total Nilai</th>
 											<th style="width: 10%"></th>
 										</tr>
@@ -98,7 +99,7 @@
                                     <tbody></tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="3" style="text-align:right;">TOTAL</th>
+                                            <th colspan="4" style="text-align:right;">TOTAL</th>
                                             <th id="total_value">0</th>
                                             <th></th>
                                         </tr>
@@ -132,6 +133,7 @@
 				{data: 'id', name: 'id', visible: false},
 				{data: 'number', name: 'number'}, // Kolom nomor urut
                 {data: 'display_date', name: 'date'},
+                {data: 'is_locked', name: 'is_locked'},
                 {data: 'total', name: 'total'},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],

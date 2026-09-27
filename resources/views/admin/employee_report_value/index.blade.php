@@ -62,6 +62,9 @@
 								</table>
                             </div>
                         </div>
+                        @if(Auth::user()->group->name == 'Employee' && $employee_report_period->is_locked == false)
+                            <center><a href="#" class="btn mb-2 mr-1 btn-success" data-toggle="tooltip" data-placement="top" title="Kirim Rapor" onClick="sendReport({{ $employee_report_period->id }})">Kirim Rapor</a></center>
+                        @endif
                     </div>
                 </div>
 
@@ -188,5 +191,45 @@
         });
     }
         
+    function sendReport(employee_report_period_id) {
+        swal({
+			title: 'Apakah Kamu Yakin Mengirim Rapor untuk Hari {{ $employee_report_period->day }} Tanggal {{ date("d-m-Y", strtotime($employee_report_period->date)) }} ?',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Kirim Rapor',
+			padding: '2em',
+		}).then(function (result) {
+			if (result.value) {
+				swal(
+					'Berhasil!',
+					'Data Rapor Berhasil Dikirim.',
+					'success'
+				).then(function () {
+					var url = "{{ url('/employee_report_period/lock') }}";
+                    var redirectUrl = "{{ url('/employee_report_period') }}/{{ Crypt::encrypt($employee_report_period->employee_report_category->id) }}";
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+                        data: {
+                            employee_report_period_id: employee_report_period_id
+                        },
+                        success: function (response) {
+                            if(response.success === true){
+                                showSuccessToast(response.message);
+                                window.location.href = redirectUrl;
+                            } else {
+                                showFailedToast(response.message);
+                            }
+                        },
+                        error: function (xhr) {
+                            showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
+                            console.error("Error pengiriman formulir:", xhr);
+                        }
+                    });
+				});
+			}
+		});
+	
+    }
 </script>
 @endsection

@@ -387,7 +387,8 @@ class PrintController extends Controller
                     whereHas('employee_report_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->whereMonth('date', $request->month)
-                        ->whereyear('date', $request->year);
+                        ->whereyear('date', $request->year)
+                        ->where('is_locked', true);
                     })->sum('value');
             
             $employee_report_gr = EmployeeReport::
@@ -395,7 +396,8 @@ class PrintController extends Controller
                         $query->where('employee_id', $v->id)
                         ->whereMonth('date', $request->month)
                         ->whereyear('date', $request->year)
-                        ->where('category', 4);
+                        ->where('category', 4)
+                        ->where('is_locked', true);
                     })->sum('value');
                     
             $employee_kpi = EmployeeKpi::where('employee_id', $v->id)

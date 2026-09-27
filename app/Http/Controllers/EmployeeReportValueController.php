@@ -59,7 +59,7 @@ class EmployeeReportValueController extends Controller
                         $value = $v->value;
                     } else if (in_array($v->report->category, ['4'])) {
                         $value = '<b>Jumlah JP : </b>'.$v->value;
-                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee->name;
+                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee_report_period->employee->name;
                         $value .= '<br><br><b>Alasan : </b>'.$v->reason;
                     } else {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
@@ -76,124 +76,147 @@ class EmployeeReportValueController extends Controller
 
                 } else {
 
-                    if ($v->report->category == 1) {
+                    if($v->employee_report_period->is_locked == false){
+                        if ($v->report->category == 1) {
 
-                        $value = '
-                            <div class="d-flex align-items-center" style="gap: 15px;">
+                            $value = '
+                                <div class="d-flex align-items-center" style="gap: 15px;">
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            id="value_'.$v->id.'"
-                                            value="1"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 1 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        Ya
-                                    </label>
-                                </div>
+                                    <div class="n-chk">
+                                        <label class="new-control new-radio radio-success">
+                                            <input type="radio"
+                                                class="new-control-input"
+                                                name="value_'.$v->id.'"
+                                                id="value_'.$v->id.'"
+                                                value="1"
+                                                onchange="updateValueitem(this, '.$v->id.')"
+                                                '.($v->value == 1 ? 'checked' : '').'>
+                                            <span class="new-control-indicator"></span>
+                                            Ya
+                                        </label>
+                                    </div>
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            id="value_'.$v->id.'"
-                                            value="0"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 0 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        Tidak
-                                    </label>
-                                </div>
+                                    <div class="n-chk">
+                                        <label class="new-control new-radio radio-success">
+                                            <input type="radio"
+                                                class="new-control-input"
+                                                name="value_'.$v->id.'"
+                                                id="value_'.$v->id.'"
+                                                value="0"
+                                                onchange="updateValueitem(this, '.$v->id.')"
+                                                '.($v->value == 0 ? 'checked' : '').'>
+                                            <span class="new-control-indicator"></span>
+                                            Tidak
+                                        </label>
+                                    </div>
 
-                            </div>';
-                       
-                    } else if($v->report->category == 2) {
+                                </div>';
+                        
+                        } else if($v->report->category == 2) {
 
-                        $value = '
-                            <div class="d-flex align-items-center" style="gap: 15px;">
+                            $value = '
+                                <div class="d-flex align-items-center" style="gap: 15px;">
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            id="value_'.$v->id.'"
-                                            value="1"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 1 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        1
-                                    </label>
-                                </div>
+                                    <div class="n-chk">
+                                        <label class="new-control new-radio radio-success">
+                                            <input type="radio"
+                                                class="new-control-input"
+                                                name="value_'.$v->id.'"
+                                                id="value_'.$v->id.'"
+                                                value="1"
+                                                onchange="updateValueitem(this, '.$v->id.')"
+                                                '.($v->value == 1 ? 'checked' : '').'>
+                                            <span class="new-control-indicator"></span>
+                                            1
+                                        </label>
+                                    </div>
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            id="value_'.$v->id.'"
-                                            value="2"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 2 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        2
-                                    </label>
-                                </div>
+                                    <div class="n-chk">
+                                        <label class="new-control new-radio radio-success">
+                                            <input type="radio"
+                                                class="new-control-input"
+                                                name="value_'.$v->id.'"
+                                                id="value_'.$v->id.'"
+                                                value="2"
+                                                onchange="updateValueitem(this, '.$v->id.')"
+                                                '.($v->value == 2 ? 'checked' : '').'>
+                                            <span class="new-control-indicator"></span>
+                                            2
+                                        </label>
+                                    </div>
 
-                                <div class="n-chk">
-                                    <label class="new-control new-radio radio-success">
-                                        <input type="radio"
-                                            class="new-control-input"
-                                            name="value_'.$v->id.'"
-                                            id="value_'.$v->id.'"
-                                            value="0"
-                                            onchange="updateValueitem(this, '.$v->id.')"
-                                            '.($v->value == 0 ? 'checked' : '').'>
-                                        <span class="new-control-indicator"></span>
-                                        0
-                                    </label>
-                                </div>
+                                    <div class="n-chk">
+                                        <label class="new-control new-radio radio-success">
+                                            <input type="radio"
+                                                class="new-control-input"
+                                                name="value_'.$v->id.'"
+                                                id="value_'.$v->id.'"
+                                                value="0"
+                                                onchange="updateValueitem(this, '.$v->id.')"
+                                                '.($v->value == 0 ? 'checked' : '').'>
+                                            <span class="new-control-indicator"></span>
+                                            0
+                                        </label>
+                                    </div>
 
-                            </div>';
+                                </div>';
 
-                    } else if($v->report->category == 3) {
-                        $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'">';
-                    } else if($v->report->category == 4) {
+                        } else if($v->report->category == 3) {
+                            $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'">';
+                        } else if($v->report->category == 4) {
 
-                        $employee = Employee::get();
-                        $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'" placeholder="Masukkan Jumlah Jam" >';
-                        $value .= '<br>
-                                    <select class="basic form-control form-control-sm" name="employee_id_'.$v->id.'" 
-                                            onchange="updateValueitem(this, '.$v->id.')" 
-                                            class="form-select form-select-sm" 
-                                            id="employee_id_'.$v->id.'">
-                                        <option value="">- Pegawai yang digantikan -</option>';
+                            $employee = Employee::get();
+                            $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'" placeholder="Masukkan Jumlah Jam" >';
+                            $value .= '<br>
+                                        <select class="basic form-control form-control-sm" name="employee_id_'.$v->id.'" 
+                                                onchange="updateValueitem(this, '.$v->id.')" 
+                                                class="form-select form-select-sm" 
+                                                id="employee_id_'.$v->id.'">
+                                            <option value="">- Pegawai yang digantikan -</option>';
 
-                        foreach ($employee as $x) {
-                            $value .= '<option value="'.$x->id.'" '.($v->employee_id == $x->id ? 'selected' : '').'>'
-                                        .e($x->name).
-                                    '</option>';
-                        }
-
-                        $value .= '</select>';
-                        $value .= '<br><input type="text" name="reason_'.$v->id.'" value="'.e($v->reason).'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" placeholder="Alasan" id="reason_'.$v->id.'">';
-                    } else if($v->report->category == 5) {
-                        $url = url('employee_report_file', Crypt::encrypt($v->id));
-                        $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
-                                    <span>Lihat File Gambar</span>';
-
-                            if ($v->employee_report_files->count() > 0) {
-                                $value .= '<span class="badge badge-danger counter">'.$v->employee_report_files->count().'</span>';
-
+                            foreach ($employee as $x) {
+                                $value .= '<option value="'.$x->id.'" '.($v->employee_id == $x->id ? 'selected' : '').'>'
+                                            .e($x->name).
+                                        '</option>';
                             }
 
-                            $value .= '</a>';
-                            
+                            $value .= '</select>';
+                            $value .= '<br><input type="text" name="reason_'.$v->id.'" value="'.e($v->reason).'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" placeholder="Alasan" id="reason_'.$v->id.'">';
+                        } else if($v->report->category == 5) {
+                            $url = url('employee_report_file', Crypt::encrypt($v->id));
+                            $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                                        <span>Lihat File Gambar</span>';
+
+                                if ($v->employee_report_files->count() > 0) {
+                                    $value .= '<span class="badge badge-danger counter">'.$v->employee_report_files->count().'</span>';
+
+                                }
+
+                                $value .= '</a>';
+                                
+                        }
+                    
+                    } else {
+                        if (in_array($v->report->category, ['1', '2', '3'])) {
+                            $value = $v->value;
+                        } else if (in_array($v->report->category, ['4'])) {
+                            $value = '<b>Jumlah JP : </b>'.$v->value;
+                            $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee_report_period->employee->name;
+                            $value .= '<br><br><b>Alasan : </b>'.$v->reason;
+                        } else {
+                            $url = url('employee_report_file', Crypt::encrypt($v->id));
+                            $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
+                                        <span>Lihat File Gambar</span>';
+
+                                if ($v->employee_report_files->count() > 0) {
+                                    $value .= '<span class="badge badge-danger counter">'.$v->employee_report_files->count().'</span>';
+
+                                }
+
+                                $value .= '</a>';
+                        }
                     }
+
                 }
 
                 return $value;

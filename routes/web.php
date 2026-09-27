@@ -93,6 +93,8 @@ Route::middleware(['role:Admin KPI,Admin Unit,Employee'])->group(function () {
     Route::get('/employee_report_period/{employee_report_category}', [EmployeeReportPeriodController::class, 'index'])->name('employee_report_period.index');
     Route::get('/employee_report_period/list/{employee_report_category}', [EmployeeReportPeriodController::class, 'get_employee_report_period_index'])->name('employee_report_period.list');
     Route::post('/employee_report_period/store', [EmployeeReportPeriodController::class, 'store']);
+    Route::post('/employee_report_period/lock', [EmployeeReportPeriodController::class, 'lock']);
+    Route::post('/employee_report_period/unlock', [EmployeeReportPeriodController::class, 'unlock']);
 
     ## Employee Report
     Route::get('/employee_report_value/{employee_report_period}', [EmployeeReportValueController::class, 'index'])->name('employee_report_value.index');

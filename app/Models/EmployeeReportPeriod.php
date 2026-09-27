@@ -14,6 +14,7 @@ class EmployeeReportPeriod extends Model
         'employee_id',
         'day',
         'date',
+        'is_locked',
     ];
 
     public function employee_report_category(){

@@ -61,6 +61,14 @@ class EmployeeReportPeriodController extends Controller
             ->addColumn('display_date', function ($v) {
                 return $v->day.' / '.date('d-m-Y', strtotime($v->date));
             })
+            ->addColumn('is_locked', function ($v) {
+                if($v->is_locked==true){
+                    $status ='<span class="badge badge-success">Sudah Dikirm</span>';
+                }else{
+                    $status ='<span class="badge badge-danger">Belum Dikirim</span>';
+                }
+                return $status;
+            })
             ->addColumn('total', function ($v) {
                 return $v->employee_reports->sum('value');
             })
@@ -73,13 +81,13 @@ class EmployeeReportPeriodController extends Controller
                 
                 return $btn;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['is_locked','action'])
             ->make(true);
         }
     }
 
     
-    ## Save Employee KPI Indicator 
+    ## Save Employee Report Indicator 
     public function store(Request $request)
     {
         if ($request->ajax()) {
@@ -109,8 +117,38 @@ class EmployeeReportPeriodController extends Controller
                 }
 
 
-                activity()->log('Create Employee KPI Indicator Data With Employee Id = '.$request->employee_id);
+                activity()->log('Create Employee Report Indicator Data With Employee Id = '.$request->employee_id);
                 return response()->json(['success' => true, 'message' => 'Tambah Data Rapor Berhasil']);
+                
+        }
+    }
+
+    ## Lock
+    public function lock(Request $request)
+    {
+        if ($request->ajax()) {
+
+                $employee_report_period = EmployeeReportPeriod::where('id', $request->employee_report_period_id)->first();
+                $employee_report_period->is_locked = 1;
+                $employee_report_period->save();
+
+                activity()->log('Lock Employee Report Period Data With Id = '.$employee_report_period->id);
+                return response()->json(['success' => true, 'message' => 'Kirim Data Rapor Berhasil']);
+                
+        }
+    }
+
+    ## Unlock
+    public function unlock(Request $request)
+    {
+        if ($request->ajax()) {
+
+                $employee_report_period = EmployeeReportPeriod::where('id', $request->employee_report_period_id)->first();
+                $employee_report_period->is_locked = 0;
+                $employee_report_period->save();
+
+                activity()->log('Lock Employee Report Period Data With Id = '.$employee_report_period->id);
+                return response()->json(['success' => true, 'message' => 'Kirim Data Rapor Berhasil']);
                 
         }
     }
