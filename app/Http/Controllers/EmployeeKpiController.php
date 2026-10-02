@@ -8,6 +8,7 @@ use App\Models\EmployeeKpi;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\KpiCategory;
 use App\Models\WorkUnit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -21,6 +22,29 @@ class EmployeeKpiController extends Controller
         $title = "Pegawai Aktif";
         $work_unit = WorkUnit::get();
         $kpi_category = KpiCategory::get();
+                
+        $previousMonth = Carbon::now()->subMonth();
+        $currentMonth = Carbon::now();
+
+        $employee_kpi = EmployeeKpi::where('month', $previousMonth->month)
+            ->where('year', $previousMonth->year)
+            ->get();
+
+        foreach ($employee_kpi as $v) {
+            EmployeeKpi::firstOrCreate(
+                [
+                    'employee_id' => $v->employee_id,
+                    'kpi_id' => $v->kpi_id,
+                    'month' => $currentMonth->month,
+                    'year' => $currentMonth->year,
+                ],
+                [
+                    'weight_task' => $v->weight_task,
+                    'weight_task_value' => $v->weight_task_value,
+                ]
+            );
+        }
+
         return view('admin.employee_kpi.index', compact('title', 'work_unit','kpi_category'));
     }
 

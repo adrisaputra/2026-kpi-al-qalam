@@ -82,7 +82,10 @@ class EmployeeReportController extends Controller
                                                 function ($query) use ($v, $month, $year) {
                                                     $query->where('employee_id', $v->id)
                                                         ->whereMonth('date', $month)
-                                                        ->whereYear('date', $year);
+                                                        ->whereYear('date', $year)
+                                                        ->whereHas('employee_report_category', function ($query) use($v) {
+                                                            $query->where('id', $v->employee_report_category_id);
+                                                        });
                                                 }
                                             )->sum('value');
                     return $value;

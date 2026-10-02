@@ -7,7 +7,9 @@ use App\Models\EmployeeKpi;
 use App\Models\EmployeeKpiBonus;
 use App\Models\EmployeeKpiIndicator;
 use App\Models\EmployeeReport;
+use App\Models\EmployeeReportCategory;
 use App\Models\Kpi;
+use App\Models\ReportRange;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -101,7 +103,8 @@ class PrintController extends Controller
                     whereHas('employee_report_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->whereMonth('date', $request->month)
-                        ->whereyear('date', $request->year);
+                        ->whereyear('date', $request->year)
+                        ->whereHas('employee_report_category');
                     })->sum('value');
             
             $sheet->setCellValue('A' . $rows, $no++);
@@ -388,9 +391,20 @@ class PrintController extends Controller
                         $query->where('employee_id', $v->id)
                         ->whereMonth('date', $request->month)
                         ->whereyear('date', $request->year)
-                        ->where('is_locked', true);
+                        ->where('is_locked', true)
+                        ->whereHas('employee_report_category');
                     })->sum('value');
-            
+                        
+            $employee_report_category = EmployeeReportCategory::where('employee_id', $v->id)
+                                                    ->where('month', $request->month)
+                                                    ->where('year', $request->year)
+                                                    ->first();
+
+            $report_range = ReportRange::where('report_category_id', $employee_report_category?->report_category_id)
+                ->where('min_value', '<=', $employee_report)
+                ->where('max_value', '>=', $employee_report)
+                ->first();
+
             $employee_report_gr = EmployeeReport::
                     whereHas('employee_report_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
@@ -457,7 +471,7 @@ class PrintController extends Controller
             
             $sheet->setCellValue('A' . $rows, $no++);
             $sheet->setCellValue('B' . $rows, $v->name);
-            $sheet->setCellValue('C' . $rows, $employee_report);
+            $sheet->setCellValue('C' . $rows, $report_range->score ?? 0 );
             $sheet->setCellValue('D' . $rows, $total_employee_kpi);
             $sheet->setCellValue('E' . $rows, '=AVERAGE(C'.$rows.':D'.$rows.')');
             $sheet->setCellValue('F' . $rows, '=IF(E' . $rows . '>=90,"Sangat Baik",IF(E' . $rows . '>=80,"Baik",IF(E' . $rows . '>=70,"Cukup",IF(E' . $rows . '>=60,"Kurang","Perlu Pembinaan"))))');

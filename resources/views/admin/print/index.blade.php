@@ -35,13 +35,7 @@
                                 
                                 <div class="col-xl-3 col-md-12 col-sm-12 col-12">
                                     <div class="form-group" style="margin-bottom: 0rem;">
-                                        <select class="form-control form-control-sm" id="category_report" name="category_report" required  onchange=" if (this.selectedIndex==1){ 
-												document.getElementById('show_month').style.display = 'inline'; 
-												document.getElementById('show_year').style.display = 'inline'; 
-											} else if (this.selectedIndex==3){ 
-												document.getElementById('show_month').style.display = 'inline'; 
-												document.getElementById('show_year').style.display = 'inline'; 
-											};">
+                                        <select class="form-control form-control-sm" id="category_report" name="category_report" required>
                                             <option value="">- Jenis Laporan -</option>
                                             <option value="1">Rekap Rapor</option>
                                             <option value="3">Rekap Nilai Akhir</option>
@@ -49,7 +43,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-xl-3 col-md-12 col-sm-12 col-12" id="show_month" style="display:none;">
+                                <div class="col-xl-3 col-md-12 col-sm-12 col-12" id="show_month">
                                     <select id="month" name="month" class="form-control form-control-sm">
                                         <option value="01" @if(date('m') == '01') selected @endif>Januari</option>
                                         <option value="02" @if(date('m') == '02') selected @endif>Februari</option>
@@ -66,7 +60,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-xl-3 col-md-12 col-sm-12 col-12" id="show_year" style="display:none;">
+                                <div class="col-xl-3 col-md-12 col-sm-12 col-12" id="show_year">
                                     <select id="year" name="year" class="form-control form-control-sm">
                                         @for($i=2026;$i<=date('Y');$i++)
                                             <option value="{{ $i }}" @if(date('Y')==$i) selected @endif>{{ $i }}</option>
