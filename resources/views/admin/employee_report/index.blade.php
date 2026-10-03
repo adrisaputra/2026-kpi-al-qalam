@@ -79,7 +79,8 @@
 											<th>NIY</th>
 											<th>TMT</th>
 											<th>Unit Kerja</th>
-											<th>Nilai</th>
+											<th>Total Nilai</th>
+											<th>Skor</th>
 											<th style="width: 10%"></th>
 										</tr>
 									</thead>
@@ -116,6 +117,7 @@
                 {data: 'tmt_display', name: 'employees.tmt'}, 
                 {data: 'work_unit_name', name: 'work_units.name'}, // ASC/DESC jalan
                 {data: 'value', name: 'value'}, 
+                {data: 'score', name: 'score'}, 
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ],
 			order: [

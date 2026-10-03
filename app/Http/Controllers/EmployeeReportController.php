@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeReport;
+use App\Models\EmployeeReportCategory;
+use App\Models\ReportRange;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,12 +85,37 @@ class EmployeeReportController extends Controller
                                                     $query->where('employee_id', $v->id)
                                                         ->whereMonth('date', $month)
                                                         ->whereYear('date', $year)
-                                                        ->whereHas('employee_report_category', function ($query) use($v) {
-                                                            $query->where('id', $v->employee_report_category_id);
-                                                        });
+                                                        ->where('is_locked', true)
+                                                        ->whereHas('employee_report_category');
+                                                        // ->whereHas('employee_report_category', function ($query) use($v) {
+                                                        //     $query->where('id', $v->employee_report_category_id);
+                                                        // });
                                                 }
                                             )->sum('value');
                     return $value;
+                })
+                ->addColumn('score', function ($v) use ($month,$year){
+                    $value = EmployeeReport::whereHas('employee_report_period',
+                                                function ($query) use ($v, $month, $year) {
+                                                    $query->where('employee_id', $v->id)
+                                                        ->whereMonth('date', $month)
+                                                        ->whereYear('date', $year)
+                                                        ->where('is_locked', true)
+                                                        ->whereHas('employee_report_category');
+                                                }
+                                            )->sum('value');
+                                                    
+                    $employee_report_category = EmployeeReportCategory::where('employee_id', $v->id)
+                                                            ->where('month', $month)
+                                                            ->where('year', $year)
+                                                            ->first();
+
+                    $report_range = ReportRange::where('report_category_id', $employee_report_category?->report_category_id)
+                        ->where('min_value', '<=', $value)
+                        ->where('max_value', '>=', $value)
+                        ->first();
+
+                    return $report_range->score ?? 0;
                 })
                 ->addColumn('action', function ($v){
                     $report = url('employee_report_category', Crypt::encrypt($v->id));
