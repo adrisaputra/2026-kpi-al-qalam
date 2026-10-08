@@ -249,5 +249,41 @@
     }
 
 
+    function restoreReport(employee_report_period_id) {
+        swal({
+			title: 'Kembalikan rapor untuk diperbaiki?',
+			text: 'Rapor yang sudah dikirim akan dikembalikan dan dapat diedit kembali. Lanjutkan?',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Ya, kembalikan',
+			cancelButtonText: 'Batal',
+			padding: '2em',
+		}).then(function (result) {
+			if (result.value) {
+				var url = "{{ url('/employee_report_period/unlock') }}";
+                var redirectUrl = "{{ url('/employee_report_period') }}/{{ Crypt::encrypt($employee_report_category->id) }}";
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        employee_report_period_id: employee_report_period_id
+                    },
+                    success: function (response) {
+                        if(response.success === true){
+                            showSuccessToast(response.message);
+                            window.location.href = redirectUrl;
+                        } else {
+                            showFailedToast(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        showFailedToast(xhr);
+                        console.error("Error mengembalikan rapor:", xhr);
+                    }
+                });
+			}
+		});
+	
+    }
 </script>
 @endsection

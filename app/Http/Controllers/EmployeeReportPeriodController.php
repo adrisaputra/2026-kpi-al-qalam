@@ -63,7 +63,7 @@ class EmployeeReportPeriodController extends Controller
             })
             ->addColumn('is_locked', function ($v) {
                 if($v->is_locked==true){
-                    $status ='<span class="badge badge-success">Sudah Dikirm</span>';
+                    $status ='<span class="badge badge-success">Sudah Dikirim</span>';
                 }else{
                     $status ='<span class="badge badge-danger">Belum Dikirim</span>';
                 }
@@ -79,6 +79,11 @@ class EmployeeReportPeriodController extends Controller
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list text-info"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                     </a>';
                 
+                if($v->is_locked == true){
+                    $btn .= '<a href="#" title="Kembalikan untuk diperbaiki" onclick="restoreReport('.$v->id.'); return false;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rotate-ccw text-warning"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-9.97L1 10"></path></svg>
+                    </a>';
+                }
                 return $btn;
             })
             ->rawColumns(['is_locked','action'])
@@ -134,7 +139,7 @@ class EmployeeReportPeriodController extends Controller
 
                 activity()->log('Lock Employee Report Period Data With Id = '.$employee_report_period->id);
                 return response()->json(['success' => true, 'message' => 'Kirim Data Rapor Berhasil']);
-                
+
         }
     }
 
@@ -147,9 +152,9 @@ class EmployeeReportPeriodController extends Controller
                 $employee_report_period->is_locked = 0;
                 $employee_report_period->save();
 
-                activity()->log('Lock Employee Report Period Data With Id = '.$employee_report_period->id);
-                return response()->json(['success' => true, 'message' => 'Kirim Data Rapor Berhasil']);
-                
+                activity()->log('Unlock Employee Report Period Data With Id = '.$employee_report_period->id);
+                return response()->json(['success' => true, 'message' => 'Rapor berhasil dikembalikan dan dapat diedit kembali.']);
+
         }
     }
 

@@ -59,7 +59,7 @@ class EmployeeReportValueController extends Controller
                         $value = $v->value;
                     } else if (in_array($v->report->category, ['4'])) {
                         $value = '<b>Jumlah JP : </b>'.$v->value;
-                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee_report_period->employee->name;
+                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee?->name;
                         $value .= '<br><br><b>Alasan : </b>'.$v->reason;
                     } else {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
@@ -201,7 +201,7 @@ class EmployeeReportValueController extends Controller
                             $value = $v->value;
                         } else if (in_array($v->report->category, ['4'])) {
                             $value = '<b>Jumlah JP : </b>'.$v->value;
-                            $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee_report_period->employee->name;
+                            $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee?->name;
                             $value .= '<br><br><b>Alasan : </b>'.$v->reason;
                         } else {
                             $url = url('employee_report_file', Crypt::encrypt($v->id));
