@@ -287,8 +287,12 @@
             contentType: false, // Biarkan jQuery menentukan contentType secara otomatis
             processData: false, // Biarkan jQuery menangani proses data secara otomatis
             success: function (response) {
-                showSuccessToast(response.message); // Tampilkan notifikasi toast
-                $('#myForm')[0].reset(); // Reset form setelah berhasil menambahkan data
+                if (response.success) {
+                    showSuccessToast(response.message);
+                } else {
+                    showFailedToast(response.message);
+                }
+                $('#myForm')[0].reset();
                 $('#exampleModal').modal('hide');
                 table.ajax.reload(null, false);
             },

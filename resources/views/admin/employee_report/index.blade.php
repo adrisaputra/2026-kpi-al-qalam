@@ -19,9 +19,13 @@
 
 							<div class="widget-content widget-content-area">
 								<div class="row">
-									<div class="@if(Auth::user()->group->name == 'Admin KPI') col-xl-5 @else col-xl-8 @endif col-md-12 col-sm-12 col-12">
+									<div class="@if(Auth::user()->group->name == 'Admin KPI') col-xl-6 @else col-xl-8 @endif col-md-12 col-sm-12 col-12">
 										<a href="{{ url(Request::segment(1)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
-									</div>
+                                        <button type="button" class="btn mb-2 mr-1 btn-danger" title="Tombol kunci belum diaktifkan" aria-label="Kunci rapor" disabled>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                            Kunci
+                                        </button>
+                                    </div>
                                         
                                     <div class="col-xl-2 col-md-12 col-sm-12 col-12">
                                         <select id="get_month" name="get_month" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
@@ -48,7 +52,7 @@
                                     </div>
                                         
                                     @if(Auth::user()->group->name == 'Admin KPI')
-                                        <div class="col-xl-3 col-md-12 col-sm-12 col-12">
+                                        <div class="col-xl-2 col-md-12 col-sm-12 col-12">
                                             <select id="get_work_unit" name="get_work_unit" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
                                                 <option value="">Pilih Unit Kerja</option>
                                                 @foreach($work_unit as $v)

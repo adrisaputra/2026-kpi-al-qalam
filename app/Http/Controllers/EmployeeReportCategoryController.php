@@ -118,12 +118,23 @@ class EmployeeReportCategoryController extends Controller
     {
         if ($request->ajax()) {
 
+            $employee_report_category = EmployeeReportCategory::where('employee_id', $request->employee_id)
+                                        ->where('report_category_id', $request->report_category_id)
+                                        ->where('month', $request->month)
+                                        ->where('year', $request->year)
+                                        ->first();
+                                        
+            if($employee_report_category){
+                return response()->json(['success' => false, 'message' => 'Kategori Rapor Sudah Ada']);
+            }
+
             $employee_report_category = new EmployeeReportCategory();
             $employee_report_category->employee_id = $request->employee_id;
             $employee_report_category->report_category_id = $request->report_category_id;
             $employee_report_category->month = $request->month;
             $employee_report_category->year = $request->year;
             $employee_report_category->save();
+
             activity()->log('Create Employee KPI Data');
             return response()->json(['success' => true, 'message' => 'Tambah Kategori Rapor Berhasil']);
         }
