@@ -19,12 +19,12 @@
 
 							<div class="widget-content widget-content-area">
 								<div class="row">
-									<div class="@if(Auth::user()->group->name == 'Admin KPI') col-xl-6 @else col-xl-8 @endif col-md-12 col-sm-12 col-12">
-										<a href="{{ url(Request::segment(1)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
-                                        <button type="button" class="btn mb-2 mr-1 btn-danger" title="Tombol kunci belum diaktifkan" aria-label="Kunci rapor" disabled>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                            Kunci
-                                        </button>
+                                    <div class="@if(Auth::user()->group->name == 'Admin KPI') col-xl-5 @else col-xl-8 @endif col-md-12 col-sm-12 col-12">
+                                    <a href="{{ url(Request::segment(1)) }}" class="btn mb-2 mr-1 btn-warning" data-toggle="tooltip" data-placement="top" title="Refresh"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg></a>
+                                    <button type="button" id="toggle-period-lock" onclick="togglePeriodLock()" class="btn mb-2 mr-1 btn-danger" title="Kunci periode rapor untuk semua pegawai" aria-label="Kunci rapor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                        Kunci
+                                    </button>
                                     </div>
                                         
                                     <div class="col-xl-2 col-md-12 col-sm-12 col-12">
@@ -43,6 +43,7 @@
                                             <option value="12" @if(date('m') == '12') selected @endif>Desember</option>
                                         </select>
                                     </div>
+
                                     <div class="col-xl-2 col-md-12 col-sm-12 col-12">
                                         <select id="get_year" name="get_year" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
                                             @for($i=2026;$i<=date('Y');$i++)
@@ -52,7 +53,7 @@
                                     </div>
                                         
                                     @if(Auth::user()->group->name == 'Admin KPI')
-                                        <div class="col-xl-2 col-md-12 col-sm-12 col-12">
+                                        <div class="col-xl-3 col-md-12 col-sm-12 col-12">
                                             <select id="get_work_unit" name="get_work_unit" class="basic form-control form-control-sm" style="height: 38px;padding: 5px;">
                                                 <option value="">Pilih Unit Kerja</option>
                                                 @foreach($work_unit as $v)
@@ -101,6 +102,7 @@
     var table;
 
     $(document).ready(function () {
+        check_lock();
         table = $('#employee-table').DataTable({
             processing: true,
             serverSide: true,
@@ -141,13 +143,17 @@
         // Tambahkan event listener untuk perubahan combo box office
         $('#get_month').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            check_lock();
         });
         $('#get_year').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            check_lock();
         });
         $('#get_work_unit').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
+            check_lock();
         });
+
 
         $('#myForm').submit(function (e) {
             e.preventDefault(); // Hindari pengiriman form secara default
@@ -198,7 +204,6 @@
 
     });
 
-
     // Fungsi untuk menampilkan notifikasi toast dengan ikon centang
     function showSuccessToast(message) {
         Snackbar.show({
@@ -220,5 +225,116 @@
         });
     }
      
+    function togglePeriodLock(){
+
+        var month = $('#get_month').val();
+        var year = $('#get_year').val();
+
+        var isLocked = $('#toggle-period-lock').data('status') === 'locked';
+
+        var action = isLocked ? 'Buka Kunci' : 'Kunci'; var message = isLocked ? 'Apakah Kamu Yakin Akan Membuka Kunci Pengisian Rapor Bulan ' + month + ' Tahun ' + year + '?' : 'Apakah Kamu Yakin Akan Mengunci Pengisian Rapor Bulan ' + month + ' Tahun ' + year + '?';
+        
+        new Swal({
+            title: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: action,
+            padding: '2em'
+        }).then(function (result) {
+			if (result.value) {
+				swal(
+                    'Dikunci!',
+                    'Periode rapor berhasil dikunci.',
+                    'success'
+                ).then(function () {
+                    var url = "{{ url('/employee_report/update_period_lock_status') }}";
+                        $.ajax({
+                            url: url,
+                            type: "POST",
+                            data: {
+                                month: month,
+                                year: year,
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function (response) {
+                                showSuccessToast(response.message);
+                                check_lock();
+                            },
+                            error: function (xhr) {
+                                console.error("Error pengiriman formulir:", xhr);
+                                $('#loading').hide();   
+                            }
+                        });
+                });
+            }
+        });
+        
+    }
+
+    function check_lock(){
+
+        var month = $('#get_month').val();
+        var year = $('#get_year').val();
+
+        var url = "{{ url('/employee_report/period_lock_status') }}";
+        $.ajax({
+            url: url + "/" + month +"/" + year,
+            type: "get",
+            success: function (response) {
+                if (response.data?.status === 'locked') {
+                    $('#toggle-period-lock')
+                    .html(`
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            width="18" height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Buka Kunci
+                    `)
+                    .data('status', 'locked')
+                    .removeClass('btn-success btn-primary')
+                    .addClass('btn-success mb-2 mr-1')
+                    .attr('title', 'Buka Kunci periode rapor untuk semua pegawai')
+                    .attr('aria-label', 'Buka Kunci rapor')
+                    .css('pointer-events', 'auto');
+                } else {
+                    $('#toggle-period-lock')
+                    .html(`
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            width="18" height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Kunci
+                    `)
+                    .data('status', 'unlocked')
+                    .removeClass('btn-success btn-primary')
+                    .addClass('btn-danger mb-2 mr-1')
+                    .attr('title', 'Kunci periode rapor untuk semua pegawai')
+                    .attr('aria-label', 'Kunci rapor')
+                    .css('pointer-events', 'auto');
+                }
+            },
+            error: function (xhr) {
+                console.error("Error pengiriman formulir:", xhr);
+            }
+        });
+        
+    }
+
 </script>
 @endsection

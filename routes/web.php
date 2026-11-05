@@ -137,6 +137,10 @@ Route::middleware(['role:Admin KPI,Admin Unit'])->group(function () {
 
 
 Route::middleware(['role:Admin KPI'])->group(function () {
+
+    ## Employee Report Period Lock
+    Route::get('/employee_report/period_lock_status/{month}/{year}', [EmployeeReportController::class, 'period_lock_status']);
+    Route::post('/employee_report/update_period_lock_status', [EmployeeReportController::class, 'update_period_lock_status']);
     
     ## KPI Category
     Route::get('/kpi_category', [KpiCategoryController::class, 'index'])->name('kpi_category.index');

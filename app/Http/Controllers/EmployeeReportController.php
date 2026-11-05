@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Models\Employee;
 use App\Models\EmployeeReport;
 use App\Models\EmployeeReportCategory;
+use App\Models\EmployeeReportPeriodLock;
 use App\Models\ReportRange;
 use App\Models\WorkUnit;
 use Illuminate\Http\Request;
@@ -143,4 +144,47 @@ class EmployeeReportController extends Controller
                 ->rawColumns(['name_display', 'photo', 'action'])->make(true);
         }
     }
+
+    
+    public function period_lock_status($month = null, $year = null,Request $request)
+    {
+        if ($request->ajax()) {
+            $employee_report_period_lock = EmployeeReportPeriodLock::where('month', $month)->where('year', $year)->first();
+            return response()->json(['success' => true, 'message' => 'Data Berhasil Dipublikasikan', 'data' => $employee_report_period_lock]);
+        }
+    }
+
+    public function update_period_lock_status(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $employee_report_period_lock = EmployeeReportPeriodLock::where('month', $request->month)->where('year', $request->year)->first();
+
+            if (!$employee_report_period_lock) {
+                $employee_report_period_lock = new EmployeeReportPeriodLock();
+                $employee_report_period_lock->month = $request->month;
+                $employee_report_period_lock->year = $request->year;
+                $employee_report_period_lock->status = 'locked';
+                $employee_report_period_lock->save();
+                    
+                activity()->log('Update Period Lock Status');
+                return response()->json(['success' => true, 'message' => 'Report Berhasil Dikunci']);
+            } else {
+                $employee_report_period_lock->month = $request->month;
+                $employee_report_period_lock->year = $request->year;
+                if($employee_report_period_lock->status == 'locked'){
+                    $employee_report_period_lock->status = 'unlocked';
+                    $message = 'Report Berhasil Dibuka';
+                } else {
+                    $employee_report_period_lock->status = 'locked';
+                    $message = 'Report Berhasil Dikunci';
+                }
+                $employee_report_period_lock->save();
+
+                activity()->log('Update Period Lock Status');
+                return response()->json(['success' => true, 'message' => $message]);
+            }
+        }
+    }
+
 }

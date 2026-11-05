@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\EmployeeReport;
 use App\Models\EmployeeReportCategory;
+use App\Models\EmployeeReportPeriodLock;
 use App\Models\ReportCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -117,6 +118,12 @@ class EmployeeReportCategoryController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
+            if (EmployeeReportPeriodLock::isLockedForPeriod(
+                (int) $request->month,
+                (int) $request->year
+            )) {
+                return response()->json(['success' => false, 'message' => EmployeeReportPeriodLock::LOCKED_MESSAGE]);
+            }
 
             $employee_report_category = EmployeeReportCategory::where('employee_id', $request->employee_id)
                                         ->where('report_category_id', $request->report_category_id)
@@ -152,6 +159,18 @@ class EmployeeReportCategoryController extends Controller
     public function update(Request $request, EmployeeReportCategory $employee_report_category)
     {
         if ($request->ajax()) {
+            $currentPeriodLocked = EmployeeReportPeriodLock::isLockedForPeriod(
+                (int) $employee_report_category->month,
+                (int) $employee_report_category->year
+            );
+            $targetPeriodLocked = EmployeeReportPeriodLock::isLockedForPeriod(
+                (int) $request->month,
+                (int) $request->year
+            );
+
+            if ($currentPeriodLocked || $targetPeriodLocked) {
+                return response()->json(['success' => false, 'message' => EmployeeReportPeriodLock::LOCKED_MESSAGE]);
+            }
 
             $employee_report_category->employee_id = $request->employee_id;
             $employee_report_category->report_category_id = $request->report_category_id;
@@ -168,6 +187,13 @@ class EmployeeReportCategoryController extends Controller
     public function delete(Request $request,  EmployeeReportCategory $employee_report_category)
     {
         if ($request->ajax()) {
+            if (EmployeeReportPeriodLock::isLockedForPeriod(
+                (int) $employee_report_category->month,
+                (int) $employee_report_category->year
+            )) {
+                return response()->json(['success' => false, 'message' => EmployeeReportPeriodLock::LOCKED_MESSAGE]);
+            }
+
             $employee_report_category->delete();
             activity()->log('Delete Employee KPI Data With ID = ' . $employee_report_category->id);
             return response()->json(['success' => true, 'message' => 'Hapus Kategori Rapor Berhasil']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeReport;
 use App\Models\EmployeeReportFile;
+use App\Models\EmployeeReportPeriodLock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -27,6 +28,9 @@ class EmployeeReportFileController extends Controller
     {
         if ($request->ajax()) {
             $counters = 1;
+            $report = EmployeeReport::with('employee_report_period')->findOrFail($employee_report);
+            $reportLocked = $report->employee_report_period->is_locked
+                || EmployeeReportPeriodLock::isLockedForDate($report->employee_report_period->date);
 
             $employee_report_file = EmployeeReportFile::where('employee_report_id', $employee_report)->get();
 
@@ -44,9 +48,9 @@ class EmployeeReportFileController extends Controller
                     $image = '<a href=' . $url_image . ' target="_blank"><img src=' . $url_image . ' width="100%"></a>';
                     return $image;
                 })
-                ->addColumn('action', function ($v) {
+                ->addColumn('action', function ($v) use ($reportLocked) {
                     $btn =null;
-                    if(Auth::user()->group->name == "Employee"){
+                    if(Auth::user()->group->name == "Employee" && !$reportLocked){
                         $btn = '<a href="#" onClick="getData(' . $v->id . ')" id="' . $v->id . '" title="Edit" data-toggle="modal" data-target="#exampleModal">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                             </a>';
@@ -92,6 +96,11 @@ class EmployeeReportFileController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
+            $report = EmployeeReport::with('employee_report_period')->findOrFail($request->employee_report_id);
+            if ($this->reportIsLocked($report)) {
+                return $this->lockedResponse();
+            }
+
             $employee_report_file = new EmployeeReportFile();
             $employee_report_file->employee_report_id = $request->employee_report_id;
 
@@ -153,6 +162,10 @@ class EmployeeReportFileController extends Controller
     public function update(Request $request, EmployeeReportFile $employee_report_file)
     {
         if ($request->ajax()) {
+            if ($this->reportIsLocked($employee_report_file->employee_report)) {
+                return $this->lockedResponse();
+            }
+
             if ($request->hasFile('image')) {
 
                 // Simpan nama file lama
@@ -214,6 +227,10 @@ class EmployeeReportFileController extends Controller
     public function delete(Request $request, EmployeeReportFile $employee_report_file)
     {
         if ($request->ajax()) {
+            if ($this->reportIsLocked($employee_report_file->employee_report)) {
+                return $this->lockedResponse();
+            }
+
             $image = $employee_report_file->image;
             $employee_report_file->delete();
 
@@ -223,5 +240,18 @@ class EmployeeReportFileController extends Controller
             activity()->log('Delete Data Employee Report File With ID = ' . $employee_report_file->id);
             return response()->json(['success' => true, 'message' => 'Hapus Data Berhasil']);
         }
+    }
+
+    private function reportIsLocked(EmployeeReport $employee_report): bool
+    {
+        $period = $employee_report->employee_report_period;
+
+        return $period->is_locked
+            || EmployeeReportPeriodLock::isLockedForDate($period->date);
+    }
+
+    private function lockedResponse()
+    {
+        return response()->json(['success' => false, 'message' => EmployeeReportPeriodLock::LOCKED_MESSAGE]);
     }
 }

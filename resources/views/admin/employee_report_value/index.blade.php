@@ -62,7 +62,8 @@
 								</table>
                             </div>
                         </div>
-                        @if(Auth::user()->group->name == 'Employee' && $employee_report_period->is_locked == false)
+                        
+                        @if(Auth::user()->group->name == 'Employee' && $periodIsLocked == false)
                             <center><a href="#" class="btn mb-2 mr-1 btn-success" data-toggle="tooltip" data-placement="top" title="Kirim Rapor" onClick="sendReport({{ $employee_report_period->id }})">Kirim Rapor</a></center>
                         @endif
                     </div>
