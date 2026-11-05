@@ -25,7 +25,7 @@ class EmployeeKpiBonus extends Model
     }
 
     public function kpi_bonus(){
-        return $this->belongsTo('App\Models\KpiBonus');
+        return $this->belongsTo('App\Models\KpiBonus')->withTrashed();
     }
 
     public function employee_kpi_indicator_item(){

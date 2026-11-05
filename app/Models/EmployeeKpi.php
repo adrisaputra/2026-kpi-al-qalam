@@ -25,7 +25,7 @@ class EmployeeKpi extends Model
     }
 
     public function kpi(){
-        return $this->belongsTo('App\Models\Kpi');
+        return $this->belongsTo('App\Models\Kpi')->withTrashed();
     }
     
     public function employee_kpi_period(){

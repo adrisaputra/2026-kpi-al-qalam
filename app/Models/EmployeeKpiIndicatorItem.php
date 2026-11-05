@@ -21,7 +21,7 @@ class EmployeeKpiIndicatorItem extends Model
     }
 
     public function kpi_indicator_item(){
-        return $this->belongsTo('App\Models\KpiIndicatorItem');
+        return $this->belongsTo('App\Models\KpiIndicatorItem')->withTrashed();
     }
 
 }

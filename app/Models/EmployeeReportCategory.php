@@ -23,6 +23,6 @@ class EmployeeReportCategory extends Model
     }
 
     public function report_category(){
-        return $this->belongsTo('App\Models\ReportCategory');
+        return $this->belongsTo('App\Models\ReportCategory')->withTrashed();
     }
 }
