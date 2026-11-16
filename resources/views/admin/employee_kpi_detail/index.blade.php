@@ -219,14 +219,14 @@
 
         $('#get_month').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
-            var month = $.trim($('#get_month').val());
-            $('#month').val(month).trigger('change');
+            // var month = $.trim($('#get_month').val());
+            // $('#month').val(month).trigger('change');
         });
         
         $('#get_year').on('change', function () {
             table.draw(); // Panggil ulang DataTable untuk memperbarui data berdasarkan filter office
-            var year = $.trim($('#get_year').val());
-            $('#year').val(year).trigger('change');
+            // var year = $.trim($('#get_year').val());
+            // $('#year').val(year).trigger('change');
         });
         
         $('#myForm').submit(function (e) {
