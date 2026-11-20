@@ -292,6 +292,8 @@
     function clearForm(){
         document.getElementById("head_title").textContent = "Tambah {{ __($title) }}";
         $('#myForm')[0].reset();
+        $("#month").val('').trigger("change");
+        $("#year").val('').trigger("change");
         document.getElementById("action").textContent = "Simpan";
     }
 
