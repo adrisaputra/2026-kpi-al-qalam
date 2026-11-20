@@ -61,6 +61,7 @@ Route::middleware(['role:Admin KPI,Admin Unit,Employee'])->group(function () {
     Route::get('/employee_kpi_detail/edit/{employee_kpi}', [EmployeeKpiDetailController::class, 'edit']);
     Route::put('/employee_kpi_detail/edit/{employee_kpi}', [EmployeeKpiDetailController::class, 'update']);
     Route::get('/employee_kpi_detail/delete/{employee_kpi}',[EmployeeKpiDetailController::class, 'delete']);
+    Route::post('/employee_kpi_detail/refresh/{employee_kpi}',[EmployeeKpiDetailController::class, 'refresh']);
     
     ## Employee KPI Periode
     Route::get('/employee_kpi_period/{employee_kpi}', [EmployeeKpiPeriodController::class, 'index'])->name('employee_kpi_period.index');

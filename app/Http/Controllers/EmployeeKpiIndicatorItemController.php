@@ -18,6 +18,16 @@ class EmployeeKpiIndicatorItemController extends Controller
         $title = "KPI";
         $employee_kpi_indicator = Crypt::decrypt($employee_kpi_indicator);
         $employee_kpi_indicator = EmployeeKpiIndicator::where('id',$employee_kpi_indicator)->first();
+
+        ## Hitung ulang score dan value untuk semua EmployeeKpiIndicator
+        // $employee_kpi_indicator = EmployeeKpiIndicator::get();
+        // foreach($employee_kpi_indicator as $v){
+        //     $score2 = $this->calculateKpiScore($v->id);
+        //     $v->score = $score2;
+        //     $v->value = ($v->weight / 5) * $score2;
+        //     $v->save();
+        // }
+
         return view('admin.employee_kpi_indicator_item.index', compact('title', 'employee_kpi_indicator'));
     }
 
@@ -158,9 +168,9 @@ class EmployeeKpiIndicatorItemController extends Controller
                 $score2 = $this->calculateKpiScore($employee_kpi_indicator_item->employee_kpi_indicator_id);
                 
                 $employee_kpi_indicator = EmployeeKpiIndicator::where('id',$employee_kpi_indicator_item->employee_kpi_indicator_id)->first();
-                $kpi_indicator = KpiIndicator::where('id',$employee_kpi_indicator->kpi_indicator_id)->first();
+                // $kpi_indicator = KpiIndicator::where('id',$employee_kpi_indicator->kpi_indicator_id)->first();
                 $employee_kpi_indicator->score = $score2;
-                $employee_kpi_indicator->value = ($kpi_indicator->weight / 5) * $score2;
+                $employee_kpi_indicator->value = ($employee_kpi_indicator->weight / 5) * $score2;
                 $employee_kpi_indicator->save();
 
                 return [

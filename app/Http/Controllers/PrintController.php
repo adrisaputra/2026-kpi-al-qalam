@@ -405,12 +405,11 @@ class PrintController extends Controller
                 ->where('max_value', '>=', $employee_report)
                 ->first();
 
-            $employee_report_gr = EmployeeReport::
-                    whereHas('employee_report_period', function ($query) use ($v, $request) {
+            $employee_report_gr = EmployeeReport::where('category', 4)
+                    ->whereHas('employee_report_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->whereMonth('date', $request->month)
                         ->whereyear('date', $request->year)
-                        ->where('category', 4)
                         ->where('is_locked', true);
                     })->sum('value');
                     
@@ -445,28 +444,25 @@ class PrintController extends Controller
                 $total_employee_kpi += $value * $weight / 100;
             }
 
-            $employee_kpi_ttq = EmployeeKpiBonus::
-                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+            $employee_kpi_ttq = EmployeeKpiBonus::where('category', 1)
+                    ->whereHas('employee_kpi_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->where('month', $request->month)
-                        ->where('year', $request->year)
-                        ->where('category', 1);
+                        ->where('year', $request->year);
                     })->sum('value');
             
-            $employee_kpi_catering = EmployeeKpiBonus::
-                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+            $employee_kpi_catering = EmployeeKpiBonus::where('category', 2)
+                    ->whereHas('employee_kpi_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->where('month', $request->month)
-                        ->where('year', $request->year)
-                        ->where('category', 2);
+                        ->where('year', $request->year);
                     })->sum('value');
             
-            $employee_kpi_jp = EmployeeKpiBonus::
-                    whereHas('employee_kpi_period', function ($query) use ($v, $request) {
+            $employee_kpi_jp = EmployeeKpiBonus::where('category', 3)
+                    ->whereHas('employee_kpi_period', function ($query) use ($v, $request) {
                         $query->where('employee_id', $v->id)
                         ->where('month', $request->month)
-                        ->where('year', $request->year)
-                        ->where('category', 3);
+                        ->where('year', $request->year);
                     })->sum('value');
             
             $sheet->setCellValue('A' . $rows, $no++);

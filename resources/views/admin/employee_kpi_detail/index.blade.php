@@ -52,6 +52,9 @@
                                     @if(in_array(Auth::user()->group->name,['Admin KPI','Admin Unit']))
                                         <a href="{{ url('employee_kpi') }}" class="btn mb-2 mr-1 btn-danger" data-toggle="tooltip" data-placement="top" title="Kembali"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 8 12 12 16"></polyline><line x1="16" y1="12" x2="8" y2="12"></line></svg></a>
                                     @endif
+                                    
+                                    <a href="#" onclick="refreshData({{ $employee->employee_kpi->id }})" class="btn mb-2 mr-1 btn-info" data-toggle="tooltip" data-placement="top" title="Kembali">Hitung Ulang Bobot</a>
+                                
                                 </div>
                                 
                                 <div class="col-xl-2 col-md-12 col-sm-12 col-12">
@@ -419,6 +422,46 @@
 					var url = "{{ url('/employee_kpi_detail/delete') }}";
                     $.ajax({
                         url: url + "/" + id,
+                        success: function (response) {
+                            showSuccessToast(response.message);
+                            $('#myForm')[0].reset();
+                            table.ajax.reload(null, false);
+                        },
+                        error: function (xhr) {
+                            showFailedToast(xhr); // Tampilkan notifikasi toast untuk keberhasilan
+                            console.error("Error pengiriman formulir:", xhr);
+                        }
+                    });
+				});
+			}
+		});
+	
+    }
+    // Delete Data
+    function refreshData(id) {
+        get_month = $('#get_month').val(); // Kirim nilai combobox office dalam request
+        get_year = $('#get_year').val(); // Kirim nilai combobox office dalam request
+        swal({
+			title: 'Apakah Kamu Yakin?',
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonText: 'Hitung Ulang',
+			padding: '2em'
+		}).then(function (result) {
+			if (result.value) {
+				swal(
+					'Hitung Ulang!',
+					'Data Berhasil Diupdate.',
+					'success'
+				).then(function () {
+					var url = "{{ url('/employee_kpi_detail/refresh') }}";
+                    $.ajax({
+                        url: url + "/" + id,
+                        method: "POST",
+                        data: {
+                            month: get_month,
+                            year: get_year
+                        },
                         success: function (response) {
                             showSuccessToast(response.message);
                             $('#myForm')[0].reset();

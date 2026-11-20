@@ -277,56 +277,13 @@ class EmployeeKpiDetailController extends Controller
                 ->orderBy('weight_task')
                 ->get();
 
-            // // Aturan bobot berdasarkan jumlah task
-            // $weights = [
-            //     1 => [100],
-            //     2 => [60, 40],
-            //     3 => [60, 20, 20],
-            // ];
+            $weights = $employee_kpis->count() == 1 ? [100] : [60, 40];
 
-            // $totalTask = $employee_kpis->count();
-
-            // if (isset($weights[$totalTask])) {
-
-            //     foreach ($employee_kpis as $index => $kpi) {
-
-            //         $kpi->weight_task = $index + 1;
-            //         $kpi->weight_task_value = $weights[$totalTask][$index];
-            //         $kpi->save();
-            //     }
-            // } else {
-
-            //     // Jika jumlah task belum memiliki aturan bobot
-            //     foreach ($employee_kpis as $index => $kpi) {
-
-            //         $kpi->weight_task = $index + 1;
-            //         $kpi->save();
-            //     }
-            // }
-
-            // Renumber + atur bobot
             foreach ($employee_kpis as $index => $kpi) {
-
-                $weightTask = $index + 1;
-
-                $kpi->weight_task = $weightTask;
-
-                if ($weightTask == 1) {
-
-                    $kpi->weight_task_value = 100;
-
-                } elseif ($weightTask == 2) {
-
-                    $kpi->weight_task_value = 40;
-
-                } else {
-
-                    $kpi->weight_task_value = 0;
-                }
-
+                $kpi->weight_task = $index + 1;
+                $kpi->weight_task_value = $weights[$index] ?? 0;
                 $kpi->save();
             }
-
 
             activity()->log(
                 'Delete Employee KPI Data With ID = ' . $employee_kpi->id
@@ -335,6 +292,36 @@ class EmployeeKpiDetailController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Hapus Employee KPI Berhasil'
+            ]);
+        }
+    }
+
+    ## Delete KPI
+    public function refresh(Request $request, EmployeeKpi $employee_kpi)
+    {
+        if ($request->ajax()) {
+                
+            $employee_kpis = EmployeeKpi::where('employee_id', $employee_kpi->employee_id)
+                ->where('month', $request->month)
+                ->where('year', $request->year)
+                ->orderBy('weight_task')
+                ->get();
+
+            $weights = $employee_kpis->count() == 1 ? [100] : [60, 40];
+
+            foreach ($employee_kpis as $index => $kpi) {
+                $kpi->weight_task = $index + 1;
+                $kpi->weight_task_value = $weights[$index] ?? 0;
+                $kpi->save();
+            }
+
+            activity()->log(
+                'Refresh Employee KPI Data With ID = ' . $employee_kpi->id
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Hitung ulang bobot berhasil'
             ]);
         }
     }
