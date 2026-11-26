@@ -62,7 +62,6 @@
 								</table>
                             </div>
                         </div>
-                        
                         @if(Auth::user()->group->name == 'Employee' && $periodIsLocked == false)
                             <center><a href="#" class="btn mb-2 mr-1 btn-success" data-toggle="tooltip" data-placement="top" title="Kirim Rapor" onClick="sendReport({{ $employee_report_period->id }})">Kirim Rapor</a></center>
                         @endif
@@ -148,6 +147,7 @@
     function updateValueitem(element, id) {
         let value = null;
         let employee_id = null;
+        let employee_ids = null;
         let reason = null;
 
         // Jika yang berubah adalah radio button
@@ -164,12 +164,19 @@
             employee_id = $('#employee_id_' + id).val();
         }
 
+        // Multiple employee
+        if ($('#employee_ids_' + id).length) {
+            employee_ids = $('#employee_ids_' + id).val() || [];
+        }
+
         if ($('#reason_' + id).length) {
             reason = $('#reason_' + id).val();
         }
 
         console.log('ID:', id);
         console.log('Value:', value);
+        console.log('Employee ID:', employee_id);
+        console.log('Employee IDs:', employee_ids);
     
         var url = "{{ url('/employee_report_value/edit') }}";
         $.ajax({
@@ -178,6 +185,7 @@
             data: {
                 value : value,
                 employee_id : employee_id,
+                employee_ids : employee_ids,
                 reason : reason,
                 _token: "{{ csrf_token() }}"
             },

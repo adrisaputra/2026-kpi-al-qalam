@@ -187,7 +187,7 @@ class EmployeeReportValueController extends Controller
                                         <select class="basic form-control form-control-sm tagging" multiple="multiple" name="employee_ids_'.$v->id.'[]" 
                                                 onchange="updateValueitem(this, '.$v->id.')" 
                                                 class="form-select form-select-sm" 
-                                                id="employee_id_'.$v->id.'">
+                                                id="employee_ids_'.$v->id.'">
                                             <option value="">- Pegawai yang digantikan -</option>';
 
                             foreach ($employee as $x) {
@@ -270,7 +270,7 @@ class EmployeeReportValueController extends Controller
             }
 
             $employee_report->value = $request->value;
-            // $employee_report->employee_id = $request->employee_id;
+            $employee_report->employee_id = $request->employee_id;
             $employee_report->employee_ids = json_encode($request->employee_ids ?? []);
             $employee_report->reason = $request->reason;
             $employee_report->save();
