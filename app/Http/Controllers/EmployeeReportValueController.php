@@ -30,6 +30,7 @@ class EmployeeReportValueController extends Controller
                 ]);
             }
         }
+        
         $periodIsLocked = $employee_report_period->is_locked || EmployeeReportPeriodLock::isLockedForDate($employee_report_period->date);
         return view('admin.employee_report_value.index', compact('title', 'employee_report_period', 'periodIsLocked'));
     }
@@ -61,13 +62,22 @@ class EmployeeReportValueController extends Controller
 
                 if (in_array(Auth::user()->group->name, ['Admin KPI', 'Admin Unit'])) {
 
-                    if (in_array($v->report?->category, ['1', '2', '3'])) {
+                    if (in_array($v->report->category, ['1', '2', '3'])) {
                         $value = $v->value;
-                    } else if (in_array($v->report?->category, ['4'])) {
+                    } else if (in_array($v->report->category, ['4'])) {
                         $value = '<b>Jumlah JP : </b>'.$v->value;
-                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee?->name;
+                        $employee_ids = is_array($v->employee_ids)
+                            ? $v->employee_ids
+                            : json_decode($v->employee_ids ?? '[]', true);
+
+                        $employee_ids = $employee_ids ?? [];
+                        $value .= '<br><br><b>Pegawai yang digantikan : </b><br>';
+
+                        $value .= Employee::whereIn('id', $employee_ids)
+                            ->pluck('name')
+                            ->implode('<br>');
                         $value .= '<br><br><b>Alasan : </b>'.$v->reason;
-                    } else if (in_array($v->report?->category, ['5'])) {
+                    } else {
                         $url = url('employee_report_file', Crypt::encrypt($v->id));
                         $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                                     <span>Lihat File Gambar</span>';
@@ -78,14 +88,12 @@ class EmployeeReportValueController extends Controller
                             }
 
                             $value .= '</a>';
-                    } else {
-                        $value = 0;
                     }
 
                 } else {
 
                     if (!$periodIsLocked) {
-                        if ($v->report?->category == 1) {
+                        if ($v->report->category == 1) {
 
                             $value = '
                                 <div class="d-flex align-items-center" style="gap: 15px;">
@@ -120,7 +128,7 @@ class EmployeeReportValueController extends Controller
 
                                 </div>';
                         
-                        } else if($v->report?->category == 2) {
+                        } else if($v->report->category == 2) {
 
                             $value = '
                                 <div class="d-flex align-items-center" style="gap: 15px;">
@@ -169,28 +177,34 @@ class EmployeeReportValueController extends Controller
 
                                 </div>';
 
-                        } else if($v->report?->category == 3) {
+                        } else if($v->report->category == 3) {
                             $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'">';
-                        } else if($v->report?->category == 4) {
+                        } else if($v->report->category == 4) {
 
                             $employee = Employee::get();
                             $value = '<input type="number" name="value_'.$v->id.'" value="'.$v->value.'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" id="value_'.$v->id.'" placeholder="Masukkan Jumlah Jam" >';
                             $value .= '<br>
-                                        <select class="basic form-control form-control-sm" name="employee_id_'.$v->id.'" 
+                                        <select class="basic form-control form-control-sm tagging" multiple="multiple" name="employee_ids_'.$v->id.'[]" 
                                                 onchange="updateValueitem(this, '.$v->id.')" 
                                                 class="form-select form-select-sm" 
                                                 id="employee_id_'.$v->id.'">
                                             <option value="">- Pegawai yang digantikan -</option>';
 
                             foreach ($employee as $x) {
-                                $value .= '<option value="'.$x->id.'" '.($v->employee_id == $x->id ? 'selected' : '').'>'
+                                $employee_ids = is_array($v->employee_ids)
+                                    ? $v->employee_ids
+                                    : json_decode($v->employee_ids ?? '[]', true);
+
+                                $selected = in_array($x->id, $employee_ids) ? 'selected' : '';
+
+                                $value .= '<option value="'.$x->id.'" '.$selected.'>'
                                             .e($x->name).
                                         '</option>';
                             }
 
                             $value .= '</select>';
                             $value .= '<br><input type="text" name="reason_'.$v->id.'" value="'.e($v->reason).'" onchange="updateValueitem(this, '.$v->id.')" class="form-control form-control-sm" placeholder="Alasan" id="reason_'.$v->id.'">';
-                        } else if($v->report?->category == 5) {
+                        } else if($v->report->category == 5) {
                             $url = url('employee_report_file', Crypt::encrypt($v->id));
                             $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                                         <span>Lihat File Gambar</span>';
@@ -205,13 +219,22 @@ class EmployeeReportValueController extends Controller
                         }
                     
                     } else {
-                        if (in_array($v->report?->category, ['1', '2', '3'])) {
+                        if (in_array($v->report->category, ['1', '2', '3'])) {
                             $value = $v->value;
-                        } else if (in_array($v->report?->category, ['4'])) {
+                        } else if (in_array($v->report->category, ['4'])) {
                             $value = '<b>Jumlah JP : </b>'.$v->value;
-                            $value .= '<br><br><b>Pegawai yang digantikan : </b><br>'.$v->employee?->name;
+                            $employee_ids = is_array($v->employee_ids)
+                                ? $v->employee_ids
+                                : json_decode($v->employee_ids ?? '[]', true);
+
+                            $employee_ids = $employee_ids ?? [];
+                            $value .= '<br><br><b>Pegawai yang digantikan : </b><br>';
+
+                            $value .= Employee::whereIn('id', $employee_ids)
+                                ->pluck('name')
+                                ->implode('<br>');
                             $value .= '<br><br><b>Alasan : </b>'.$v->reason;
-                        } else if (in_array($v->report?->category, ['5'])) {
+                        } else {
                             $url = url('employee_report_file', Crypt::encrypt($v->id));
                             $value = '<a href="' . $url . '"  class="btn btn-info btn-sm position-relative me-5" data-toggle="tooltip" data-placement="top" title="Data">
                                         <span>Lihat File Gambar</span>';
@@ -222,8 +245,6 @@ class EmployeeReportValueController extends Controller
                                 }
 
                                 $value .= '</a>';
-                        } else {
-                            $value = 0;
                         }
                     }
 
@@ -249,7 +270,8 @@ class EmployeeReportValueController extends Controller
             }
 
             $employee_report->value = $request->value;
-            $employee_report->employee_id = $request->employee_id;
+            // $employee_report->employee_id = $request->employee_id;
+            $employee_report->employee_ids = json_encode($request->employee_ids ?? []);
             $employee_report->reason = $request->reason;
             $employee_report->save();
 
